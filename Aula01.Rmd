@@ -1,0 +1,278 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 01"
+author: "Prof. Frega 
+<br>
+<small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "11/03/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+---
+
+```{=html}
+```
+
+# Introdução
+
+Aqui começamos a escrever a introdução do nosso material.
+
+Aqui continuamos
+
+A seguir vamos colocando outros ítens tipográficos
+
+## Objetivos
+
+### Objetivo Geral
+
+### Objetivo Específico
+
+#### Subsubseção
+
+##### Parágrafo
+
+###### Subparágrafo
+
+####### Subsubparágrafo
+
+Um subsubparágrafo é aceito pelo *markdown* mas não é definido tipograficamente. Normalmente usamos só até o nível 6, que é o subparágrafo.
+
+# Referencial teórico-empírico
+
+# Metodologia
+
+Escrevendo uma equação
+
+```         
+$$
+y = ax^2+bx+c
+$$
+```
+
+$$
+y = ax^2+bx+c
+$$
+
+# Análise de dados e discussão dos resultados
+
+```{r}
+2 + 2
+```
+
+```{r}
+set.seed(1)
+.x <- rnorm(10000)
+head(.x, 10)
+tail(.x, 10)
+```
+
+```{r}
+hist(.x, freq = FALSE, col = "yellow", border = "black")
+hist(.x, freq = FALSE, col = "lightyellow", border = "gray")
+curve(dnorm(x, mean(.x), sd(.x)), xlim = c(min(.x), max(.x)), add = TRUE, col = "#4040FFC0", lwd = 2.5)
+```
+
+```{r}
+1 / 2
+```
+
+# Dados do Principles of Econometrics
+
+## Pacote `PoEdata_0.1.0.tar.gz`
+
+Uma vez instalado o pacote PoEdata_0.1.0.tar.gz
+
+```{r}
+library(PoEdata)
+```
+
+```{r}
+library(printr)
+data(mroz)
+head(mroz[,1:5])
+tail(mroz[,1:5])
+```
+
+## Pequeno exemplo de programação em `R`
+
+```{r, warning=FALSE}
+library(DescTools)
+plotSquare = function(deltay = 1.5, deltax = abs(deltay/Asp()), 
+                      xbase = 12, ybase = 3, col = "#FF808040") {
+  polygon(c(0, deltax, deltax, 0, 0)+xbase, 
+          c(0, 0, deltay, deltay, 0)+ybase, 
+          col = col)
+}
+
+plotRegressao = function(modelo1 = modelo1, horas = horas, nota = nota, sequencia=5, sub = NULL) {
+# desenho os pontos observados
+plot(horas, nota, pch = 20, col = "darkgray", xlim = c(0, 14), ylim = c(0, 100), axes = FALSE, sub = "Regressão linear simples", xlab = "Horas de estudo", ylab = "Nota na avaliação", main = sub)
+
+# desenho os eixos no (0, 0)
+axis(1, pos = 0)
+axis(2, pos = 0)
+
+# traça a linha do modelo1 em azul
+if(sequencia>1) abline(modelo1, col = "blue")
+
+# calcula os pontos sobre a reta
+estimados <- predict(modelo1, horas = horas)
+
+# desenha os pontos sobre a reta
+if(sequencia>2) points(horas, estimados, pch = 20, col = "blue")
+
+# desenha as barras de erro (y - ychapéu) e dá nome aos pontos
+delta = 0.3
+if(sequencia>3) {
+for (i in 1:length(horas)) {
+  # desenha as barras de erro verticais
+  lines(c(horas[i], horas[i]), c(estimados[i], nota[i]), col = "red")
+  # desenha as linhas horizontais
+  lines(c(horas[i]-delta, horas[i]+delta), c(estimados[i], estimados[i]), col = "red")
+  lines(c(horas[i]-delta, horas[i]+delta), c(nota[i], nota[i]), col = "red")
+  # coloca o nome do ponto acima ou abaixo dele conforme a estética
+  text(horas[i], nota[i], bquote(y[.(i)]), pos = ifelse(estimados[i]>nota[i], 1, 3))
+}
+}
+if(sequencia>4) {
+for (i in 1:length(horas)) {
+  deltay = nota[i]-estimados[i]
+  deltax = abs(deltay/Asp())
+  if(deltay>0) deltax = -deltax
+  plotSquare(xbase = horas[i], ybase = estimados[i], deltay = deltay, deltax = deltax)
+}
+}
+
+text(8, 10, expression(min(Sigma(y[i]-bar(y[i]))^2)), cex = 1.2)
+text(8, 15, "Mínimos quadrados ordinários minimiza o somatório dos quadrados dos erros", cex = 0.7)
+}
+
+```
+
+```{r, fig.asp=1, fig.cap="Nota na avaliação *versus* horas de estudo", fig.align='center'}
+# conjuntos de dados
+nota <- c(40, 30, 60, 65, 70, 90)
+horas <- c(2, 4, 6, 8, 10, 12)
+# função lm (linear model) -> guarda em modelo1
+lm(nota~horas) -> modelo1
+
+
+plotRegressao(modelo1, horas, nota, 1, expression("Nuvem de pontos"))
+plotRegressao(modelo1, horas, nota, 2, expression(paste("Reta de regressão: ", nota==b[0]+b[1]*horas)))
+plotRegressao(modelo1, horas, nota, 3, expression(paste("Reta de regressão com as estimativas ", hat(y))))
+plotRegressao(modelo1, horas, nota, 4, expression(paste("Erros observados: ", y-hat(y))))
+plotRegressao(modelo1, horas, nota, 5, expression(paste("Quadrados dos erros: ", (y-hat(y))^2)))
+```
+
+```{r}
+modelo1
+modelo1$coefficients[1]
+modelo1$coefficients[2]
+```
+
+```{=html}
+<!---
+Isto é um comentário
+--->
+```
+```         
+$$
+\widehat{\text{nota}} = b_0+b_1\cdot \text{horas} = `r modelo1$coef[1]`+`r modelo1$coef[2]`\cdot \text{horas}
+$$
+```
+
+$$
+\widehat{\text{nota}} = b_0+b_1\cdot \text{horas} = `r modelo1$coef[1]`+`r modelo1$coef[2]`\cdot \text{horas}
+$$
+
+Diagnósticos do modelo
+
+Estatística = testes de hipóteses
+
+Uma hipótese pode ser rejeitada ou não
+
+Existe um valor calculado para cada teste que se chama p.value (p-valor) para o qual existe um valor crítico, normalmente tomado como 0,05 (ou 5%) que chamamos de significância do teste.
+
+Todo teste tem uma hipótese nula ($H_0$), se o p-valor for menor que o limite, rejeita-se $H_0$, se for igual ou maior, aceita-se $H_0$.
+
+$H_0$ do teste F: não há relação entre as variáveis.
+
+$H_0$ do teste t: o coeficiente associado é igual a zero.
+
+```{r}
+summary(nota)
+summary(horas)
+summary(.x)
+summary(modelo1)
+```
+
+$R^2$ é a porção de variação da nota que é explicada pelas horas.
+
+Ou seja, aproximadamente 83% da variação da nota é explicada pelas horas de estudo.
+
+```{r}
+x = 1:6*10
+y = 1:6
+plot(x, y)
+plotSquare(xbase = 20, ybase = 2, deltay = 0.5)
+plotSquare(xbase = 30, ybase = 3, deltay = 1.5, col = "#8080FF40")
+plotSquare(xbase = 40, ybase = 4, deltay = -2.5, col = "#80FF8040")
+plotSquare(xbase = 50, ybase = 5, deltay = -1.5, col = "#FFFF8040")
+abline(c(0, 0.1), col = "darkgray")
+```
+
+```{r}
+f = function(x) (x^3+8)/(x^4-16)
+x = seq(-3, -1.0000001, length.out = 100)
+y = f(x)
+plot(x, y, type = "l")
+abline(v=-2, h = -3/8, col = "lightblue")
+text(-2.75, -0.40, expression(y==lim(frac(x^3+8, x^4-16), x%->%-2)))
+text(-1.75, -0.35, expression(y(-2)=="?"))
+f(-2.000000001)
+-3/8
+```
+
+```{r}
+plot.new(); plot.window(c(0,4), c(15,1))
+text(1, 1, "universal", adj = 0); text(2.5, 1,  "\\042")
+text(3, 1, expression(symbol("\042")))
+text(1, 2, "existential", adj = 0); text(2.5, 2,  "\\044")
+text(3, 2, expression(symbol("\044")))
+text(1, 3, "suchthat", adj = 0); text(2.5, 3,  "\\047")
+text(3, 3, expression(symbol("\047")))
+text(1, 4, "therefore", adj = 0); text(2.5, 4,  "\\134")
+text(3, 4, expression(symbol("\134")))
+text(1, 5, "perpendicular", adj = 0); text(2.5, 5,  "\\136")
+text(3, 5, expression(symbol("\136")))
+text(1, 6, "circlemultiply", adj = 0); text(2.5, 6,  "\\304")
+text(3, 6, expression(symbol("\304")))
+text(1, 7, "circleplus", adj = 0); text(2.5, 7,  "\\305")
+text(3, 7, expression(symbol("\305")))
+text(1, 8, "emptyset", adj = 0); text(2.5, 8,  "\\306")
+text(3, 8, expression(symbol("\306")))
+text(1, 9, "angle", adj = 0); text(2.5, 9,  "\\320")
+text(3, 9, expression(symbol("\320")))
+text(1, 10, "leftangle", adj = 0); text(2.5, 10,  "\\341")
+text(3, 10, expression(symbol("\341")))
+text(1, 11, "rightangle", adj = 0); text(2.5, 11,  "\\361")
+text(3, 11, expression(symbol("\361")))
+```
+
