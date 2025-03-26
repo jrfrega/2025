@@ -246,4 +246,9 @@ summary(mod6)
 cor(mod6$fitted.values, log(newbroiler$q))^2
 ```
 
+```{r}
+modelo.linear.newbroiler = lm(q~p, data=newbroiler)
+modelo.quadratico.newbroiler = lm(q~I(p^2), data=newbroiler)
+modelo.quadratico.newbroiler %>% summary
+```
 

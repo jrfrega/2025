@@ -1973,6 +1973,27 @@ mod.a.a$residuals %&gt;% scale %&gt;% shapiro.test()</code></pre>
 <pre class="r"><code># R^2 generalizado
 cor(mod6$fitted.values, log(newbroiler$q))^2</code></pre>
 <pre><code>## [1] 0.9136386</code></pre>
+<pre class="r"><code>modelo.linear.newbroiler = lm(q~p, data=newbroiler)
+modelo.quadratico.newbroiler = lm(q~I(p^2), data=newbroiler)
+modelo.quadratico.newbroiler %&gt;% summary</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = q ~ I(p^2), data = newbroiler)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -10.128  -5.888  -3.190   6.574  15.670 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   42.415      1.702  24.915  &lt; 2e-16 ***
+## I(p^2)        -4.650      0.549  -8.471 3.14e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.757 on 50 degrees of freedom
+## Multiple R-squared:  0.5893, Adjusted R-squared:  0.5811 
+## F-statistic: 71.75 on 1 and 50 DF,  p-value: 3.138e-11</code></pre>
 </div>
 
 

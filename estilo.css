@@ -16,7 +16,7 @@
     border: 1px solid black; padding: 0.5em; 
     margin-top: 0.5em; margin-bottom: 1em; margin-top: 2em; 
     font-weight: 900;}
-  h1 {background-color: #0000F0F0;}
+  h1 {background-color: #0000F0F0;} /* #RRGGBBAA */
   h2 {background-color: #0000F0A0;}
   h3 {background-color: #0000F070;}
   h4 {background-color: #0000F050; color: black;}
