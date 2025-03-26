@@ -105,6 +105,7 @@ padres %>% shapiro.test()
 
 ```{r}
 library(tseries)
+library(magrittr)
 # Teste de Jarque-Bera 
 # H0: não há desvios da normalidade (p > 0.05)
 padres %>% jarque.bera.test()
@@ -123,10 +124,126 @@ rexp(20) %>% qqPlot
 runif(20) %>% qqPlot
 ```
 
+## Teste de forma funcional
+
+Teste RESET de Ramsey
+
+```{r}
+library(lmtest)
+# Teste RESET de Ramsey
+# H0: forma funcional é adequada
+reset(m1)
+```
+
+Forma funcional adequada é que a representação da equação é funcionalmente adequada, 
+ou seja, os termos estão nas potências e funções certas.
+
+```{r}
+set.seed(12)
+xx = seq(-3, 3, length.out = 50)
+yy = 3*xx^2 + 2*rnorm(xx)
+plot(xx, yy)
+```
+
+```{r}
+mteste = lm(yy~xx)
+summary(mteste)
+```
+
+```{r}
+reset(mteste)
+```
+
+O teste RESET rejeitou a forma funcional utilizada.
+
+```{r}
+mteste2 = lm(yy~I(xx^2))
+reset(mteste2)
+```
+
+Opa, agora a forma funcional é adequada, é quadrática!
+
+```{r}
+set.seed(12)
+xx = seq(-3, 3, length.out = 50)
+yy = 3*xx^3 + 4*rnorm(xx)
+plot(xx, yy)
+```
+
+
+```{r}
+mteste3 = lm(yy~I(xx^3))
+reset(mteste3, power = 3)
+summary(mteste3)
+```
+
+```{r}
+plot(xx, yy)
+abline((lm(yy~xx) -> mteste1), col = "green")
+mteste2 = lm(yy~I(xx^2))
+lines(xx, predict(mteste2, data.frame(xx = xx)), col = "red")
+mteste3 = lm(yy~I(xx^3))
+lines(xx, predict(mteste3, data.frame(xx = xx)), col = "blue")
+legend("topleft", legend = c("Grau 1", "Grau 2", "Grau 3"), fill = c("green", "red", "blue"), cex = 0.7)
+```
+
+
+```{r}
+mteste1 %>% reset
+mteste1$residuals %>% scale %>% shapiro.test()
+mteste2 %>% reset
+mteste2$residuals %>% scale %>% shapiro.test()
+mteste3 %>% reset
+mteste3$residuals %>% scale %>% shapiro.test()
+summary(mteste3)
+```
+
+## Heteroskedasticity (Heteroscedasticidade)
+
+```{r}
+plot(m1$model[,2:1]); abline(m1)
+```
+
+```{r}
+# Teste de Breusch-Pagan
+# H0: os dados são homoscedásticos
+m1 %>% bptest
+```
+
+O p-valor abaixo de 0.05 rejeitou a H0, ou seja, os dados são heteroscedásticos. 
 
 
 
+## Modelo log-log
 
-
+```{r}
+data("newbroiler", package="PoEdata")
+mod.a <- lm(q~p, newbroiler)
+plot(mod.a$model[,2:1]); abline(mod.a)
+mod.a$residuals %>% scale %>% shapiro.test()
+mod.a %>% reset
+# mod.a é inadequado
+mod6 <- lm(log(q)~log(p), data=newbroiler)
+plot(mod6$model[,2:1]); abline(mod6)
+mod6$residuals %>% scale %>% shapiro.test()
+mod6$residuals %>% scale %>% hist
+mod6 %>% reset
+nrow(newbroiler)
+mod6 %>% bptest
+mod6.a <- lm(log(q)~I(log(p)^3), data=newbroiler)
+mod6.a$residuals %>% scale %>% shapiro.test()
+mod6.a$residuals %>% scale %>% hist
+mod6.a %>% reset
+mod.a.a <- lm(q~p+I(p^2)+I(p^3), newbroiler)
+# aproximação de terceiro grau
+mod.a.a$residuals %>% scale %>% shapiro.test()
+mod.a.a$residuals %>% scale %>% hist
+mod.a.a %>% reset
+```
+```{r}
+summary(mod6)
+# R^2 generalizado
+cor(mod6$fitted.values, log(newbroiler$q))^2
+```
 
 

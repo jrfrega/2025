@@ -1,36 +1,32 @@
 ---
 title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
-subtitle: "Todas as aulas"
 author: "Prof. Frega"
 date: "11/03/2025"
-output: 
-  # funcionalidades extras ao tipo html_document
+output:
+  bookdown::html_document2:
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+    theme: cer
+    number_sections: yes
+    code_folding: show
+    css: estilo.css
+  html_document:
+    toc: yes
+    toc_depth: '6'
+    df_print: paged
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    code_folding: show
   pdf_document:
     toc: yes
     toc_depth: 6
     number_sections: yes
     extra_dependencies:
-      babel: ["portuguese,brazil"]
-      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
-  # o tipo de documento bookdown::html_document2 acrescenta algumas 
-  bookdown::html_document2: 
-  # html_document: 
-    # mostra o sumário com seu nível máximo
-    # coloca o sumário flutuante à esquerda
-    # mostra/oculta os chunks de código
-    toc: yes
-    toc_depth: 6
-    toc_float: true
-    theme: cer
-    number_sections: yes
-    code_folding: 'show'
-    css: estilo.css
-  rmdformats::readthedown:
-    # mostra/oculta os chunks de código
-    toc_depth: 6
-    number_sections: yes
-    code_folding: 'show'
-  # html_document:
+      babel: portuguese,brazil
+      geometry: top=3cm, bottom=2cm,left=3cm,right=2cm
+subtitle: Todas as aulas
 documentclass: book
 ---
 
@@ -49,6 +45,12 @@ library(reticulate)
 # AULA 2 { - }
 
 ```{r Aula 02, child="Aula02.Rmd"}
+
+```
+
+# AULA 3 { - }
+
+```{r Aula 03, child="Aula03.Rmd"}
 
 ```
 

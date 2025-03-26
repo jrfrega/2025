@@ -1,0 +1,2440 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{book}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage[portuguese,brazil]{babel}
+\usepackage[top=3cm, bottom=2cm,left=3cm,right=2cm]{geometry}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Métodos Numéricos Aplicados a Finanças --- Turma 2025},
+  pdfauthor={Prof.~Frega},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Métodos Numéricos Aplicados a Finanças --- Turma 2025}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Todas as aulas}
+\author{Prof.~Frega}
+\date{11/03/2025}
+
+\begin{document}
+\frontmatter
+\maketitle
+
+{
+\setcounter{tocdepth}{5}
+\tableofcontents
+}
+\mainmatter
+\hypertarget{aula-1}{%
+\chapter*{AULA 1}\label{aula-1}}
+\addcontentsline{toc}{chapter}{AULA 1}
+
+\hypertarget{introduuxe7uxe3o}{%
+\chapter{Introdução}\label{introduuxe7uxe3o}}
+
+Aqui começamos a escrever a introdução do nosso material.
+
+Aqui continuamos
+
+A seguir vamos colocando outros ítens tipográficos
+
+\hypertarget{objetivos}{%
+\section{Objetivos}\label{objetivos}}
+
+\hypertarget{objetivo-geral}{%
+\subsection{Objetivo Geral}\label{objetivo-geral}}
+
+\hypertarget{objetivo-especuxedfico}{%
+\subsection{Objetivo Específico}\label{objetivo-especuxedfico}}
+
+\hypertarget{subsubseuxe7uxe3o}{%
+\subsubsection{Subsubseção}\label{subsubseuxe7uxe3o}}
+
+\hypertarget{paruxe1grafo}{%
+\paragraph{Parágrafo}\label{paruxe1grafo}}
+
+\hypertarget{subparuxe1grafo}{%
+\subparagraph{Subparágrafo}\label{subparuxe1grafo}}
+
+Subsubparágrafo
+
+Um subsubparágrafo é aceito pelo \emph{markdown} mas não é definido
+tipograficamente. Normalmente usamos só até o nível 6, que é o
+subparágrafo.
+
+\hypertarget{referencial-teuxf3rico-empuxedrico}{%
+\chapter{Referencial
+teórico-empírico}\label{referencial-teuxf3rico-empuxedrico}}
+
+\hypertarget{metodologia}{%
+\chapter{Metodologia}\label{metodologia}}
+
+Escrevendo uma equação
+
+\begin{verbatim}
+$$
+y = ax^2+bx+c
+$$
+\end{verbatim}
+
+\[
+y = ax^2+bx+c
+\]
+
+\hypertarget{anuxe1lise-de-dados-e-discussuxe3o-dos-resultados}{%
+\chapter{Análise de dados e discussão dos
+resultados}\label{anuxe1lise-de-dados-e-discussuxe3o-dos-resultados}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{2} \SpecialCharTok{+} \DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{.x }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{10000}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(.x, }\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] -0.6264538  0.1836433 -0.8356286  1.5952808  0.3295078 -0.8204684
+##  [7]  0.4874291  0.7383247  0.5757814 -0.3053884
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tail}\NormalTok{(.x, }\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1]  1.04776175 -0.02428861 -0.47787499 -0.02971747  0.20966546  0.95950757
+##  [7]  0.43660362  0.49936656  0.89397983  0.25738706
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(.x, }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{col =} \StringTok{"yellow"}\NormalTok{, }\AttributeTok{border =} \StringTok{"black"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(.x, }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{col =} \StringTok{"lightyellow"}\NormalTok{, }\AttributeTok{border =} \StringTok{"gray"}\NormalTok{)}
+\FunctionTok{curve}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(x, }\FunctionTok{mean}\NormalTok{(.x), }\FunctionTok{sd}\NormalTok{(.x)), }\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(.x), }\FunctionTok{max}\NormalTok{(.x)),}
+    \AttributeTok{add =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#4040FFC0"}\NormalTok{, }\AttributeTok{lwd =} \FloatTok{2.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1}\SpecialCharTok{/}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5
+\end{verbatim}
+
+\hypertarget{dados-do-principles-of-econometrics}{%
+\chapter{Dados do Principles of
+Econometrics}\label{dados-do-principles-of-econometrics}}
+
+\hypertarget{pacote-poedata_0.1.0.tar.gz}{%
+\section{\texorpdfstring{Pacote
+\texttt{PoEdata\_0.1.0.tar.gz}}{Pacote PoEdata\_0.1.0.tar.gz}}\label{pacote-poedata_0.1.0.tar.gz}}
+
+Uma vez instalado o pacote PoEdata\_0.1.0.tar.gz
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(printr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'printr':
+##   method                from     
+##   knit_print.data.frame rmarkdown
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(mroz)}
+\FunctionTok{head}\NormalTok{(mroz[, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrr@{}}
+\toprule\noalign{}
+taxableinc & federaltax & hsiblings & hfathereduc & hmothereduc \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+12200 & 1494 & 1 & 14 & 16 \\
+18000 & 2615 & 8 & 7 & 3 \\
+24000 & 3957 & 4 & 7 & 10 \\
+16400 & 2279 & 6 & 7 & 12 \\
+10000 & 1063 & 3 & 7 & 7 \\
+6295 & 370 & 8 & 7 & 7 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tail}\NormalTok{(mroz[, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule\noalign{}
+& taxableinc & federaltax & hsiblings & hfathereduc & hmothereduc \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+748 & 16100 & 1825 & 0 & 7 & 12 \\
+749 & 32000 & 4701 & 8 & 12 & 7 \\
+750 & 18500 & 2720 & 4 & 12 & 12 \\
+751 & 13000 & 1642 & 6 & 7 & 12 \\
+752 & 17200 & 2447 & 2 & 7 & 10 \\
+753 & 18700 & 2327 & 4 & 10 & 7 \\
+\end{longtable}
+
+\hypertarget{pequeno-exemplo-de-programauxe7uxe3o-em-r}{%
+\section{\texorpdfstring{Pequeno exemplo de programação em
+\texttt{R}}{Pequeno exemplo de programação em R}}\label{pequeno-exemplo-de-programauxe7uxe3o-em-r}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(DescTools)}
+\NormalTok{plotSquare }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(}\AttributeTok{deltay =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{deltax =} \FunctionTok{abs}\NormalTok{(deltay}\SpecialCharTok{/}\FunctionTok{Asp}\NormalTok{()),}
+    \AttributeTok{xbase =} \DecValTok{12}\NormalTok{, }\AttributeTok{ybase =} \DecValTok{3}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#FF808040"}\NormalTok{) \{}
+    \FunctionTok{polygon}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, deltax, deltax, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{) }\SpecialCharTok{+}\NormalTok{ xbase, }\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, deltay,}
+\NormalTok{        deltay, }\DecValTok{0}\NormalTok{) }\SpecialCharTok{+}\NormalTok{ ybase, }\AttributeTok{col =}\NormalTok{ col)}
+\NormalTok{\}}
+\NormalTok{plotRegressao }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(}\AttributeTok{modelo1 =}\NormalTok{ modelo1, }\AttributeTok{horas =}\NormalTok{ horas, }\AttributeTok{nota =}\NormalTok{ nota,}
+    \AttributeTok{sequencia =} \DecValTok{5}\NormalTok{, }\AttributeTok{sub =} \ConstantTok{NULL}\NormalTok{) \{}
+    \CommentTok{\# desenho os pontos observados}
+    \FunctionTok{plot}\NormalTok{(horas, nota, }\AttributeTok{pch =} \DecValTok{20}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkgray"}\NormalTok{, }\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}
+        \DecValTok{14}\NormalTok{), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{), }\AttributeTok{axes =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{sub =} \StringTok{"Regressão linear simples"}\NormalTok{,}
+        \AttributeTok{xlab =} \StringTok{"Horas de estudo"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Nota na avaliação"}\NormalTok{,}
+        \AttributeTok{main =}\NormalTok{ sub)}
+    \CommentTok{\# desenho os eixos no (0, 0)}
+    \FunctionTok{axis}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{pos =} \DecValTok{0}\NormalTok{)}
+    \FunctionTok{axis}\NormalTok{(}\DecValTok{2}\NormalTok{, }\AttributeTok{pos =} \DecValTok{0}\NormalTok{)}
+    \CommentTok{\# traça a linha do modelo1 em azul}
+    \ControlFlowTok{if}\NormalTok{ (sequencia }\SpecialCharTok{\textgreater{}} \DecValTok{1}\NormalTok{)}
+        \FunctionTok{abline}\NormalTok{(modelo1, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+    \CommentTok{\# calcula os pontos sobre a reta}
+\NormalTok{    estimados }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(modelo1, }\AttributeTok{horas =}\NormalTok{ horas)}
+    \CommentTok{\# desenha os pontos sobre a reta}
+    \ControlFlowTok{if}\NormalTok{ (sequencia }\SpecialCharTok{\textgreater{}} \DecValTok{2}\NormalTok{)}
+        \FunctionTok{points}\NormalTok{(horas, estimados, }\AttributeTok{pch =} \DecValTok{20}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+    \CommentTok{\# desenha as barras de erro (y {-} ychapéu) e dá nome aos}
+    \CommentTok{\# pontos}
+\NormalTok{    delta }\OtherTok{=} \FloatTok{0.3}
+    \ControlFlowTok{if}\NormalTok{ (sequencia }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{) \{}
+        \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(horas)) \{}
+            \CommentTok{\# desenha as barras de erro verticais}
+            \FunctionTok{lines}\NormalTok{(}\FunctionTok{c}\NormalTok{(horas[i], horas[i]), }\FunctionTok{c}\NormalTok{(estimados[i], nota[i]),}
+                \AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+            \CommentTok{\# desenha as linhas horizontais}
+            \FunctionTok{lines}\NormalTok{(}\FunctionTok{c}\NormalTok{(horas[i] }\SpecialCharTok{{-}}\NormalTok{ delta, horas[i] }\SpecialCharTok{+}\NormalTok{ delta), }\FunctionTok{c}\NormalTok{(estimados[i],}
+\NormalTok{                estimados[i]), }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+            \FunctionTok{lines}\NormalTok{(}\FunctionTok{c}\NormalTok{(horas[i] }\SpecialCharTok{{-}}\NormalTok{ delta, horas[i] }\SpecialCharTok{+}\NormalTok{ delta), }\FunctionTok{c}\NormalTok{(nota[i],}
+\NormalTok{                nota[i]), }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+            \CommentTok{\# coloca o nome do ponto acima ou abaixo dele}
+            \CommentTok{\# conforme a estética}
+            \FunctionTok{text}\NormalTok{(horas[i], nota[i], }\FunctionTok{bquote}\NormalTok{(y[.(i)]), }\AttributeTok{pos =} \FunctionTok{ifelse}\NormalTok{(estimados[i] }\SpecialCharTok{\textgreater{}}
+\NormalTok{                nota[i], }\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{))}
+\NormalTok{        \}}
+\NormalTok{    \}}
+    \ControlFlowTok{if}\NormalTok{ (sequencia }\SpecialCharTok{\textgreater{}} \DecValTok{4}\NormalTok{) \{}
+        \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(horas)) \{}
+\NormalTok{            deltay }\OtherTok{=}\NormalTok{ nota[i] }\SpecialCharTok{{-}}\NormalTok{ estimados[i]}
+\NormalTok{            deltax }\OtherTok{=} \FunctionTok{abs}\NormalTok{(deltay}\SpecialCharTok{/}\FunctionTok{Asp}\NormalTok{())}
+            \ControlFlowTok{if}\NormalTok{ (deltay }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)}
+\NormalTok{                deltax }\OtherTok{=} \SpecialCharTok{{-}}\NormalTok{deltax}
+            \FunctionTok{plotSquare}\NormalTok{(}\AttributeTok{xbase =}\NormalTok{ horas[i], }\AttributeTok{ybase =}\NormalTok{ estimados[i],}
+                \AttributeTok{deltay =}\NormalTok{ deltay, }\AttributeTok{deltax =}\NormalTok{ deltax)}
+\NormalTok{        \}}
+\NormalTok{    \}}
+    \FunctionTok{text}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{10}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{min}\NormalTok{(}\FunctionTok{Sigma}\NormalTok{(y[i] }\SpecialCharTok{{-}} \FunctionTok{bar}\NormalTok{(y[i]))}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)), }\AttributeTok{cex =} \FloatTok{1.2}\NormalTok{)}
+    \FunctionTok{text}\NormalTok{(}\DecValTok{8}\NormalTok{, }\DecValTok{15}\NormalTok{, }\StringTok{"Mínimos quadrados ordinários minimiza o somatório dos quadrados dos erros"}\NormalTok{,}
+        \AttributeTok{cex =} \FloatTok{0.7}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# conjuntos de dados}
+\NormalTok{nota }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{40}\NormalTok{, }\DecValTok{30}\NormalTok{, }\DecValTok{60}\NormalTok{, }\DecValTok{65}\NormalTok{, }\DecValTok{70}\NormalTok{, }\DecValTok{90}\NormalTok{)}
+\NormalTok{horas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{12}\NormalTok{)}
+\CommentTok{\# função lm (linear model) {-}\textgreater{} guarda em modelo1}
+\FunctionTok{lm}\NormalTok{(nota }\SpecialCharTok{\textasciitilde{}}\NormalTok{ horas) }\OtherTok{{-}\textgreater{}}\NormalTok{ modelo1}
+\FunctionTok{plotRegressao}\NormalTok{(modelo1, horas, nota, }\DecValTok{1}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\StringTok{"Nuvem de pontos"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-10-1} 
+
+}
+
+\caption{Nota na avaliação *versus* horas de estudo}\label{fig:unnamed-chunk-10-1}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plotRegressao}\NormalTok{(modelo1, horas, nota, }\DecValTok{2}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Reta de regressão: "}\NormalTok{,}
+\NormalTok{    nota }\SpecialCharTok{==}\NormalTok{ b[}\DecValTok{0}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ b[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{*}\NormalTok{ horas)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-10-2} 
+
+}
+
+\caption{Nota na avaliação *versus* horas de estudo}\label{fig:unnamed-chunk-10-2}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plotRegressao}\NormalTok{(modelo1, horas, nota, }\DecValTok{3}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Reta de regressão com as estimativas "}\NormalTok{,}
+    \FunctionTok{hat}\NormalTok{(y))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-10-3} 
+
+}
+
+\caption{Nota na avaliação *versus* horas de estudo}\label{fig:unnamed-chunk-10-3}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plotRegressao}\NormalTok{(modelo1, horas, nota, }\DecValTok{4}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Erros observados: "}\NormalTok{,}
+\NormalTok{    y }\SpecialCharTok{{-}} \FunctionTok{hat}\NormalTok{(y))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-10-4} 
+
+}
+
+\caption{Nota na avaliação *versus* horas de estudo}\label{fig:unnamed-chunk-10-4}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plotRegressao}\NormalTok{(modelo1, horas, nota, }\DecValTok{5}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Quadrados dos erros: "}\NormalTok{,}
+\NormalTok{    (y }\SpecialCharTok{{-}} \FunctionTok{hat}\NormalTok{(y))}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-10-5} 
+
+}
+
+\caption{Nota na avaliação *versus* horas de estudo}\label{fig:unnamed-chunk-10-5}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modelo1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = nota ~ horas)
+## 
+## Coefficients:
+## (Intercept)        horas  
+##      21.667        5.357
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modelo1}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept) 
+##    21.66667
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modelo1}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    horas 
+## 5.357143
+\end{verbatim}
+
+\begin{verbatim}
+$$
+\widehat{\text{nota}} = b_0+b_1\cdot \text{horas} = 21.6666667+5.3571429\cdot \text{horas}
+$$
+\end{verbatim}
+
+\[
+\widehat{\text{nota}} = b_0+b_1\cdot \text{horas} = 21.6666667+5.3571429\cdot \text{horas}
+\]
+
+Diagnósticos do modelo
+
+Estatística = testes de hipóteses
+
+Uma hipótese pode ser rejeitada ou não
+
+Existe um valor calculado para cada teste que se chama p.value (p-valor)
+para o qual existe um valor crítico, normalmente tomado como 0,05 (ou
+5\%) que chamamos de significância do teste.
+
+Todo teste tem uma hipótese nula (\(H_0\)), se o p-valor for menor que o
+limite, rejeita-se \(H_0\), se for igual ou maior, aceita-se \(H_0\).
+
+\(H_0\) do teste F: não há relação entre as variáveis.
+
+\(H_0\) do teste t: o coeficiente associado é igual a zero.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(nota)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrr@{}}
+\toprule\noalign{}
+Min. & 1st Qu. & Median & Mean & 3rd Qu. & Max. \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+30 & 45 & 62.5 & 59.16667 & 68.75 & 90 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(horas)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrr@{}}
+\toprule\noalign{}
+Min. & 1st Qu. & Median & Mean & 3rd Qu. & Max. \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2 & 4.5 & 7 & 7 & 9.5 & 12 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(.x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrr@{}}
+\toprule\noalign{}
+Min. & 1st Qu. & Median & Mean & 3rd Qu. & Max. \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+-3.6713 & -0.6733944 & -0.0159288 & -0.006537 & 0.6776605 & 3.810277 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(modelo1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = nota ~ horas)
+## 
+## Residuals:
+##        1        2        3        4        5        6 
+##   7.6190 -13.0952   6.1905   0.4762  -5.2381   4.0476 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)   
+## (Intercept)   21.667      8.221   2.636   0.0578 . 
+## horas          5.357      1.055   5.076   0.0071 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 8.83 on 4 degrees of freedom
+## Multiple R-squared:  0.8656, Adjusted R-squared:  0.832 
+## F-statistic: 25.76 on 1 and 4 DF,  p-value: 0.007102
+\end{verbatim}
+
+\(R^2\) é a porção de variação da nota que é explicada pelas horas.
+
+Ou seja, aproximadamente 83\% da variação da nota é explicada pelas
+horas de estudo.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\OtherTok{=} \DecValTok{1}\SpecialCharTok{:}\DecValTok{6} \SpecialCharTok{*} \DecValTok{10}
+\NormalTok{y }\OtherTok{=} \DecValTok{1}\SpecialCharTok{:}\DecValTok{6}
+\FunctionTok{plot}\NormalTok{(x, y)}
+\FunctionTok{plotSquare}\NormalTok{(}\AttributeTok{xbase =} \DecValTok{20}\NormalTok{, }\AttributeTok{ybase =} \DecValTok{2}\NormalTok{, }\AttributeTok{deltay =} \FloatTok{0.5}\NormalTok{)}
+\FunctionTok{plotSquare}\NormalTok{(}\AttributeTok{xbase =} \DecValTok{30}\NormalTok{, }\AttributeTok{ybase =} \DecValTok{3}\NormalTok{, }\AttributeTok{deltay =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#8080FF40"}\NormalTok{)}
+\FunctionTok{plotSquare}\NormalTok{(}\AttributeTok{xbase =} \DecValTok{40}\NormalTok{, }\AttributeTok{ybase =} \DecValTok{4}\NormalTok{, }\AttributeTok{deltay =} \SpecialCharTok{{-}}\FloatTok{2.5}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#80FF8040"}\NormalTok{)}
+\FunctionTok{plotSquare}\NormalTok{(}\AttributeTok{xbase =} \DecValTok{50}\NormalTok{, }\AttributeTok{ybase =} \DecValTok{5}\NormalTok{, }\AttributeTok{deltay =} \SpecialCharTok{{-}}\FloatTok{1.5}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#FFFF8040"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{), }\AttributeTok{col =} \StringTok{"darkgray"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{f }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(x) (x}\SpecialCharTok{\^{}}\DecValTok{3} \SpecialCharTok{+} \DecValTok{8}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(x}\SpecialCharTok{\^{}}\DecValTok{4} \SpecialCharTok{{-}} \DecValTok{16}\NormalTok{)}
+\NormalTok{x }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{3}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{1.0000001}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{100}\NormalTok{)}
+\NormalTok{y }\OtherTok{=} \FunctionTok{f}\NormalTok{(x)}
+\FunctionTok{plot}\NormalTok{(x, y, }\AttributeTok{type =} \StringTok{"l"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v =} \SpecialCharTok{{-}}\DecValTok{2}\NormalTok{, }\AttributeTok{h =} \SpecialCharTok{{-}}\DecValTok{3}\SpecialCharTok{/}\DecValTok{8}\NormalTok{, }\AttributeTok{col =} \StringTok{"lightblue"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{2.75}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{0.4}\NormalTok{, }\FunctionTok{expression}\NormalTok{(y }\SpecialCharTok{==} \FunctionTok{lim}\NormalTok{(}\FunctionTok{frac}\NormalTok{(x}\SpecialCharTok{\^{}}\DecValTok{3} \SpecialCharTok{+} \DecValTok{8}\NormalTok{, x}\SpecialCharTok{\^{}}\DecValTok{4} \SpecialCharTok{{-}} \DecValTok{16}\NormalTok{),}
+\NormalTok{    x }\SpecialCharTok{\%{-}\textgreater{}\%} \SpecialCharTok{{-}}\DecValTok{2}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{1.75}\NormalTok{, }\SpecialCharTok{{-}}\FloatTok{0.35}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{y}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{==} \StringTok{"?"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{f}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{2.000000001}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.375
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\SpecialCharTok{{-}}\DecValTok{3}\SpecialCharTok{/}\DecValTok{8}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.375
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot.new}\NormalTok{()}
+\FunctionTok{plot.window}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{4}\NormalTok{), }\FunctionTok{c}\NormalTok{(}\DecValTok{15}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\StringTok{"universal"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{042"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}"}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\StringTok{"existential"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{2}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{044"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"$"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\StringTok{"suchthat"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{3}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{047"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"\textquotesingle{}"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{, }\StringTok{"therefore"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{4}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{134"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{5}\NormalTok{, }\StringTok{"perpendicular"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{136"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"\^{}"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{6}\NormalTok{, }\StringTok{"circlemultiply"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{304"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{6}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}xc4}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{7}\NormalTok{, }\StringTok{"circleplus"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{7}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{305"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{7}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}xc5}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{8}\NormalTok{, }\StringTok{"emptyset"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{8}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{306"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{8}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}xc6}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{9}\NormalTok{, }\StringTok{"angle"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{9}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{320"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{9}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}xd0}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\StringTok{"leftangle"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{10}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{341"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{10}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}xe1}\StringTok{"}\NormalTok{)))}
+\FunctionTok{text}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{11}\NormalTok{, }\StringTok{"rightangle"}\NormalTok{, }\AttributeTok{adj =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\DecValTok{11}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{361"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{11}\NormalTok{, }\FunctionTok{expression}\NormalTok{(}\FunctionTok{symbol}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}xf1}\StringTok{"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\hypertarget{aula-2}{%
+\chapter*{AULA 2}\label{aula-2}}
+\addcontentsline{toc}{chapter}{AULA 2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(magrittr)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{regressuxe3o-linear-simples}{%
+\chapter{Regressão linear simples}\label{regressuxe3o-linear-simples}}
+
+\hypertarget{modelo-geral}{%
+\section{Modelo geral}\label{modelo-geral}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\FunctionTok{data}\NormalTok{(}\StringTok{"cps\_small"}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(cps\_small}\SpecialCharTok{$}\NormalTok{educ, cps\_small}\SpecialCharTok{$}\NormalTok{wage, }\AttributeTok{xlab =} \StringTok{"education"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"wage"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-32-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(cps\_small}\SpecialCharTok{$}\NormalTok{educ, cps\_small}\SpecialCharTok{$}\NormalTok{wage, }\AttributeTok{xlab =} \StringTok{"Educação"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Renda"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-32-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(cps\_small, }\DecValTok{15}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrrrrr@{}}
+\toprule\noalign{}
+wage & educ & exper & female & black & white & midwest & south & west \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2.03 & 13 & 2 & 1 & 0 & 1 & 0 & 1 & 0 \\
+2.07 & 12 & 7 & 0 & 0 & 1 & 1 & 0 & 0 \\
+2.12 & 12 & 35 & 0 & 0 & 1 & 0 & 1 & 0 \\
+2.54 & 16 & 20 & 1 & 0 & 1 & 0 & 1 & 0 \\
+2.68 & 12 & 24 & 1 & 0 & 1 & 0 & 1 & 0 \\
+3.09 & 13 & 4 & 0 & 0 & 1 & 0 & 1 & 0 \\
+3.16 & 13 & 1 & 0 & 0 & 1 & 0 & 0 & 1 \\
+3.17 & 12 & 22 & 1 & 0 & 1 & 0 & 1 & 0 \\
+3.20 & 12 & 23 & 0 & 0 & 1 & 0 & 1 & 0 \\
+3.27 & 12 & 4 & 1 & 0 & 1 & 0 & 0 & 1 \\
+3.32 & 12 & 11 & 1 & 0 & 1 & 0 & 0 & 1 \\
+3.32 & 13 & 3 & 1 & 0 & 1 & 1 & 0 & 0 \\
+3.34 & 18 & 15 & 0 & 0 & 1 & 1 & 0 & 0 \\
+3.39 & 13 & 7 & 1 & 0 & 1 & 0 & 0 & 0 \\
+3.39 & 12 & 15 & 1 & 0 & 1 & 0 & 0 & 1 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(cps\_small}\SpecialCharTok{$}\NormalTok{exper, cps\_small}\SpecialCharTok{$}\NormalTok{wage, }\AttributeTok{col =} \StringTok{"gray"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-34-1.pdf}
+
+\hypertarget{example-food-expenditure-versus-income}{%
+\section{Example: Food Expenditure versus
+Income}\label{example-food-expenditure-versus-income}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\FunctionTok{data}\NormalTok{(food)}
+\FunctionTok{head}\NormalTok{(food)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rr@{}}
+\toprule\noalign{}
+food\_exp & income \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+115.22 & 3.69 \\
+135.98 & 4.39 \\
+119.34 & 4.75 \\
+114.96 & 6.03 \\
+187.05 & 12.47 \\
+243.92 & 12.98 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# help(food)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(}\StringTok{"food"}\NormalTok{, }\AttributeTok{package =} \StringTok{"PoEdata"}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income, food}\SpecialCharTok{$}\NormalTok{food\_exp)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Gráfico de dispersão ou scatter plot}
+\FunctionTok{plot}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income, food}\SpecialCharTok{$}\NormalTok{food\_exp, }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{food\_exp)),}
+    \AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income)), }\AttributeTok{xlab =} \StringTok{"weekly income in $100"}\NormalTok{,}
+    \AttributeTok{ylab =} \StringTok{"weekly food expenditure in $"}\NormalTok{, }\AttributeTok{type =} \StringTok{"p"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-36-2.pdf}
+
+\hypertarget{estimating-a-linear-regression}{%
+\section{Estimating a Linear
+Regression}\label{estimating-a-linear-regression}}
+
+\[
+food\_exp = \beta_0 + \beta_1 income +e\\[1em]
+\widehat{food\_exp} = \beta_0 + \beta_1 income
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\CommentTok{\# roda a regressão}
+\NormalTok{mod1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ food\_exp }\SpecialCharTok{\textasciitilde{}}\NormalTok{ income, }\AttributeTok{data =}\NormalTok{ food)}
+\CommentTok{\# olha os coeficientes}
+\NormalTok{mod1}\SpecialCharTok{$}\NormalTok{coefficients}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept)      income 
+##    83.41600    10.20964
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ou}
+\FunctionTok{coef}\NormalTok{(mod1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept)      income 
+##    83.41600    10.20964
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# um por um}
+\NormalTok{mod1}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept) 
+##      83.416
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod1}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   income 
+## 10.20964
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ou}
+\NormalTok{(b1 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod1)[[}\DecValTok{1}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 83.416
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(b2 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod1)[[}\DecValTok{2}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 10.20964
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# mostra o resultado da regressão}
+\NormalTok{smod1 }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(mod1)}
+\NormalTok{smod1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = food_exp ~ income, data = food)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -223.025  -50.816   -6.324   67.879  212.044 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   83.416     43.410   1.922   0.0622 .  
+## income        10.210      2.093   4.877 1.95e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 89.52 on 38 degrees of freedom
+## Multiple R-squared:  0.385,  Adjusted R-squared:  0.3688 
+## F-statistic: 23.79 on 1 and 38 DF,  p-value: 1.946e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income, food}\SpecialCharTok{$}\NormalTok{food\_exp, }\AttributeTok{xlab =} \StringTok{"Renda semanal em $100"}\NormalTok{,}
+    \AttributeTok{ylab =} \StringTok{"Despesa com comida em $"}\NormalTok{, }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{food\_exp)),}
+    \AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income)), }\AttributeTok{type =} \StringTok{"p"}\NormalTok{, }\AttributeTok{col =} \StringTok{"lightblue"}\NormalTok{,}
+    \AttributeTok{pch =} \DecValTok{16}\NormalTok{, }\AttributeTok{frame.plot =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{axes =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{main =} \StringTok{"Despesa com comida versus renda"}\NormalTok{)}
+\FunctionTok{axis}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{pos =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{axis}\NormalTok{(}\DecValTok{2}\NormalTok{, }\AttributeTok{pos =} \DecValTok{0}\NormalTok{)}
+\CommentTok{\# abline(b1,b2)}
+\FunctionTok{abline}\NormalTok{(mod1, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{h =}\NormalTok{ b1, }\AttributeTok{col =} \StringTok{"darkgray"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-38-1.pdf}
+
+\hypertarget{prediction-with-the-linear-regression-model}{%
+\section{Prediction with the Linear Regression
+Model}\label{prediction-with-the-linear-regression-model}}
+
+Qual a despesa com comida de um indivíduo que ganha \$2000 por semana?
+
+\[
+\widehat{food\_exp} = 83.416 + 10.210 \cdot income\\
+\widehat{food\_exp} = 83.416 + 10.210 \cdot 20\\
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{coef}\NormalTok{(mod1)[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{+} \FunctionTok{coef}\NormalTok{(mod1)[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{*} \DecValTok{20}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept) 
+##    287.6089
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{predict}\NormalTok{(mod1, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{income =} \DecValTok{20}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        1 
+## 287.6089
+\end{verbatim}
+
+\hypertarget{repeated-samples-to-assess-regression-coefficients}{%
+\section{Repeated Samples to Assess Regression
+Coefficients}\label{repeated-samples-to-assess-regression-coefficients}}
+
+Tecnicamente isso se chama \emph{bootstrap} e trataremos depois.
+
+\hypertarget{estimated-variances-and-covariance-of-regression-coefficients}{%
+\section{Estimated Variances and Covariance of Regression
+Coefficients}\label{estimated-variances-and-covariance-of-regression-coefficients}}
+
+Será útil mais tarde.
+
+\hypertarget{non-linear-relationships}{%
+\section{Non-Linear Relationships}\label{non-linear-relationships}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\FunctionTok{data}\NormalTok{(br)}
+\CommentTok{\# testando uma relação quadrática}
+\NormalTok{mod3 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ price }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(sqft}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), }\AttributeTok{data =}\NormalTok{ br)}
+\CommentTok{\# versus uma do primeiro grau}
+\NormalTok{mod3.a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sqft, }\AttributeTok{data =}\NormalTok{ br)}
+\NormalTok{(}\FunctionTok{summary}\NormalTok{(mod3) }\OtherTok{{-}\textgreater{}}\NormalTok{ s3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = price ~ I(sqft^2), data = br)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -696604  -23366     779   21869  713159 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 5.578e+04  2.890e+03   19.30   <2e-16 ***
+## I(sqft^2)   1.542e-02  3.131e-04   49.25   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 68210 on 1078 degrees of freedom
+## Multiple R-squared:  0.6923, Adjusted R-squared:  0.6921 
+## F-statistic:  2426 on 1 and 1078 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\FunctionTok{summary}\NormalTok{(mod3.a) }\OtherTok{{-}\textgreater{}}\NormalTok{ s3a)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = price ~ sqft, data = br)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -366641  -31399   -1535   25601  932272 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -60861.462   6110.187  -9.961   <2e-16 ***
+## sqft            92.747      2.411  38.476   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 79820 on 1078 degrees of freedom
+## Multiple R-squared:  0.5786, Adjusted R-squared:  0.5783 
+## F-statistic:  1480 on 1 and 1078 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# desenhando os dados com as curvas de regressão}
+\FunctionTok{plot}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{sqft, br}\SpecialCharTok{$}\NormalTok{price, }\AttributeTok{pch =} \DecValTok{20}\NormalTok{, }\AttributeTok{col =} \StringTok{"gray"}\NormalTok{)}
+\NormalTok{x }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\FunctionTok{min}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{sqft), }\FunctionTok{max}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{sqft), }\AttributeTok{length.out =} \DecValTok{100}\NormalTok{)}
+\NormalTok{y }\OtherTok{=} \FunctionTok{predict}\NormalTok{(mod3, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{sqft =}\NormalTok{ x))}
+\FunctionTok{abline}\NormalTok{(mod3.a, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(x, y, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\FunctionTok{bquote}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Primeiro grau: "}\NormalTok{,}
+\NormalTok{    R[aj]}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{==}\NormalTok{ .(s3a}\SpecialCharTok{$}\NormalTok{adj.r.squared }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{round}\NormalTok{(}\DecValTok{4}\NormalTok{)))), }\FunctionTok{bquote}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Segundo grau: "}\NormalTok{, R[aj]}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{==}
+\NormalTok{    .(s3}\SpecialCharTok{$}\NormalTok{adj.r.squared }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{round}\NormalTok{(}\DecValTok{4}\NormalTok{))))), }\AttributeTok{cex =} \FloatTok{0.8}\NormalTok{, }\AttributeTok{fill =} \FunctionTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"blue"}\NormalTok{))}
+\FunctionTok{grid}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-40-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{b1 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod3)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{b2 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod3)[[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{sqftx }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{2000}\NormalTok{, }\DecValTok{4000}\NormalTok{, }\DecValTok{6000}\NormalTok{)  }\CommentTok{\#given values for sqft}
+\NormalTok{pricex }\OtherTok{=}\NormalTok{ b1 }\SpecialCharTok{+}\NormalTok{ b2 }\SpecialCharTok{*}\NormalTok{ sqftx}\SpecialCharTok{\^{}}\DecValTok{2}  \CommentTok{\#prices corresponding to given sqft }
+\NormalTok{DpriceDsqft }\OtherTok{\textless{}{-}} \DecValTok{2} \SpecialCharTok{*}\NormalTok{ b2 }\SpecialCharTok{*}\NormalTok{ sqftx  }\CommentTok{\# marginal effect of sqft on price}
+\NormalTok{elasticity }\OtherTok{=}\NormalTok{ DpriceDsqft }\SpecialCharTok{*}\NormalTok{ sqftx}\SpecialCharTok{/}\NormalTok{pricex}
+\NormalTok{b1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 55776.57
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{b2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.0154213
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{DpriceDsqft}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  61.68521 123.37041 185.05562
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{elasticity  }\CommentTok{\#prints results}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.050303 1.631251 1.817408
+\end{verbatim}
+
+\hypertarget{verificando-a-variuxe1vel-dependente}{%
+\subsection{Verificando a variável
+dependente}\label{verificando-a-variuxe1vel-dependente}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{price)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-41-1.pdf}
+
+Transformação de variáveis
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(}\FunctionTok{log}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{price))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-42-1.pdf}
+
+\hypertarget{transformauxe7uxe3o-logaruxedtmica}{%
+\subsection{Transformação
+logarítmica}\label{transformauxe7uxe3o-logaruxedtmica}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{sqft, }\FunctionTok{log}\NormalTok{(br}\SpecialCharTok{$}\NormalTok{price))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-43-1.pdf}
+
+\hypertarget{using-indicator-variables-in-a-regression}{%
+\section{Using Indicator Variables in a
+Regression}\label{using-indicator-variables-in-a-regression}}
+
+Variável indicadora = dummy
+
+\[
+dummy \in \{0, 1\}
+\]
+
+utown = university town
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(utown)}
+\FunctionTok{head}\NormalTok{(utown)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrrrr@{}}
+\toprule\noalign{}
+price & sqft & age & utown & pool & fplace \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+205.452 & 23.46 & 6 & 0 & 0 & 1 \\
+185.328 & 20.03 & 5 & 0 & 0 & 1 \\
+248.422 & 27.77 & 6 & 0 & 0 & 0 \\
+154.690 & 20.17 & 1 & 0 & 0 & 0 \\
+221.801 & 26.45 & 0 & 0 & 0 & 1 \\
+199.119 & 21.56 & 6 & 0 & 0 & 1 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod5 }\OtherTok{=} \FunctionTok{lm}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ utown, }\AttributeTok{data =}\NormalTok{ utown)}
+\FunctionTok{summary}\NormalTok{(mod5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = price ~ utown, data = utown)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -85.672 -20.359  -0.462  20.646  67.955 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  215.732      1.318  163.67   <2e-16 ***
+## utown         61.509      1.830   33.62   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 28.91 on 998 degrees of freedom
+## Multiple R-squared:  0.5311, Adjusted R-squared:  0.5306 
+## F-statistic:  1130 on 1 and 998 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Fora de utown preço = 215.732 (215.7324948)
+
+Dentro de utown preço = 215.7324948 + 61.5091064 = 277.2416012
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(utown[utown}\SpecialCharTok{$}\NormalTok{utown }\SpecialCharTok{==} \DecValTok{1}\NormalTok{, }\StringTok{"price"}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 277.2416
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(utown[utown}\SpecialCharTok{$}\NormalTok{utown }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\StringTok{"price"}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 215.7325
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(magrittr)}
+\NormalTok{utown[utown}\SpecialCharTok{$}\NormalTok{utown }\SpecialCharTok{==} \DecValTok{1}\NormalTok{, }\StringTok{"price"}\NormalTok{] }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    mean}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 277.2416
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{utown[utown}\SpecialCharTok{$}\NormalTok{utown }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\StringTok{"price"}\NormalTok{] }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    mean}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 215.7325
+\end{verbatim}
+
+\hypertarget{monte-carlo}{%
+\section{Monte Carlo}\label{monte-carlo}}
+
+Vamos ver depois
+
+\hypertarget{chapter-3-interval-estimation-and-hypothesis-testing}{%
+\chapter{Chapter 3 Interval Estimation and Hypothesis
+Testing}\label{chapter-3-interval-estimation-and-hypothesis-testing}}
+
+\hypertarget{example-confidence-intervals-in-the-food-model}{%
+\section{Example: Confidence Intervals in the food
+Model}\label{example-confidence-intervals-in-the-food-model}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\FunctionTok{data}\NormalTok{(}\StringTok{"food"}\NormalTok{)}
+\NormalTok{alpha }\OtherTok{\textless{}{-}} \FloatTok{0.05}  \CommentTok{\# chosen significance level}
+\NormalTok{mod1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(food\_exp }\SpecialCharTok{\textasciitilde{}}\NormalTok{ income, }\AttributeTok{data =}\NormalTok{ food)}
+\NormalTok{b2 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(mod1)[[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{df.residual}\NormalTok{(mod1)  }\CommentTok{\# degrees of freedom}
+\NormalTok{smod1 }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(mod1)}
+\NormalTok{seb2 }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(smod1)[}\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{]  }\CommentTok{\# se(b2)}
+\NormalTok{tc }\OtherTok{\textless{}{-}} \FunctionTok{qt}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, df)}
+\NormalTok{lowb }\OtherTok{\textless{}{-}}\NormalTok{ b2 }\SpecialCharTok{{-}}\NormalTok{ tc }\SpecialCharTok{*}\NormalTok{ seb2  }\CommentTok{\# lower bound}
+\NormalTok{upb }\OtherTok{\textless{}{-}}\NormalTok{ b2 }\SpecialCharTok{+}\NormalTok{ tc }\SpecialCharTok{*}\NormalTok{ seb2  }\CommentTok{\# upper bound}
+\FunctionTok{c}\NormalTok{(lowb, b2, upb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  5.972052 10.209643 14.447233
+\end{verbatim}
+
+Tenho 1-significância = 1 - 0.05 = 0.95 = 95\% de CONFIANÇA que o valor
+do coeficiente angular está situado entre 5.9720525 e 14.4472334.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(mod1, }\AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrr@{}}
+\toprule\noalign{}
+& 2.5 \% & 97.5 \% \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & -4.463279 & 171.29528 \\
+income & 5.972053 & 14.44723 \\
+\end{longtable}
+
+\hypertarget{bootstrap}{%
+\section{Bootstrap}\label{bootstrap}}
+
+Reamostragem
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Travo o gerador de números pseudo{-}aleatórios}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\CommentTok{\# Número de simulações}
+\NormalTok{N }\OtherTok{=} \DecValTok{500}  \CommentTok{\# coloquei 500 para rodar mais rápido, na prática usa{-}se 2000 ou mais}
+\CommentTok{\# Número de elementos na amostra}
+\FunctionTok{nrow}\NormalTok{(br) }\OtherTok{{-}\textgreater{}}\NormalTok{ n}
+\CommentTok{\# Inicializo vetor de valores}
+\NormalTok{valores }\OtherTok{=} \ConstantTok{NULL}
+\CommentTok{\# loop de reamostragem}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{N) \{}
+    \CommentTok{\# crio amostra de tamanho n com repetição}
+    \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{n, n, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ idx}
+    \CommentTok{\# faço a regressão}
+    \FunctionTok{lm}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(sqft}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{), }\AttributeTok{data =}\NormalTok{ br[idx, ]) }\OtherTok{{-}\textgreater{}}\NormalTok{ modb}
+    \CommentTok{\# guardo o valor do coeficiente angular}
+\NormalTok{    valores }\OtherTok{=} \FunctionTok{c}\NormalTok{(valores, modb}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{])}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# desenho um histograma com uma curva normal superimposta}
+\CommentTok{\# Este esquema de cores é somente um exemplo, adote um}
+\CommentTok{\# padrão para todos os gráficos para não ficar um}
+\CommentTok{\# \textquotesingle{}carnaval\textquotesingle{}}
+\FunctionTok{hist}\NormalTok{(valores, }\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{col =} \StringTok{"\#FFA00080"}\NormalTok{, }\AttributeTok{border =} \StringTok{"white"}\NormalTok{)}
+\FunctionTok{curve}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(x, }\FunctionTok{mean}\NormalTok{(valores), }\FunctionTok{sd}\NormalTok{(valores)), }\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\FunctionTok{min}\NormalTok{(valores),}
+    \FunctionTok{max}\NormalTok{(valores)), }\AttributeTok{add =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-51-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{c}\NormalTok{(mod3}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{], }\FunctionTok{mean}\NormalTok{(valores))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  I(sqft^2)            
+## 0.01542130 0.01535264
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Teste de normalidade (veremos em um futuro próximo)}
+\FunctionTok{shapiro.test}\NormalTok{(}\FunctionTok{sample}\NormalTok{(valores, }\FunctionTok{min}\NormalTok{(}\DecValTok{500}\NormalTok{, }\FunctionTok{length}\NormalTok{(valores))))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sample(valores, min(500, length(valores)))
+## W = 0.99399, p-value = 0.04537
+\end{verbatim}
+
+\hypertarget{adendo---ler-dados-do-excel}{%
+\chapter{Adendo - ler dados do
+EXCEL}\label{adendo---ler-dados-do-excel}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# file.choose()}
+\FunctionTok{library}\NormalTok{(openxlsx)}
+\FunctionTok{read.xlsx}\NormalTok{(}\StringTok{"/Users/jfrega/Downloads/DadosTeste.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \StringTok{"Planilha1"}\NormalTok{,}
+    \AttributeTok{startRow =} \DecValTok{1}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ meusDados}
+\FunctionTok{plot}\NormalTok{(meusDados}\SpecialCharTok{$}\NormalTok{x, meusDados}\SpecialCharTok{$}\NormalTok{y)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-52-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, meusDados) }\OtherTok{{-}\textgreater{}}\NormalTok{ m}
+\NormalTok{m }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    summary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x, data = meusDados)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.9643 -1.2054  0.2679  1.1696  1.5000 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   6.6429     1.1198   5.932  0.00102 ** 
+## x             2.1071     0.2218   9.502 7.75e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.437 on 6 degrees of freedom
+## Multiple R-squared:  0.9377, Adjusted R-squared:  0.9273 
+## F-statistic: 90.29 on 1 and 6 DF,  p-value: 7.745e-05
+\end{verbatim}
+
+\hypertarget{adendo-regressuxe3o-ols-em-python}{%
+\chapter{Adendo --- Regressão OLS em
+Python}\label{adendo-regressuxe3o-ols-em-python}}
+
+\#````
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}
+\CommentTok{\# ATENÇÃO: para rodar este trecho do código é necessário ter o Python instalado e configurado}
+\CommentTok{\#}
+\CommentTok{\# o comando import do Python é similar ao comando library do R}
+\CommentTok{\# statsmodels.formula.api é a interface para os modelos estatísticos}
+\ImportTok{import}\NormalTok{ statsmodels.formula.api }\ImportTok{as}\NormalTok{ smf}
+\CommentTok{\# vou acessar os dados que foram lidos no meu código em R}
+\NormalTok{r.meusDados}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      x     y
+## 0  1.0  10.0
+## 1  2.0  12.0
+## 2  3.0  11.0
+## 3  4.0  15.0
+## 4  5.0  16.0
+## 5  6.0  18.0
+## 6  7.0  22.0
+## 7  8.0  25.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# rodo o modelo OLS}
+\NormalTok{model }\OperatorTok{=}\NormalTok{ smf.ols(formula}\OperatorTok{=}\StringTok{"y\textasciitilde{}x"}\NormalTok{, data}\OperatorTok{=}\NormalTok{r.meusDados)}
+\CommentTok{\# inspeciono os resultados}
+\BuiltInTok{print}\NormalTok{(model.fit().summary())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                             OLS Regression Results                            
+## ==============================================================================
+## Dep. Variable:                      y   R-squared:                       0.938
+## Model:                            OLS   Adj. R-squared:                  0.927
+## Method:                 Least Squares   F-statistic:                     90.29
+## Date:                Tue, 25 Mar 2025   Prob (F-statistic):           7.75e-05
+## Time:                        21:56:06   Log-Likelihood:                -13.102
+## No. Observations:                   8   AIC:                             30.20
+## Df Residuals:                       6   BIC:                             30.36
+## Df Model:                           1                                         
+## Covariance Type:            nonrobust                                         
+## ==============================================================================
+##                  coef    std err          t      P>|t|      [0.025      0.975]
+## ------------------------------------------------------------------------------
+## Intercept      6.6429      1.120      5.932      0.001       3.903       9.383
+## x              2.1071      0.222      9.502      0.000       1.565       2.650
+## ==============================================================================
+## Omnibus:                        2.183   Durbin-Watson:                   1.522
+## Prob(Omnibus):                  0.336   Jarque-Bera (JB):                0.848
+## Skew:                          -0.279   Prob(JB):                        0.654
+## Kurtosis:                       1.505   Cond. No.                         11.5
+## ==============================================================================
+## 
+## Notes:
+## [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+## 
+## /Users/jfrega/Library/r-miniconda-arm64/lib/python3.10/site-packages/scipy/stats/_axis_nan_policy.py:418: UserWarning: `kurtosistest` p-value may be inaccurate with fewer than 20 observations; only n=8 observations were given.
+##   return hypotest_fun_in(*args, **kwds)
+\end{verbatim}
+
+\#````
+
+\hypertarget{aula-3}{%
+\chapter*{AULA 3}\label{aula-3}}
+\addcontentsline{toc}{chapter}{AULA 3}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(magrittr)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{forecasting-predicting-a-particular-value}{%
+\section{Forecasting (Predicting a Particular
+Value)}\label{forecasting-predicting-a-particular-value}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(PoEdata)}
+\FunctionTok{data}\NormalTok{(}\StringTok{"food"}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(}\AttributeTok{x =}\NormalTok{ food}\SpecialCharTok{$}\NormalTok{income, }\AttributeTok{y =}\NormalTok{ food}\SpecialCharTok{$}\NormalTok{food\_exp, }\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income)),}
+    \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{food\_exp)), }\AttributeTok{axes =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{axis}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{pos =} \DecValTok{0}\NormalTok{)}
+\FunctionTok{axis}\NormalTok{(}\DecValTok{2}\NormalTok{, }\AttributeTok{pos =} \DecValTok{0}\NormalTok{)}
+\NormalTok{alpha }\OtherTok{\textless{}{-}} \FloatTok{0.05}
+\NormalTok{x }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{xbar }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income)}
+\NormalTok{ybar }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{food\_exp)}
+\NormalTok{m1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ food\_exp }\SpecialCharTok{\textasciitilde{}}\NormalTok{ income, }\AttributeTok{data =}\NormalTok{ food)}
+\FunctionTok{abline}\NormalTok{(m1)}
+\FunctionTok{points}\NormalTok{(xbar, ybar, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{pch =} \DecValTok{16}\NormalTok{, }\AttributeTok{cex =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{h =}\NormalTok{ ybar, }\AttributeTok{v =}\NormalTok{ xbar, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{predict}\NormalTok{(m1, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{income =} \DecValTok{20}\NormalTok{), }\AttributeTok{interval =} \StringTok{"confidence"}\NormalTok{,}
+    \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrr@{}}
+\toprule\noalign{}
+fit & lwr & upr \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+287.6089 & 258.9069 & 316.3108 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{predict}\NormalTok{(m1, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{income =} \DecValTok{20}\NormalTok{), }\AttributeTok{interval =} \StringTok{"prediction"}\NormalTok{,}
+    \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrr@{}}
+\toprule\noalign{}
+fit & lwr & upr \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+287.6089 & 104.1323 & 471.0854 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(m1) }\OtherTok{{-}\textgreater{}}\NormalTok{ sm1}
+\NormalTok{sm1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = food_exp ~ income, data = food)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -223.025  -50.816   -6.324   67.879  212.044 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   83.416     43.410   1.922   0.0622 .  
+## income        10.210      2.093   4.877 1.95e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 89.52 on 38 degrees of freedom
+## Multiple R-squared:  0.385,  Adjusted R-squared:  0.3688 
+## F-statistic: 23.79 on 1 and 38 DF,  p-value: 1.946e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xx }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\FunctionTok{min}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income), }\FunctionTok{max}\NormalTok{(food}\SpecialCharTok{$}\NormalTok{income), }\AttributeTok{length.out =} \DecValTok{50}\NormalTok{)}
+\NormalTok{yy }\OtherTok{=} \FunctionTok{predict}\NormalTok{(m1, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{income =}\NormalTok{ xx), }\AttributeTok{interval =} \StringTok{"prediction"}\NormalTok{,}
+    \AttributeTok{level =} \DecValTok{1} \SpecialCharTok{{-}} \FloatTok{0.05}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(xx, yy[, }\DecValTok{2}\NormalTok{], }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(xx, yy[, }\DecValTok{3}\NormalTok{], }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-80-1.pdf}
+
+\[
+\text{food_exp}= b_0+b_1\ \text{income}+e\\
+\widehat{\text{food_exp}}= 83.416+10.210\ \text{income}
+\]
+
+\hypertarget{goodness-of-fit}{%
+\section{Goodness-of-Fit}\label{goodness-of-fit}}
+
+Bondade de ajuste
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sm1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = food_exp ~ income, data = food)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -223.025  -50.816   -6.324   67.879  212.044 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   83.416     43.410   1.922   0.0622 .  
+## income        10.210      2.093   4.877 1.95e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 89.52 on 38 degrees of freedom
+## Multiple R-squared:  0.385,  Adjusted R-squared:  0.3688 
+## F-statistic: 23.79 on 1 and 38 DF,  p-value: 1.946e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sm1}\SpecialCharTok{$}\NormalTok{r.squared}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3850022
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sm1}\SpecialCharTok{$}\NormalTok{adj.r.squared}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3688181
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sm1}\SpecialCharTok{$}\NormalTok{fstatistic}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    value    numdf    dendf 
+## 23.78884  1.00000 38.00000
+\end{verbatim}
+
+\hypertarget{linear-log-models}{%
+\section{Linear-Log Models}\label{linear-log-models}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(food\_exp }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(income), }\AttributeTok{data =}\NormalTok{ food)}
+\FunctionTok{summary}\NormalTok{(mod2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = food_exp ~ log(income), data = food)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -215.427  -51.666    2.186   47.819  241.548 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   -97.19      84.24  -1.154    0.256    
+## log(income)   132.17      28.80   4.588 4.76e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 91.57 on 38 degrees of freedom
+## Multiple R-squared:  0.3565, Adjusted R-squared:  0.3396 
+## F-statistic: 21.05 on 1 and 38 DF,  p-value: 4.76e-05
+\end{verbatim}
+
+\hypertarget{residuals-and-diagnostics}{%
+\section{Residuals and Diagnostics}\label{residuals-and-diagnostics}}
+
+\hypertarget{normalidade-dos-resuxedduos}{%
+\subsection{Normalidade dos
+resíduos}\label{normalidade-dos-resuxedduos}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# resíduos padronizados tem média zero e desvio{-}padrão um}
+\NormalTok{m1}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\OtherTok{{-}\textgreater{}}\NormalTok{ padres}
+\NormalTok{padres }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{hist}\NormalTok{(}\AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{curve}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(x, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{), }\AttributeTok{add =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-83-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# teste de Shapiro{-}Wilk H0: não há desvios da normalidade}
+\CommentTok{\# (p \textgreater{} 0.05)}
+\NormalTok{padres }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.98838, p-value = 0.9493
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tseries)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'quantmod':
+##   method            from
+##   as.zoo.data.frame zoo
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(magrittr)}
+\CommentTok{\# Teste de Jarque{-}Bera H0: não há desvios da normalidade (p}
+\CommentTok{\# \textgreater{} 0.05)}
+\NormalTok{padres }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{jarque.bera.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Jarque Bera Test
+## 
+## data:  .
+## X-squared = 0.06334, df = 2, p-value = 0.9688
+\end{verbatim}
+
+Testes de normalidade funcionam bem para n \textgreater{} 30 e n
+\textless{} 400 (valores empíricos e aproximados).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(car)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: carData
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'car'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:DescTools':
+## 
+##     Recode
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{padres }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{qqPlot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-86-1.pdf}
+
+\begin{verbatim}
+## [1] 31 38
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\FunctionTok{rexp}\NormalTok{(}\DecValTok{20}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    qqPlot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-87-1.pdf}
+
+\begin{verbatim}
+## [1] 14  6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{runif}\NormalTok{(}\DecValTok{20}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    qqPlot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-87-2.pdf}
+
+\begin{verbatim}
+## [1] 10 18
+\end{verbatim}
+
+\hypertarget{teste-de-forma-funcional}{%
+\section{Teste de forma funcional}\label{teste-de-forma-funcional}}
+
+Teste RESET de Ramsey
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lmtest)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Teste RESET de Ramsey H0: forma funcional é adequada}
+\FunctionTok{reset}\NormalTok{(m1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  m1
+## RESET = 0.066009, df1 = 2, df2 = 36, p-value = 0.9362
+\end{verbatim}
+
+Forma funcional adequada é que a representação da equação é
+funcionalmente adequada, ou seja, os termos estão nas potências e
+funções certas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{12}\NormalTok{)}
+\NormalTok{xx }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{50}\NormalTok{)}
+\NormalTok{yy }\OtherTok{=} \DecValTok{3} \SpecialCharTok{*}\NormalTok{ xx}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \DecValTok{2} \SpecialCharTok{*} \FunctionTok{rnorm}\NormalTok{(xx)}
+\FunctionTok{plot}\NormalTok{(xx, yy)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-89-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste }\OtherTok{=} \FunctionTok{lm}\NormalTok{(yy }\SpecialCharTok{\textasciitilde{}}\NormalTok{ xx)}
+\FunctionTok{summary}\NormalTok{(mteste)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = yy ~ xx)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -11.114  -6.409  -3.041   5.847  19.216 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   9.0815     1.1687   7.770  4.9e-10 ***
+## xx            0.1050     0.6614   0.159    0.874    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 8.264 on 48 degrees of freedom
+## Multiple R-squared:  0.0005252,  Adjusted R-squared:  -0.0203 
+## F-statistic: 0.02522 on 1 and 48 DF,  p-value: 0.8745
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{reset}\NormalTok{(mteste)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  mteste
+## RESET = 537.61, df1 = 2, df2 = 46, p-value < 2.2e-16
+\end{verbatim}
+
+O teste RESET rejeitou a forma funcional utilizada.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste2 }\OtherTok{=} \FunctionTok{lm}\NormalTok{(yy }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(xx}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\FunctionTok{reset}\NormalTok{(mteste2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  mteste2
+## RESET = 1.2401, df1 = 2, df2 = 46, p-value = 0.2988
+\end{verbatim}
+
+Opa, agora a forma funcional é adequada, é quadrática!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{12}\NormalTok{)}
+\NormalTok{xx }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{50}\NormalTok{)}
+\NormalTok{yy }\OtherTok{=} \DecValTok{3} \SpecialCharTok{*}\NormalTok{ xx}\SpecialCharTok{\^{}}\DecValTok{3} \SpecialCharTok{+} \DecValTok{4} \SpecialCharTok{*} \FunctionTok{rnorm}\NormalTok{(xx)}
+\FunctionTok{plot}\NormalTok{(xx, yy)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-93-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste3 }\OtherTok{=} \FunctionTok{lm}\NormalTok{(yy }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(xx}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{))}
+\FunctionTok{reset}\NormalTok{(mteste3, }\AttributeTok{power =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  mteste3
+## RESET = 0.0016132, df1 = 1, df2 = 47, p-value = 0.9681
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(mteste3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = yy ~ I(xx^3))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.7571 -2.3349 -0.2141  1.9016  8.8388 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -0.57172    0.49085  -1.165     0.25    
+## I(xx^3)      3.04184    0.04533  67.099   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.471 on 48 degrees of freedom
+## Multiple R-squared:  0.9895, Adjusted R-squared:  0.9892 
+## F-statistic:  4502 on 1 and 48 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(xx, yy)}
+\FunctionTok{abline}\NormalTok{((}\FunctionTok{lm}\NormalTok{(yy }\SpecialCharTok{\textasciitilde{}}\NormalTok{ xx) }\OtherTok{{-}\textgreater{}}\NormalTok{ mteste1), }\AttributeTok{col =} \StringTok{"green"}\NormalTok{)}
+\NormalTok{mteste2 }\OtherTok{=} \FunctionTok{lm}\NormalTok{(yy }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(xx}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\FunctionTok{lines}\NormalTok{(xx, }\FunctionTok{predict}\NormalTok{(mteste2, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{xx =}\NormalTok{ xx)), }\AttributeTok{col =} \StringTok{"red"}\NormalTok{)}
+\NormalTok{mteste3 }\OtherTok{=} \FunctionTok{lm}\NormalTok{(yy }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(xx}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{))}
+\FunctionTok{lines}\NormalTok{(xx, }\FunctionTok{predict}\NormalTok{(mteste3, }\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{xx =}\NormalTok{ xx)), }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topleft"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Grau 1"}\NormalTok{, }\StringTok{"Grau 2"}\NormalTok{, }\StringTok{"Grau 3"}\NormalTok{), }\AttributeTok{fill =} \FunctionTok{c}\NormalTok{(}\StringTok{"green"}\NormalTok{,}
+    \StringTok{"red"}\NormalTok{, }\StringTok{"blue"}\NormalTok{), }\AttributeTok{cex =} \FloatTok{0.7}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-95-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste1 }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 377.37, df1 = 2, df2 = 46, p-value < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste1}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.96821, p-value = 0.1956
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste2 }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 0.011796, df1 = 2, df2 = 46, p-value = 0.9883
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste2}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.94613, p-value = 0.02371
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste3 }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 0.46335, df1 = 2, df2 = 46, p-value = 0.6321
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mteste3}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.96619, p-value = 0.1613
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(mteste3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = yy ~ I(xx^3))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.7571 -2.3349 -0.2141  1.9016  8.8388 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -0.57172    0.49085  -1.165     0.25    
+## I(xx^3)      3.04184    0.04533  67.099   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.471 on 48 degrees of freedom
+## Multiple R-squared:  0.9895, Adjusted R-squared:  0.9892 
+## F-statistic:  4502 on 1 and 48 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\hypertarget{heteroskedasticity-heteroscedasticidade}{%
+\section{Heteroskedasticity
+(Heteroscedasticidade)}\label{heteroskedasticity-heteroscedasticidade}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(m1}\SpecialCharTok{$}\NormalTok{model[, }\DecValTok{2}\SpecialCharTok{:}\DecValTok{1}\NormalTok{])}
+\FunctionTok{abline}\NormalTok{(m1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-97-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Teste de Breusch{-}Pagan H0: os dados são homoscedásticos}
+\NormalTok{m1 }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    bptest}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  studentized Breusch-Pagan test
+## 
+## data:  .
+## BP = 7.3844, df = 1, p-value = 0.006579
+\end{verbatim}
+
+O p-valor abaixo de 0.05 rejeitou a H0, ou seja, os dados são
+heteroscedásticos.
+
+\hypertarget{modelo-log-log}{%
+\section{Modelo log-log}\label{modelo-log-log}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(}\StringTok{"newbroiler"}\NormalTok{, }\AttributeTok{package =} \StringTok{"PoEdata"}\NormalTok{)}
+\NormalTok{mod.a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(q }\SpecialCharTok{\textasciitilde{}}\NormalTok{ p, newbroiler)}
+\FunctionTok{plot}\NormalTok{(mod.a}\SpecialCharTok{$}\NormalTok{model[, }\DecValTok{2}\SpecialCharTok{:}\DecValTok{1}\NormalTok{])}
+\FunctionTok{abline}\NormalTok{(mod.a)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-99-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.a}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.88678, p-value = 0.0001358
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.a }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 41.974, df1 = 2, df2 = 48, p-value = 2.885e-11
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# mod.a é inadequado}
+\NormalTok{mod6 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(q) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(p), }\AttributeTok{data =}\NormalTok{ newbroiler)}
+\FunctionTok{plot}\NormalTok{(mod6}\SpecialCharTok{$}\NormalTok{model[, }\DecValTok{2}\SpecialCharTok{:}\DecValTok{1}\NormalTok{])}
+\FunctionTok{abline}\NormalTok{(mod6)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-99-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.97287, p-value = 0.2787
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    hist}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-99-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6 }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 9.0626, df1 = 2, df2 = 48, p-value = 0.0004581
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{nrow}\NormalTok{(newbroiler)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 52
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6 }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    bptest}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  studentized Breusch-Pagan test
+## 
+## data:  .
+## BP = 2.5034, df = 1, p-value = 0.1136
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6.a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(q) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{I}\NormalTok{(}\FunctionTok{log}\NormalTok{(p)}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{), }\AttributeTok{data =}\NormalTok{ newbroiler)}
+\NormalTok{mod6.a}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.94107, p-value = 0.01238
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6.a}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    hist}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-99-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod6.a }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 32.957, df1 = 2, df2 = 48, p-value = 9.816e-10
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.a.a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(q }\SpecialCharTok{\textasciitilde{}}\NormalTok{ p }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(p}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(p}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{), newbroiler)}
+\CommentTok{\# aproximação de terceiro grau}
+\NormalTok{mod.a.a}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{shapiro.test}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  .
+## W = 0.94371, p-value = 0.01589
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.a.a}\SpecialCharTok{$}\NormalTok{residuals }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    scale }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    hist}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Aulas2025_files/figure-latex/unnamed-chunk-99-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.a.a }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{    reset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  RESET test
+## 
+## data:  .
+## RESET = 2.6918, df1 = 2, df2 = 46, p-value = 0.07843
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(mod6)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log(q) ~ log(p), data = newbroiler)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.228363 -0.080077 -0.007662  0.106041  0.218679 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.71694    0.02236   166.2   <2e-16 ***
+## log(p)      -1.12136    0.04876   -23.0   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.118 on 50 degrees of freedom
+## Multiple R-squared:  0.9136, Adjusted R-squared:  0.9119 
+## F-statistic:   529 on 1 and 50 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# R\^{}2 generalizado}
+\FunctionTok{cor}\NormalTok{(mod6}\SpecialCharTok{$}\NormalTok{fitted.values, }\FunctionTok{log}\NormalTok{(newbroiler}\SpecialCharTok{$}\NormalTok{q))}\SpecialCharTok{\^{}}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9136386
+\end{verbatim}
+
+\backmatter
+\end{document}
