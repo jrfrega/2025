@@ -31,7 +31,7 @@ documentclass: book
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, tidy=TRUE, tidy.opts = list(blank = FALSE, width.cutoff = 60))
+knitr::opts_chunk$set(echo = TRUE, tidy=TRUE, tidy.opts = list(blank = FALSE, width.cutoff = 60), fig.width = 5, fig.align = "center")
 library(magrittr)
 library(reticulate)
 ```

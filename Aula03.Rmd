@@ -252,3 +252,41 @@ modelo.quadratico.newbroiler = lm(q~I(p^2), data=newbroiler)
 modelo.quadratico.newbroiler %>% summary
 ```
 
+
+## Overfitting
+
+Sobreajustamento ou *overfitting* é o fenômeno em que o modelo tem uma complexidade excessiva para explicar o fenômeno, fazendo excelentes previsões para os pontos conhecidos da amostra, mas não conseguindo lidar bem com pontos desconhecidos. 
+
+No exemplo a seguir, temos um conjunto de pontos que pode ser adequadamente aproximado por uma reta mas que foi sobreajustado por um polinômio de quarto grau e outro de nono grau. 
+
+```{r, fig.asp=1, fig.width=5}
+# semente aleatória
+set.seed(112)
+# 10 valores de x
+x = 1:10
+# 10 valores de y
+y = 2*x+2*rnorm(x)
+# regressão por um polinômio de grau 9
+lm(y~x+I(x^2)+I(x^3)+I(x^4)+I(x^5)+I(x^6)+I(x^7)+I(x^8)+I(x^9)) -> m9
+# regressão por um polinômio de grau 4
+lm(y~x+I(x^2)+I(x^3)+I(x^4)) -> m4
+# regressão linear
+lm(y~x) -> m1
+# calcula a curva polinomial
+xx = seq(-0.3+min(x), max(x)+0.2, length.out = 100)
+yy = predict(m9, data.frame(x = xx))
+yy4 = predict(m4, data.frame(x = xx))
+# plota os pontos respeitando os máximos e mínimos da curva polinomial
+plot(x, y, ylim = c(min(c(0, y, yy, yy4)), max(c(y, yy, yy4))*1.01), xlim = c(min(c(0, x, xx)), max(c(x, xx))*1.01), xlab = expression(x), ylab = expression(y), pch = 20, col = "#C00000")
+# desenha a curva polinomial
+lines(xx, yy, col = "red")
+lines(xx, yy4, col = "darkgray")
+# resenha uma simples reta de regressão
+abline(m1, col = "blue")
+grid()
+legend("topleft", legend = paste("Grau", c(1, 4, 9)), fill = c("blue", "darkgray", "red"), cex = 0.7)
+```
+
+Percebe-se que no polinômio de grau 9 o ajuste ficará muito ruim para pontos fora da amostra, em especial aqueles que ultrapassarem os limites desta. 
+
+
