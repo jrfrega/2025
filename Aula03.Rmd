@@ -221,18 +221,21 @@ data("newbroiler", package="PoEdata")
 mod.a <- lm(q~p, newbroiler)
 plot(mod.a$model[,2:1]); abline(mod.a)
 mod.a$residuals %>% scale %>% shapiro.test()
+mod.a$residuals %>% qqPlot(main="Resíduos muito ruins")
 mod.a %>% reset
 # mod.a é inadequado
 mod6 <- lm(log(q)~log(p), data=newbroiler)
 plot(mod6$model[,2:1]); abline(mod6)
 mod6$residuals %>% scale %>% shapiro.test()
 mod6$residuals %>% scale %>% hist
+mod6$residuals %>% qqPlot(main="Resíduos mais adequados")
 mod6 %>% reset
 nrow(newbroiler)
 mod6 %>% bptest
 mod6.a <- lm(log(q)~I(log(p)^3), data=newbroiler)
 mod6.a$residuals %>% scale %>% shapiro.test()
 mod6.a$residuals %>% scale %>% hist
+mod6.a$residuals %>% qqPlot()
 mod6.a %>% reset
 mod.a.a <- lm(q~p+I(p^2)+I(p^3), newbroiler)
 # aproximação de terceiro grau
