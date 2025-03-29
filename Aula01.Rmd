@@ -227,6 +227,11 @@ $R^2$ é a porção de variação da nota que é explicada pelas horas.
 
 Ou seja, aproximadamente 83% da variação da nota é explicada pelas horas de estudo.
 
+# Manipulação de gráficos e expressões { - }
+
+O `RStudio` é bastante competente para lidar com elementos gráficos e com equações, tornando-o apropriado para a escrita acadêmica de textos dessa natureza. 
+
+
 ```{r}
 x = 1:6*10
 y = 1:6
@@ -249,6 +254,28 @@ text(-1.75, -0.35, expression(y(-2)=="?"))
 f(-2.000000001)
 -3/8
 ```
+
+Os que estudaram Cálculo talvez se lembrem da regra de L'Hôpital:
+
+
+$$
+\lim_{x\rightarrow-2}\dfrac{x^3+8}{x^4-16}=\lim_{x\rightarrow-2}\dfrac{\rm d(x^3+8)/\rm dx}{\rm d(x^4-16)/\rm dx}= \lim_{x\rightarrow-2}\dfrac{3x^2}{4x^3} = \dfrac{3(-2)^2}{4(-2)^3} = \dfrac{12}{-32} = -\dfrac{3}{8}=-0.375
+$$
+Mais um exemplo:
+
+
+```{r}
+f = function(x) (exp(x)-1)/(x)
+x = seq(-3, 1.000000, length.out = 100)
+y = f(x)
+plot(x, y, type = "l")
+abline(v=0, h = 1, col = "lightblue")
+text(-2.5, 1.5, expression(y==lim(frac(e^x-1, x), x%->%0)))
+text(-2.5, 1.2, expression(y(0)=="?"))
+```
+
+
+
 
 ```{r}
 plot.new(); plot.window(c(0,4), c(15,1))

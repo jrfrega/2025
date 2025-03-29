@@ -1,0 +1,568 @@
+---
+title: "Untitled"
+author: "Prof. Frega"
+date: "2025-03-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+```
+
+# Lista de datas copiadas do EXCEL e resultado formatado para um script PHP
+
+```{r}
+"11/03/2025
+18/03/2025
+25/03/2025
+01/04/2025
+08/04/2025
+15/04/2025
+22/04/2025
+29/04/2025
+06/05/2025
+13/05/2025
+20/05/2025
+27/05/2025
+03/06/2025
+10/06/2025
+17/06/2025" %>% strsplit("\n") %>% unlist %>% sapply(function(x) paste0(substring(x, 7, 11), substring(x, 4, 5), substring(x, 1, 2))) %>% paste('"', ., '"', sep = "", collapse = ", ") %>% paste0("$datas = [", '"", ', ., "];") %>% cat
+```
+
+# Escrevendo equações de matemática financeira (compra e venda de imóveis)
+
+Qual deve ser o valor de venda VV de um imóvel comprado por $600000 para que tenhamos um valor líquido igual a VL, sabendo que o lucro obtido está sujeito a 15% de IR e o valor de venda a 6% de comissão?
+
+$$
+\begin{align}
+\text{VL} &= \text{VV}-(\text{VV}-600000)·0.15 - \text{VV}·0.06\\[0.5em]
+\text{VL} &= \text{VV}-0.15·\text{VV} + 90000 - 0.06·\text{VV}\\[0.5em]
+\text{VL} &= 90000 +(1-0.15-0.06)·\text{VV}\\[1em]
+\text{VV} &= \dfrac{\text{VL}-90000}{0.79}
+\end{align}
+$$
+
+# Lista de alunos coletada no SIGA transformada em lista de emails para Outlook
+
+```{r}
+"BIANCA CAROLLO RAMOS DA SILVA	bianca.carollo@ufpr.br	Matriculado	Discente Autor	Mestrado Profissional
+	CESAR AUGUSTO TOMAZI	cesar.tomazi@ufpr.br	Matriculado	Discente Autor	Mestrado Profissional
+	ISAAC CLEMENTE COELHO	clementeisaac@ufpr.br	Matriculado	Discente Autor	Mestrado Profissional
+	ALINE FONTES CORDEIRO WAENGA	alinewaenga@gmail.com	Matriculado	Discente Externo	Especialização
+	HILDA JAQUELINE DE NOVAES FUNAKI	hilda@ufpr.br	Matriculado	Discente Externo	Especialização
+	LUIS GUSTAVO HAKIM LEAL	luis.leal@tesouro.gov.br	Matriculado	Discente Externo	Especialização
+	MARINA SERIO LEAL FERREIRA	marinaslferreira@gmail.com	Matriculado	Discente Externo	Especialização
+	PAULO CESAR MAZZA JUSTICHECHEN	paulocmazza@gmail.com	Matriculado	Discente Externo	Especialização
+	PEDRO ANTONIO BOARETO	pedroaboareto@gmail.com	Matriculado	Discente Externo	Mestrado
+	RAFAEL PICHEK	rpichek@gmail.com	Matriculado	Discente Externo	Especialização
+	RENATO MILHOMEM DE OLIVEIRA FILHO	rmoliveira17@gmail.com	Matriculado	Discente Externo	Especialização" -> a
+a %>% strsplit("\n\t") %>% unlist -> b
+sapply(b, function(x){strsplit(x, "\t") %>% unlist ->a; paste0(a[1], " <", a[2], ">; ")}) %>% paste(collapse = "\n") %>% cat
+```
+
+# Breve análise de referências de uma tese para saber quais as mais recentes
+
+```{r}
+"ALDER D. A.; SILVA, J. N. M.; CARVALHO, J. O. P.; LOPES, J. C.; RUSCHEL, A. R. A estratégia de modelagem empírica de coorte e sua aplicação ao manejo florestal para a Floresta do Tapajós, Pará, Amazônia Brasileira. Bois et forêts des tropiques. v. 314, n. 4, p. 17-23, 2012.
+
+ALMEIDA, V. B.; SILVA, J. N. M.; STEINBRENNER, M. K. A. Impacto da ocorrência de árvores ocas no rendimento da colheita de madeira na Floresta Nacional de Saracá-Taquera, Pará. Pesquisa Florestal Brasileira, v. 42, p. 1-12, 2022. 
+
+AGUNG, S.; ZUHRI, B. S. S. Analysis of the Financial Feasibility of Potential Post-Pandemic Businesses Using the Net Present Value (NPV), Internal Rate of Return (IRR), and Payback Period (PP) Methods (Case Study: MSME Environmentally Friendly Bioplastic Products. MUDIMA. v. 3, n. 7, 2023.
+
+ANDRADE, M. B. T.; COSTA, J. N.; CARVALHO, T. O papel dos mercados internacionais madeireiros da Amazônia no cumprimento dos requerimentos de legalidade e de desempenho socioambiental. Imaflora, TimberFlow, n 15, 2024. 
+
+ANDRADE, V. H. F.; MACHADO, S. A.; FIGUEIREDO FILHO, A.; BOTOSSO, P. C.; MIRANDA, B. P.; SCHÖNGART, J. Growth models for two commercial tree species in upland forests of the Southern Brazilian Amazon. Forest Ecology and Management, v. 438, p. 215-223, 2019. 
+
+ANGELO, A.; HOSOKAWA, R. T.; BERGER, R.; CASTRO, L. H. R. Rentabilidade das exportações brasileiras de madeira tropical. Revista Floresta, v. 33, n. 1. P. 63-69, 2003. 
+
+ANGELO, H.; DE ALMEIDA, A. N.; MATRICARDI, E. A. T.; ROSETTI, C. F.; DE OLIVEIRA GASPAR, R.; MIGUEL, E. P.; DE ANDRADE VASCONCELOS, P. G. Determinants of profit in sustainable forest management in the Brazilian Amazon. African Journal of Agricultural Research, v. 11, n. 44, p. 4498-4503, 2016.
+
+ARAÚJO, S. M. V. G. Origem e principais elementos da legislação de proteção à biodiversidade no Brasil. In: GANEM, R. S. (Org.). Conservação da biodiversidade: legislação e políticas públicas. Brasília: Edições Câmara, p. 177-222, 2010.
+
+ARAÚJO, H. J. B. Crescimento de espécies madeireiras em uma floresta acreana e compatibilidade com a legislação florestal. Revista de Ciências Agrárias, v. 59, n. 2, p. 113-123, abr./jun. 2016. 
+AVILA, A. L.; SCHWARTZ, G.; RUSCHEL, A. R.; LOPES, J. C.; SILVA, J. N. M.; CARVALHO, J. O. P.; DORMANN, C. F.; MAZZEI, L.; SOARES, M. H. M.; BAUHUS, J. Recruitment, growth and recovery of commercial tree species over 30 years following logging and thinning in a tropical rain forest. Forest Ecology and Management, v. 385, p. 225-235, 2017.
+
+ACCASTELLO, C.; BLANC, S.; MOSSO, A.; BRUN, F. Assessing the timber value: A case study in the Italian Alps. Forest Policy and Economics. v. 93, p. 36-44, 2018.
+
+BARBIER, E. B. The concept of sustainable economic development. Environmental Conservation. v. 14, n. 2, p. 101-110, 1987. 
+
+BARROS, H. C. C. Status da comunidade arbórea remanescente 33 anos após a colheita florestal na Amazônia brasileira. Dissertação. 87 f. (Mestrado em Ciências Florestais) – Universidade Federal Rural da Amazônia, Belém, PA, 2018.
+
+BERGER, R.; Santos, A. J.; TIMOFEICZYC JUNIOR; R.; BITTENCOURT, A. M.; SOUZA, V. S.; EISFELD, C. L. O efeito do custo da terra na rentabilidade florestal: um estudo de caso para Santa Catarina. Floresta, Curitiba, PR, v. 41, n. 3, p. 599-610, jul./set. 2011.
+
+BERGER, R; PADILHA, J. B. Administração estratégica da produção. Universidade Federal do Paraná – UFPR. Setor de Ciências Agrárias – SCA. Depto de Economia Rural e Extensão – DERE. Curso de Pós-Graduação em Gestão Florestal: Curitiba. p.153. 2008.
+
+BOMFIM, S. L.; D’AVIGNON, A. L. A.; SOUZA, A. N.; FONTES, P. J. P.; JOAQUIM, M. S. O potencial da concessão de florestas públicas para o desenvolvimento socioeconômico e geração de emprego na Amazônia Legal. Rev. Serv. Público, Brasília v. 67, n. 4, p. 649-670, out/dez, 2016.
+
+BONA, D. A. O.; DA SILVA, D. A. S.; PINHEIRO, L. L.; DA SILVA, E. F.; CHICHORRO, J. F.; BASSO, M. Receita/Custo da atividade de exploração florestal em um Plano de Manejo Florestal Sustentável na Amazônia–estudo de caso. Nativa, v. 3, n. 1, p. 50-55, 2015.
+
+BRAINARD, J.; LOVETT, A.; BATEMAN, I. Sensitivity analysis in calculating the social value of carbon sequestered in British grown Sitka spruce. Journal of Forest Economics, v. 12, n. 3, p. 201-228, 2006.
+
+BRANCALION, P. H. S.; SILVA, E. J. V.; KLAUBERG, C. Reserva legal pode ser boa oportunidade de negócios em propriedades rurais. Visão Agrícola, n. Jan/Abr, p. 18-21, 2012. Disponível em: https://www.esalq.usp.br/visaoagricola/sites/default/files/VA10-visao-tecnica02.pdf. Acesso em: 04 mar. 2024.
+
+BRANDES, A. F. N.; NOVELLO, B. Q.; DOMINGUES, G. A. F.; BARROS, C. F.; TAMAIO, N.  Endangered species account for 10% of Brazil’s documented timber trade. Journal for Nature Conservation, v. 55, 2020.
+
+BRASIL. Lei nº 12.651, de 25 de maio de 2012. Dispõe sobre a proteção da vegetação nativa; altera as Leis nºs 6.938, de 31 de agosto de 1981, 9.393, de 19 de dezembro de 1996, e 11.428, de 22 de dezembro de 2006; revoga as Leis nºs 4.771, de 15 de setembro de 1965, e 7.754, de 14 de abril de 1989, e a Medida Provisória nº 2.166-67, de 24 de agosto de 2001; e dá outras providências. Diário Oficial da União, Brasília, DF, p. 1, 28 mai. 2012. Seção 1, p. 1. Disponível em: < https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12651.htm> Acesso em: 31 out. 2023.    
+
+BRAZ, E. M.; MATTOS, P. P.; OLIVEIRA, M. F.; BASSO, R. O. Strategies for Achieving Sustainable Logging Rate in the Brazilian Amazon Forest. Open Journal of Forestry, v. 4. n. 2, p. 100-105, 2014.
+
+BRAZ, E. M.; MATTOS, P. P. Manejo de produção em florestas naturais da Amazônia: mitos e verdades. Nativa, Sinop, v. 03, n. 04, p. 292-295, out./dez. 2015.
+BRAZ, E. M; MATTOS, P. P.; THAINES, F.; MADRON, L. D.; GARRASTAZU, M. C.; CANETTI, A.; D’OLIVEIRA, M. V. N. Criteria to be considered to achieve a sustainable second cycle in Amazon Forest. Pesquisa Florestal Brasileira, Colombo, v. 35, n. 83, p. 209-225, jul./set. 2015. 
+
+BRAZ, E. M.; SCHENEIDER, P. R.; MATTOS, P. P.; SELLE, G. L.; THAINES, F.; RIBAS, L. A.; VUADEN, E. Taxa de corte sustentável para manejo das florestas tropicais. Ciência Florestal. Santa Maria - RS. v. 22. n. 1, p. 137 - 145, 2012.
+
+BRAZ, E. M. Planejamento operacional da produção em Floresta Tropical. Rio Branco: Embrapa-CPAF/AC. 1997. (Embrapa-CPAF/AC – Documento n. 25).
+
+BRIENEN, R. J. W.; ZUIDEMA, P. A. Incorporating persistent tree growth differences increases estimates of tropical timber yield. Front. Ecol. Environ., v. 5, pp. 302-306, 2007.
+
+BUENO, G.; PAULILLO, L. F. DE O. E; MEIRELLES, J. L. F. Weighted average cost of capital and value creation of agribusiness companies listed on b3 between 2012 and 2019. Custos e Agronegocio, v. 16, n. Special Issue, p. 374–396, 2020.
+
+CAPANEMA, V. P.; ESCADA, M. I. S.; ANDRADE, P. R.; LANDINI, L. G. Assessing logging legislation parameters and forest growth dissimilarities in the Brazilian Amazon, Forest Ecology and Management, v. 513, 2022.
+
+CARDOSO, R. M.; MIGUEL, E. P.; SOUZA, H. J.; SOUZA, A. N.; NASCIMENTO, R. G. M. Wood volume is overestimated in the Brazilian Amazon: Why not use generic volume prediction methods in tropical forest management? Journal of Environmental Management. v. 350, 2024.
+
+CARNEIRO, F. S.; RUSCHEL, A. R.; FREITAS, L. J. M.; PINHEIRO, K. A. O.; D'ARACE, L. M. B.; MAESTRI, M. P. Resiliência do volume de madeira de espécies comerciais em diferentes áreas experimentais na Amazônia Oriental. Revista Ibero Americana de Ciências Ambientais, v. 10, n. 6, p. 15-31, 2019.
+CASAROTTO FILHO, N.; KOPITTKE, B. H.  Análise de investimentos: Manual para solução de problemas e tomadas de decisão. 12 ed. São Paulo, Atlas, 2019.
+
+CASTRO, T. C; CARVALHO, J. O. P.; SCHWARTZ, G.; SILVA, J. N. M.; RUSCHEL, A. R.; FREITAS, L. J. M.; GOMES, J. M.; PINTO, R. S. The continuous timber production over cutting cycles in the Brazilian Amazon depends on volumes of species not harvested in previous cuts. Forest Ecology and Management. v. 490, 2021.
+
+CHARISMA, B.; AMIR, E. Economic Value-Added Creation by Optimizing Capital Structure in Project Finance. International Journal of Applied Research in Management and Economics. v. 3, n. 2, p. 46 – 60, 2020.
+
+CHOI, G.; HEO, E.; LEE, C. Y. Dynamic economic analysis of subsidies for new and renewable energy in South Korea. Sustainability, v. 10, n. 6, p. 1–19, 2018.
+
+CHUDY, A. R. P.; CHUDYA, K. A.; SILVA, B. K.; CUBBAGE, F. W.; RUBILAR, R.; LORD, R. Profitability and risk sources in global timberland Investments. Forest Policy and Economics. v. 111, 2020.
+
+CONDÉ, T. M.; TONINI, H.; HIGUCHI, N.; HIGUCHI, F. G.; LIMA, A. J. N.; BARBOSA, R. I.; PEREIRA, T. S.; HAAS, M. A. Efeitos do manejo florestal sustentável na diversidade de árvores, volumes de madeira e estoques de carbono em uma floresta ecótona no norte da Amazônia brasileira. Land Use Policy, v. 119, 2022.
+
+CONFEDERAÇÃO NACIONAL DA INDÚSTRIA (CNI). Produção sustentável de florestas nativas: manejo florestal e industrialização da madeira: proposta de revisão do marco regulatório. Brasília: DF, 2018.
+
+CONSELHO NACIONAL DE MEIO AMBIENTE (CONAMA). Resolução nº 406, de 2 de fevereiro de 2009. Estabelece parâmetros técnicos a serem adotados na elaboração, apresentação, avaliação técnica e execução de Plano de Manejo Florestal Sustentável - PMFS com fins madeireiros, para florestas nativas e suas formas de sucessão no bioma Amazônia. Diário Oficial da União. Brasília, DF, p. 1, 6 fev. 2009. Seção 1, p. 1. Disponível em: https://www.ibama.gov.br/component/legislacao/?view=legislacao&legislacao=114762> Acesso em: 31 out. 2023.
+
+CONSELHO NACIONAL DE MEIO AMBIENTE (CONAMA). Regulamentação de parâmetros técnicos em PMFS no âmbito do CONAMA. Nota técnica. 2008. Disponível em: <https://conama.mma.gov.br/index.php?option=com_sisconama&task=documento.download&id=17145>. Acesso em: 10 abr. 2024.
+
+COSTA, D. H. M.; SILVA, J. N. M.; CARVALHO, J. O. P. Crescimento de árvores em uma área de terra firme na Floresta Nacional do Tapajós após a colheita de madeira. Revista de Ciências Agrárias, n. 50, p. 63-76, jul./dez. 2008.
+
+CRISTEA, C.; CRISTEA, M.; BIROU, I.; TÎRNOVAN, R. Economic assessment of grid-connected residential solar photovoltaic systems introduced under Romania’s new regulation. Renewable Energy, v. 162, p. 13–29, 2020.
+
+CYSNEIROS, V. C.; PELISSARI, A. L.; MACHADO, S. A.; FILHO, A. F.; SOUZA, L. Modelos genéricos e específicos para estimativa do volume comercial em uma floresta sob concessão na Amazônia. Scientia Forestalis, v. 45, p. 295-304, 2017.
+
+CUBBAGE, F., DAVIS, R.; FREY, G.; BEHR, D. C. Financial and Economic Evaluation Guidelines for Community Forestry Projects in Latin America. Washington, DC: Program on Forests (PROFOR). 2013.
+
+CUBBAGE, F.; DAVISC, R.; FREY, G.; BEHRC, D. C.; SILLS, E. Financial and Economic Evaluation Guidelines for International Forestry Projects. In. Tropical Forestry Handbook. L. PANCEL, M. KOHL (Eds.), Springer, Berlin Heidelberg, Berlin, 2015. 
+
+CUONG, T.; CHINH, T. T. Q.; ZHANG, Y. Y.; XIE, Y..Economic Performance of Forest Plantations in Vietnam: Eucalyptus, Acacia mangium, and Manglietia conífera. Forests. v. 11, n. 3, 2020.
+
+DAMODARAN, A. Betas by Sector (US). 2024. Disponível em: <https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/Betas.html>. Acessado em: 11 de dez. 2024. 
+
+DE GRAAF, N. R.; FILIUS, A. M.; SANTOS. A. R. H. Financial analysis of sustained forest management for timber: Perspectives for application of the CELOS managerial system in Brazilian Amazonia. Forest Ecology and Management, n. 77, p. 287-299, 2003.
+
+DRAPER, F. C., COSTA, F. R. C., ARELLANO, G. et al. Amazon tree dominance across forest strata. Nature Ecology & Evolution, v. 5, p. 757–767, 2021.
+
+DULSALAM, S.; S. SUHARTANA; YUNIAWATI, S.; HERNININGRUM, M.; ANDINI, S. Reduced impact logging in the dried land natural production forests in Indonesia. 2IOP Conf. Series: Earth and Environmental Science, v. 914, 2021.
+
+DYKSTRA, D. P. The old and new of reduced impact logging. ITTO Tropical Forest Update, v. 11, n. 2, p. 3-4, 2001.
+
+ENRÍQUEZ-DE-SALAMANCA, Á. Carbon versus Timber Economy in Mediterranean Forests. Atmosphere, v. 12, n. 746, 2021.
+
+ESCOLANO, A. J. M. Análise da oferta e da demanda de produtos oriundos das florestas nativas dentro do Brasil - período de 1986 a 2016. 2020. 112 f. Dissertação (Mestrado em Ciências). Universidade de São Paulo/Escola Superior de Agricultura “Luiz de Queiroz”. São Paulo. 2020.  
+
+FEARNSIDE, P. Deforestation of the Brazilian Amazon. Oxford Research Encyclopedia of Environmental Science. 2017.
+
+FISCHER, P. W.; CULLEN, A. C.; ETTL, G. J. The Effect of Forest Management Strategy on Carbon Storage and Revenue in Western Washington: A Probabilistic Simulation of Tradeoffs. Risk Analysis, v. 37, n. 1, 2017.
+
+FOOD AND AGRICULTURE ORGANIZATION OF THE UNITED NATIONS (FAO). The State of the World’s Forests 2022: Forest pathways for green recovery and building inclusive, resilient and sustainable economies. Rome, FAO. 2022. 
+
+FOOD AND AGRICULTURE ORGANIZATION OF THE UNITED NATIONS (FAO). Global Forest Resources Assessment 2020: Main report. Rome. 2020.
+
+FOOD AND AGRICULTURE ORGANIZATION OF THE UNITED NATIONS (FAO). Implementing the non-legally binding instrument on all types of forests a capacity building module for the implementation of the forest instrument. 2011. Disponível em: <https://www.un.org/esa/forests/wp-content/uploads/2015/06/capacity_development_module.pdf >. Acessado em: 24 out. 2023.
+
+FOOD AND AGRICULTURE ORGANIZATION OF THE UNITED NATIONS - FAO. Tendencias y perspectivas del sector forestal en américa latina y el caribe. Roma, 2006. Disponível em: <http://www.fao.org/3/a0470s/a0470s00.pdf>. Acesso em: 1 dez. 2023.
+
+FONSECA, J. W. F. Análise e Decisão de Investimentos. Curitiba: IESDE Brasil S.A. 152 p.  2009.
+
+FREY, G. E.; CHARNLEY, S.; MAKALA, J. Economic viability of community-based forest management for certified timber production in southeastern Tanzania. World Development, v. 144, 2021.
+
+FUNDAÇÃO GETÚLIO VARGAS - FGV. Coalizão Brasil clima, floresta e agricultura: eixo II: contribuições para análise da viabilidade econômica das propostas referentes à duplicação da área de manejo florestal sustentável: resumo executivo. Rio de Janeiro: FGV/ Centro de Estudos em Sustentabilidade, 2016. Disponível em < https://repositorio.fgv.br/server/api/core/bitstreams/1ca828cb-edd9-4c0b-b7a4-ae1980bbfbb2/content > Acessado em: 14 de mar. 2024.
+
+GAMA, J. R. V.; SOUZA, A. L.; SILVA, M. S.; VIEIRA, D. S.; OLIVEIRA, M. L. R.; FIGUEIREDO, A. E. S.; Lafetá, B. O. Financial viability of charcoal production in different forest management systems in Brazil. Kurú, v. 19, n. 44, 2022.
+
+GHAZARYANT, A.; ASOYAN, S.; MELIK-PARSADANYAN, V. The Credit Spread: Risk-Free Rate in the Model. Theoretical and Practical Research in Economic Fields. v. 15, n 3(31), 2024. 
+
+GIDDINGS B.; HOPWOOD B.; O’BRIEN G. Environment, economy and society: fitting them together into sustainable development. Sustainable Development. v. 10, p.187–196, 2002.
+
+GIL, A. C. Como elaborar projetos de pesquisa.  4. Ed. São Paulo: Atlas, 2002.
+
+GITMAN, L. J. Princípios de administração financeira. 7. ed. São Paulo: Harbra, 2002.
+
+GOUVEIA, D. M.; ARCE, J. E.; LOPES, E. S.; GUIMARAES, F. A. R.; LIMA, R. S.; PEREIRA, R. D. P. A. Optimization of storage yards in sustainable forest management in the amazon. Journal of Environmental Management, v. 372, 2024.
+
+GUAITA-PRADAS, I.; BLASCO-RUIZ, A. Analyzing profitability and discount rates for solar PV Plants. A spanish case. Sustainability, v. 12, n. 8, 2020.
+
+HIGUCHI, N.; SANTOS, J.; RIBEIRO, R. J.; FREITAS, J. V.; VIEIRA, G.; COIC, A. R.; MINETTE, L. J. Crescimento e Incremento de uma Floresta Amazônica de Terra Firme Manejada Experimentalmente. In: Biomassa de Nutrientes Florestais. INPA/DFID, Manaus, p. 89-132, 1997.
+
+HIGUCHI, N. Utilização e manejo dos recursos madeireiros das florestas tropicais úmidas. Acta Amazonica. v. 24 n. 3/4, p. 275-288, 1994.
+
+HOLMES, T. P.; BLATE, G. M.; ZWEEDE, J. C.; PEREIRA JR, R. BARRETO, P.; BOLTZ, F. Custos e benefícios financeiros da exploração florestal de impacto reduzido em comparação à exploração florestal convencional na Amazônia Oriental. Belém: Fundação Floresta Tropical, 66p. 2002.
+
+HUMMEL, A. C. Normas de acesso ao recurso florestal na Amazônia brasileira: O caso do manejo florestal madeireiro. 2001. 101 f. Dissertação (mestrado em Ciências de Florestas Tropicais) - Instituto Nacional de pesquisa da Amazônia, Manaus, 2001. 
+
+HUMPHRIES, S.; HOLMES, T.; ANDRADE, D. F. C.; MCGRATH, D.; DANTAS, J. B. Searching for win-win forest outcomes: Learning-by-doing, financial viability, and income growth for a community-based forest management cooperative in the Brazilian Amazon. World Development, v. 125, 2020.
+
+HUMPHRIES, S; HOLMES, T.; KAINER, K.; KOURY, C. G. G.; CRUZ, E.; ROCHA, R. M. Are community-based forest enterprises in the tropics financially viable? Case studies from the Brazilian Amazon. Ecological Economics, v. 77, p. 62-73, 2012.
+
+INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA (IBGE). Divisão regional do Brasil em regiões geográficas imediatas e regiões geográficas intermediárias. IBGE, Coordenação de Geografia, Rio de Janeiro, 82 p. 2017.
+
+INSTITUTO CHICO MENDES DE CONSERVAÇÃO DA BIODIVERSIDADE (ICMBIO). Plano de Manejo – Floresta Nacional de Caxiuanã. Volume I – Diagnóstico. 2012. Disponível em: < https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/amazonia/lista-de-ucs/flona-de-caxiuana/arquivos/volumeI_completo.pdf> Acesso em: 31 out. 2023. 
+
+INTERNATIONAL TROPICAL TIMBER ORGANIZATION (ITTO). Decision 5 (XXVII): ITTO year 2000 objective and its promotion through public education and awareness. Twenty-seventh session. Yohokohama, Japan. 1999.   
+
+IPEADATA. EMBI+ Risco-Brasil (JPM366_EMBI366). 2024. Disponível em: < http://www.ipeadata.gov.br/ExibeSerie.aspx?serid=40940&module=M>. Acessado em: 11 de dez. 2024.
+
+ISLAM, M. M.; AFRIN, S. TAREK, M. H., RAHMAN, M. M. Reliability and financial feasibility assessment of a community rainwater harvesting system considering precipitation variability due to climate change Journal of Environmental Management. v. 289, n. 1, 2021.
+
+KÁNOVÁ, M.; DRÁBEK, J.; ĆURIĆ, P.; PIRC BARČIĆ, A. Quantification of Expected Return of Investment in Wood Processing Sectors in Slovakia. Forests, v. 15, n 75, 2024.
+
+KANT, S. Extending the boundaries of forest economics. Journal of Forest Policy and Economics, v. 5, p. 39-58, 2003.
+
+KARIM, A. R. A.; MOHAMMAD, R. Meta-study of sensitivity analysis in solar renewable energy application. Progress in Energy and Environment. v. 23, p. 14-25, 2023.
+
+KUKHARENKO, A. Y.; STERN, A. A.; GORSKY, M. A. The formula for the aggregated calculation of the weighted average cost of capital of companies. Entrepreneur's guide, v. 39, p. 123–142, 2018.
+
+LEÃO, F. M.; NASCIMENTO, R. G. M.; EMMERT, F.; SANTOS, G. G. A.; CALDEIRA, N. A. M.; MIRANDA, I. S. How many trees are necessary to fit an accurate volume model for the Amazon Forest? A site-dependent analysis. Forest Ecology and Management, v. 480, 2021.
+
+LENTINI, M.; CARVALHO, T.; NUNES, F.; CERIGNONI, F. A exploração do ipê (Handroanthus spp.) em florestas naturais da Amazônia brasileira: desafios e oportunidades para a conservação e o manejo responsável. IMAFLORA, nº 4, 2021.
+
+LIMA, R. B.; RUTISHAUSER, E.; SILVA, J. A. A.; GUEDES, M. C.; HERAULT, B.; OLIVEIRA, C. P.; APARÍCIO, P. S.; SOTTA, E. D.; SILVA, D. A. S.; FERREIRA, R. L. C. Accurate Estimation of Commercial Volume in Tropical Forest. Forest Science, p. 1-8, 2020. 
+
+LIMA, F. B.; SOUZA, Á. N.; MATRICARDI, E. A. T.; COELHO JÚNIOR, L. M.; LIMA, I. B.; MOSMANN, A. J.; MOSSMANN, C. R. N.; GOMES, C. J. O. Determinants of Financial Viability of Forest Concession in Brazilian Amazon. Forests, v. 15, n. 1808, 2024. 
+
+LIMA, F. B.; SOUZA, Á. N.; MATRICARDI, E. A. T.; GASPAR, R. O.; LIMA, I. B.; SOUZA, H. J.; SANTOS, M. L. D.; MIGUEL, E. P.; BORGES, L. A. C.; SANTOS, C. R. C.; et al. Alternative Tree Species for Sustainable Forest Management in the Brazilian Amazon. Forests, v. 15, n. 1763, 2024.
+
+LIMA, K. S.; CASTRO, A. C. M.; BAPTISTA, J. S. SILVA, U. Wood-Logging Process Management in Eastern Amazonia (Brazil). Sustainability, v. 12, n. 7571, 2020.
+
+LINDENMAYER, D. B.; MARGULES, C. R.; BOTKIN, D. B. 2000. Indicators of biodiversity for ecologically sustainable forest management. Conservation Biology. v. 14, p. 941–950, 2000.
+
+LINSER, S.; WOLFSLEHNER, B.; GRITTEN, D.; RASI, R.; JOHNSON, S.; BRIDGE, S.; PAYN, T.; PRINS, K.; ROBERTSON, G. 25 years of criteria and indicators for sustainable forest management - have they made a difference? Forests, v. 9, n. 9, 2018a.
+
+LINSER, S.; WOLFSLEHNER, B.; ASMAR, F.; BRIDGE, S. R. J.; GRITTEN, D.; GUADALUPE, V.; JAFARI, M.; JOHNSON, S.; LACLAU, P.; ROBERTSON, G. 25 years of criteria and indicators for sustainable forest management: why some intergovernmental. C&I processes flourished while others faded. Forests, v. 9, n. 9, 2018b.
+
+LÓPEZ-TOBAR, R.; HERRERA-FEIJOO R. J.; GARCÍA-ROBREDO F.; MATEO, R. G.; TORRES, B. Timber harvesting and conservation status of forest species in the Ecuadorian Amazon. Frontiers in Forests and Global Change, v. 7, 2024.
+MEDINA, G.; POKORNY, B. Avaliação financeira do manejo florestal comunitário. Novos Cad. NAEA, v. 14, p. 25–36, 2011.
+
+MEDEIROS, D. T.; MELO, R. R.; CADEMARTORI, P. H. G.; BATISTA, F. G.; MASCARENHAS, A. R. P. Caracterização da madeira de espécies da Amazônia. Madera y Bosques, v. 27, n. 2, 2021. 
+
+MEDJIBE, V. P. PUTZ, F. E. Cost comparisons of reduced-impact and conventional logging in the tropics. Journal of Forest Economics, v. 18, n. 3, p. 242-256, 2012.
+
+MINISTÉRIO DO MEIO AMBIENTE. Instrução Normativa nº 5 de 11 de dezembro de 2006. Dispõe sobre procedimentos técnicos para elaboração, apresentação, execução e avaliação técnica de Planos de Manejo Florestal Sustentável - PMFS nas florestas primitivas e suas formas de sucessão na Amazônia Legal, e dá outras providências. Diário Oficial da União. Seção 1, página 155 a 159.
+
+MOODY’S. Rating Action: Moody's Ratings upgrades Brazil's ratings to Ba1 and maintains the positive outlook. 2024. Disponível em: <https://ratings.moodys.com/ratings-news/429722>. Acessado em 11 de dez. 2024.
+
+MORAES, R. A.; OLIVEIRA, X. M.; MAYRINCK, R. C; KOHLER, S. V. GOULART, S. L. Sustainable forest management for timber and non-timber resources in the Amazon forest under concession. TreeDimensional Journal, v. 13, e2024050, 2024. 
+
+MORAIS, P. P.; ARIMA, E. Y.; SOUZA, A. N.; PEREIRA, R. S.; EMMERT, F.; CARDOSO, R. M.; MIGUEL, E. P.; MATRICARDI, E. A. T. Assessment of Forest Road Models in Concession Areas in the Brazilian Amazon. Forests, v. 14, n. 1388, 2023.
+
+MORGENSTERN, E. K. The origin and early application of the principle of sustainable forest management. The Forestry Chronicle, v. 83, n. 4, 2007.  
+
+MORKOVINA, S. S.; YAKOVENKO, N. V.; SHESHNITSAN, S. S.; KUZNETSOV, D.; SHASHKIN, A.; TRETYAKOV, A.; STEPANOVA, J. Potential and Investment Attractiveness of Implementing Climate Projects on Disturbed Lands. Sustainability, v. 16, n. 8562, 2024.
+
+MUNIZ, T. F.; PINHEIRO, A. S. O. Concessão florestal como instrumento para a redução de exploração ilegal madeireira em Unidades de Conservação em Rondônia. Revista FAROL, v. 8, n. 8, p. 121-142, 2019.
+
+NAVARRETE, E.; BUSTOS, J. Faustmann optimal pine stands stochastic rotation problem. Forest Policy and Economics, v. 30, p. 39-45, 2013. 
+
+NODEHI, M.; ARANI, A. A.; TAGHVAEE, V. M. Sustainability spillover effects and partnership between East Asia & Pacific versus North America: interactions of social, environment and economy. Letters in Spatial and Resource Sciences.  v.15, p. 311–339, 2022.
+
+OLIVEIRA, G.; CASTRO, V. G.; NOGUEIRA, N. W.; GUIMARÃES, P. P.; BISPO, D. A. Mercado da madeira: estudo de caso sobre aplicação da ferramenta swot e desenvolvimento de estratégias. Nativa, Sinop, v.5, esp., p. 601-605, dez. 2017.
+
+OLIVEIRA, L. C. Efeito da exploração da madeira e de diferentes intensidades de desbaste sobre a dinâmica da vegetação de uma área de 136 ha na Floresta Nacional do Tapajós. 2005. 183 f. Tese (Doutorado em Recursos Florestais) – Escola Superior de Agricultura “Luís de Queiros”. São Paulo, 2005.
+
+OLIVEIRA, L. C. L. Q.; JARDIM, F. C. S.; GOMES, J. M. Predição do ciclo de corte de espécies arbóreas comerciais por grupos ecológicos em uma floresta na Amazônia brasileira. Revista Brasileira de Biometria, Lavras, v. 38, n. 1, p. 18-34, 2020.
+
+OLIVEIRA, M. V. N. Estudo da dinâmica da floresta manejada no projeto de manejo florestal comunitário do PC Pedro Peixoto na Amazônia Ocidental. Acta Amazonica, v. 36, p. 177-182, 2006.
+
+ORGANIZAÇÃO DAS NAÇÕES UNIDAS - ONU. Non-legally binding authoritative statement of principles for a global consensus on the management, conservation and sustainable development of all types of forests. Rio de Janeiro: Relatório da Conferência das Nações Unidas sobre Meio Ambiente e Desenvolvimento, Anexo III, 1992. Disponível em :< www.un-documents.net/for-prin.htm>. Acesso em: 05 nov. 2023.
+
+ORGANIZAÇÃO DAS NAÇÕES UNIDAS - ONU. Transforming our world: the 2030 Agenda for Sustainable Development. New York, Organizações das Nações Unidas / Assembléia Geral, 35p. 2015. Disponível em: <chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.un.org/en/development/desa/population/migration/generalassembly/docs/globalcompact/A_RES_70_1_E.pdf> Acesso em: 23 abr, 2023.
+
+SERVIÇO FLORESTAL BRASILEIRO. Plano anual de outorga florestal 2015. Ministério do Meio ambiente, Serviço Florestal Brasileiro. – Brasília: FB, 2014.
+
+PEÑA-CLAROS, M.; PETERS, E. M.; JUSTINIANO, M. J.; BONGERS, F; BLATE, G. M. FREDERICKSEN, T. S.; PUTZ, F. E. Regeneration of commercial tree species following silvicultural treatments in a moist tropical forest. Forest Ecology and Management, v. 255, n. 2, p. 1283 - 1293, 2008.
+
+PEREIRA, P. C. G.; HOEFLICH, V. A.; RUSCHEL, A.; SIQUEIRA, M. L. M. Handroanthus spp. (ipê) e Dipteryx spp. (cumarú) na lista da CITES: desafio para as concessões florestais no Brasil. In: ANAIS DA CONFERÊNCIA IUFRO 2023 AMÉRICA LATINA, 1, 2023, Curitiba, PR. Anais...Curitiba, PR, 2023, p. 120.
+
+PHILLIPS, P. D.; AZEVEDO, C. P.; DEGEN, B.; THOMPSON, I. S.; SILVA, J. N. M.; van GARDIGEN, P. R. An individual-based spatially explicit simulation model for strategic forest management planning in the eastern Amazon. Ecological Modelling. v. 173, p. 335 - 354, 2004.
+
+PIETRUNTI, M.; SIGNORETTI, F. M. Unconventional monetary policy and household debt: The role of cash-flow effects. Journal of Macroeconomics, v. 64, 2020.
+
+PIKETTY M. G.; DRIGO I.; SABLAYROLLES P.; AQUINO E. A.; PENA D.; SIST, P. Renda Anual do Manejo Florestal Comunitário na Amazônia Brasileira: Desafios para o Futuro. Floresta, v. 6, n. 11. p. 4228-4244, 2015.
+
+PILÃO, N. E; HUMMEL, P. R. V. Matemática financeira e engenharia econômica: a teoria e a prática da análise de projetos de investimento. 2 ed. São Paulo: Pioneira Thomson Learning. 2006.
+
+PINILLOS, D.; POCCARD-CHAPUIS, R.; BIANCHI, F. J. J. A.; CORBEELS, M.; CARL J. TIMLER; TITTONELL, P.; BALLESTER, M. V. R.; SCHULTE, R. P. Landholders' perceptions on legal reserves and agricultural intensification: Diversity and implications for forest conservation in the eastern Brazilian Amazon. Forest Policy and Economics. v. 129, 2021.
+
+PINTO, L. A. A. Forest management criteria for Manilkara huberi (Ducke) A. Chev. (Sapotaceae) in upland forests of Central Amazon based on dendrochronological study. Proceedings, v. 2020, 2020.   
+
+PIPONIOT, C. et al. Can timber provision from Amazonian production forests be sustainable? Environ. Res. Lett., v.14, 2019.
+
+POKORNY, B.; PALHETA, C.; STEINBRENNER, M. Custos de operações florestais: noções e conceitos. Belém, PA: Embrapa Amazônia Oriental, 80 p. il. (Documentos / Embrapa Amazônia Oriental). 2011.
+
+POKORNY, B.; JOHNSON, J. Community forestry in the Amazon: The unsolved challenge of forests and the poor. Nat. Resour. Perspect., v. 112, 2008.
+
+POKORNY; B. BAUCH, R. Critérios e indicadores para avaliação da sustentabilidade de empresa florestal em Tailândia, Pará, na Amazônia brasileira. Belém: Embrapa Amazônia Oriental, 114 p. Documentos, n 34, 2000.
+
+PRINS, K.; KOHL, M.; LINSER, S. Is the concept of sustainable forest management still fit for purpose? Forest Policy and Economics. v. 157, 2023.
+
+PURVIS, B.; MAO, Y.; ROBINSON, D. Three pillars of sustainability: in search of conceptual origins. Sustainability Science. v. 14, p. 681-695, 2019.
+
+PUTZ, F. E.; ZUIDEMA, P.; SYNNOTT, T.; PEÑA-CLAROS, M.; PINARD, M. A.; SHEIL, D.; VANCLAY, J. K.; SIST, P.; GOURLET-FLEURY, S.; GRISCOM, B.; PALMER, J.; ZAGT, R. Sustaining conservation values in selectively logged tropical forests: the attained and the attainable. Conservation Letters. v. 5, p. 296 - 303, 2012.
+
+RAZAVI, S.; JAKEMAN, A.; SALTELLI, A.; PRIEUR, C.; IOOSS, B.; BORGONOVO, E.; PLISCHKE, E.; LO PIANO, S.; IWANAGA, T.; BECKER, W.; TARANTOLA, S.; GUILLAUME, J. H. A.; JAKEMAN, J.; GUPTA, H.; MELILLO, N.; RABITTI, G.; CHABRIDON, V.; DUAN, Q.; SUN, X.; SMITH, S.; SHEIKHOLESLAMI, R.; HOSSEINI, N.; ASADZADEH, M.; PUY, A.; KUCHERENKO, S.; MAIER, H. R. The Future of Sensitivity Analysis: An essential discipline for systems modeling and policy support, Environmental Modelling & Software, v. 137, 2021.
+
+REATEGUI-BETANCOURT, J. L.; FREITAS, L. J. M.; SANTOS, K. R. B.; BRICEÑO, G.; MATRICARDI, E. A. T.; RUSCHEL, A. R.; FERREIRA, N. C. F. Timber yield of commercial tree species in the eastern Brazilian Amazon based on 33 years of inventory data, Forestry: An International Journal of Forest Research, v. 97, n. 1, p. 1–10, 2024.
+
+REIS, L. P.; SOUZA, A. L.; REIS, P. C. M.; FREITAS, L. J. M.; SILVA, L. F.; REGO, L. J. S. Aplicação do método mexicano de ordenamento florestal (MMOF) para estimar ciclo e intensidade de corte em floresta na Amazônia oriental. Scientia Forestalis, Piracicaba, v. 45, n. 113, p. 187-195, mar. 2017.
+
+REIS, L. P.; RUSCHEL, A. R.; COELHO, A. A.; LUZ, A. S.; MARTINS-DA-SILVA, R. C. V. Avaliação do potencial madeireiro na Floresta Nacional do Tapajós após 28 anos de exploração florestal. Pesquisa Florestal Brasileira. Colombo, v. 30, n. 64, p. 265 - 281, 2010.
+
+REZENDE, J. L. P.; OLIVEIRA, A. D. Análise econômica e social de projetos florestais. Universidade Federal de Viçosa – UFV, Viçosa – MG, 3 ed., 2013.
+
+RIBEIRO, J. R; AZEVEDO-RAMOS, C.; SANTOS, R. B. N. Impact of forest concessions on local jobs in central amazon. Trees, Forests and People, v. 2, 2020.
+
+RIBEIRO, A. C. F. R.; FONSECA, L. C. F.; PEREIRA, C. M. P. O plano de manejo florestal como instrumento de desenvolvimento sustentável na Amazônia. Direito e Desenvolvimento, João Pessoa, v. 11, n. 1, p. 264-276, jan./jul. 2020.
+
+RIBEIRO, F. C. Análise da viabilidade econômica do manejo florestal sustentável: um estudo de caso da Flona de Caxiuanã. 74 f. Dissertação (Mestrado em Ciência Florestal), Universidade Federal do Viçosa, Viçosa, 2021.
+
+ROCHA et al. Machine Learning: Volume and Biomass Estimates of Commercial Trees in the Amazon Forest. Sustainability, v. 15, 2023.
+
+ROCHA, Q. S. Viabilidade econômica do manejo sustentável na Amazônia: análise de diferentes cenários. 136 f. Tese (Doutorado em Ciência Florestal) – Faculdade de Ciências Agronômicas, Universidade Estadual Paulista, São Paulo, 2023.
+
+ROCHA, Q. S.; SILVA, R. G. B.; MUNIS, R. A.; SIMÕES, D. Assessing the Economic Impact of Forest Management in the Brazilian Amazon Through Real Options Analysis. Forests, v. 15, n. 2069, 2024.
+
+RODRIGUES, M. I; SOUZA, A. N.; MAZZEI, L.; SILVA, J. N. M.; JOAQUIM, M. S.; PEREIRA; R. S.; BIALI, L. J.; RODRIGUEZ, D. R. O. LUSTOSA JUNIOR, I. M. Financial variability of the second cutting of forest management in Tapajós National Forest, Brazil. Forest Policy and Economics. v. 136, 2022.
+
+RODRIGUES, M. I.; SOUZA, A. N.; JOAQUIM, M. S.; LUSTOSA JÚNIOR, I. M., PEREIRA, R. S. Concessão florestal na Amazônia brasileira. Ciência Florestal, Santa Maria, v. 30, n. 4, p. 1299-1308, out./dez. 2020.
+
+RODRIGUES, M. I.; SOUZA, A. N. D.; JOAQUIM, M. S.; SANCHES, K. L.; ARAÚJO, J. B. C. N.; CASTANHEIRA NETO, F.; COELHO JUNIOR, L. M. Financial analysis of investments in forest concession for amazon brazilian by deterministic and stochastic methods. Cerne, v. 25, n. 4, p. 482-490, 2019.
+
+ROMERO, F. M. B.; FERREIRA NETO, J. A.; SILVA, Z. A. G. P. G.; JACOVINE, L. A. G.; VELASQUEZ, S. I. S.; ROMERO, R. A. B.; RIBEIRO, S. C.; DE SOUZA, G. S. A.; ISBAEX, C.; LOPES, R. B. C.; et al. Volume, Biomass, and Carbon Estimates for Commercial Tree Species in a Managed Forest: A Case Study in the Bolivian Amazon. Forests, v. 15, n. 652, 2024.
+
+RUSCHEL, A. R. Dinâmica da composição florística e do crescimento de uma floresta explorada há 18 anos na Flona Tapajós, PA. Belém: EMBRAPA – CPATU, 2008. 57p. il. (Embrapa Amazônia Oriental – CPATU, Documentos, 341).
+
+RUSLANDI, W. P.; ROMERO, C.; PUTZ, F. E. Financial viability and carbon payment potential of large-scale silvicultural intensification in logged dipterocarp forests in Indonesia. Forest Policy and Economics. v. 85, Part 1, 2017.
+
+SABOGAL, C.; POKORNY, B.; SILVA, J. M. N.; CARVALHO, J. O. P.; ZWEEDE, J.; PUERTA, R. Diretrizes técnicas de manejo para produção madeireira mecanizada em florestas de terra firme na Amazônia brasileira. Belém, PA. Embrapa Amazônia Oriental, 2009.
+
+SALES, A.; SIVIERO, M. A.; VIEIRA, S. B.; YARED, J. A. G.; RUSCHEL, A. R.; SILVA, M. L. Silvicultural Management System Applied to Logged Forests in the Brazilian Amazon: A Case Study of Adaptation of Techniques to Increase the Yield and Diversity of Species Forestry. Diversity, v. 13, n. 509, 2021.
+
+SALTELLI, A.; ALEKSANKINA, K.; BECKER, W.; FENNELL, P.; FERRETTI, F.; HOLST, N.; LI, S.; WU, Q. Why so many published sensitivity analyses are false: A systematic review of sensitivity analysis practices. Environmental Modelling & Software, v. 114,  2019.
+
+SALTELLI, A.; TARANTOLA, S.; CAMPOLONGO, F.; RATTO, M. Sensitivity Analysis in Practice: A Guide to Assessing Scientific Models. John Wiley & Sons, Wiley Online Library Chichester, 2004.
+
+SALTELLI. A. Making best use of model evaluations to compute sensitivity índices. Computer Physics Communications. v. 145, n 2,  2002.
+
+SAMPIERI, R. H.; COLLADO, C. F.; LUCIO, P. B. Metodologia de pesquisa. 3. ed. São Paulo: McGraw-Hill, 2006.
+
+SANTOS, M. F.; FIGUEIREDO FILHO, A.; GAMA, J. R. V.; RETSLAFF, F. A. S.; COSTA, D. L. Species-specific equations: greater precision in merchantable volume estimation in managed forests in the Amazon. Cerne, v. 26, p. 315-330, 2020.
+
+SCHONGART, J. Growth-Oriented Logging (GOL): a new concept towards sustainable forest management in Central Amazonian floodplains. Forest Ecology and Management, v. 256, p. 46–58. 2008.
+
+SCHÖNGART, J.; BRÄUNING, A.; CAROLINA, A.; CAMPOS, M.; LISI, C. S.; OLIVEIRA, J. M. Dendroecological studies in the neotropics: history, status and future challenges in: Dendroecology: Tree- Ring Analyses Applied to Ecological Studies, M. M. Amoroso, Daniels, L. D.; Baker, P.J.; Camarero, J. J. (Eds.), pp. 35-73, Springer, 2017.
+
+SCHWARTZ, G.; FALKOWSKI, V.; PEÑA-CLAROS, M. Natural regeneration of tree species in the Eastern Amazon: Short-term responses after reduced-impact logging. For. Ecol. Manag. v. 385, p. 97–103, 2017.
+
+SCHWARTZ, G.; PEREIRA, P. C. G.; SIVIERO, M. A.; PEREIRA, J. F.; RUSCHEL, A. R.; YARED, J. A. G. Enrichment planting in logging gaps with Schizolobium parahyba var. amazonicum (Huber ex Ducke) Barneby: a financially profitable alternative for degraded tropical forests in the Amazon. Forest Ecology and Management, v.390 pp. 166-172, 2017. 
+
+SCHWEIER, J.; MAGAGNOTTI, N.; LABELLE, E. R.; ATHANASSIADIS, D. Sustainability Impact Assessment of Forest Operations: a Review. Current Forestry Reports, v. 5, p. 101–113, 2019.
+
+SETTEMBRE-BLUNDO, D.; GONZÁLEZ-SÁNCHEZ, R.; MEDINA-SALGADO, S.; GARCÍA-MUIÑA, F. E. Flexibility and Resilience in Corporate Decision Making: A New Sustainability-Based Risk Management System in Uncertain Times. Global Journal of Flexible Systems Management, v. 22, n. 2, 2021.
+
+SERVIÇO FLORESTAL BRASILEIRO – SFB. Cadastro Nacional de Florestas Públicas. 2020. Disponível em: <https://www.gov.br/agricultura/pt-br/assuntos/servico-florestal-brasileiro/cadastro-nacional-de-florestas-publicas>. Acesso em: 10 de dez. 2022.
+
+SILVA, E. F.; SILVA, G. F.; FIGUEIREDO, E. O.; MENDONÇA, E. R.; SANTANA, C. J. O.; FIEDLER, N. C.; SILVA, J. P. M.; AGUIAR, M. O.; SANTOS, J. S. Optimized forest planning: allocation of log storage yards in the Amazonian sustainable forest management área. Forest Ecology and Management. v. 472, 2020. 
+
+SILVA, J. N. M.; CARVALHO, J. O. P.; LOPES, J. C. A. Um sistema silvicultural policíclico para produção sustentada de madeira na Amazônia Brasileira. 180-185. 1999. Belém, Embrapa/DFID. Simposio Silvicultura na Amazonia Oriental: Contribuições do Projeto Embrapa/Dfid. 
+
+SILVA, J. N. M. Manejo Florestal. Empresa Brasileira de Pesquisa Agropecuária, Centro de Pesquisa Agroflorestal da Amazônia Oriental, 2 ed. Brasília, 1996.
+
+SILVA, J. N. M.; CARVALHO, J. O. P.; LOPES, J. C. A.; ALMEIDA, B. F.; COSTA, D. H. M.; OLIVEIRA, L. C.; VANCLAY, J. K.; SKOVSGAARD, J. P. Growth and yield of a tropical rain forest in the Brazilian Amazon 13 years after logging. Forest Ecology and Management, v. 71, p. 267-274, 1995.
+
+SILVA, J. O.; MONTEIRO, F. G.; SANTOS, L. A.; ROCHA, J. E. C.; MIRANDA, G. M. M. Economic Viability in Eucalyptus spp. Clonal Plantation for Production of Pulp. Floresta e Ambiente, v. 27, n. 4, 2020.
+
+SIST, P.; PIPONIOT, C.; KANASHIRO, M.; PENA-CLAROS, M.; PUTZ, F. E.; SCHULZE, M.; VERÍSSIMO, A.; VIDAL, E. Sustainability of Brazilian forest concessions. Forest Ecology and Management, v. 496, 2021.
+
+SIST, P.; FERREIRA, F. N. Sustainability of reduced-impact logging in the Eastern Amazon. Forest Ecology and Management, v. 243, p. 199 – 209, 2007.
+
+SIVIERO, M. A.; RUSCHEL, A. R., YARED, J. A. G.; VIEIRA, S. B.; SALES, A. PEREIRA, J. F.; AGUIAR, O. J. R.; BRIENZA JUNIOR, S.; PEREIRA, P. C. G.; BERBERIAN, G. A.; CONTINI, K. P. S. Manejo de florestas naturais degradadas na Amazônia: estudo de caso sobre critérios de colheita. Ciência Florestal, Santa Maria, v. 30, n. 1, p. 43-59, jan./mar. 2020a. 
+
+SIVIERO, M. A.; RUSCHEL, A. R.; YARED, J. A. G.; AGUIAR, O. J. R.; PEREIRA, P. C. G.; VIEIRA, S. B.; SALES, A. Harvesting Criteria Application as a Technical and Financial Alternative for Management of Degraded Tropical Forests: A Case Study from Brazilian Amazon, Diversity, Basel, v. 12, n. 373, p. 1-14, 2020b.
+
+SKORNYAKOVA, Y. B. Depreciation costs of fixed assets: accounting and management aspect. Economic sciences, n. 2 (46), 2020.
+
+SOARES, C. C.; BEZERRA, M. G. F. A gestão da concessão florestal no estado do Pará. Research, Society and Development, v. 11, n. 1, 2022.
+
+SORETZ, A. S.; NODEHIB, M.; TAGHVAEE, V. M. Sustainability and sustainable development concepts: Defining the perspectives and pillars. Reference Module in Social Sciences, Elsevier, 2023.
+
+SOUZA, A.; CLEMENTE, A. Decisões financeiras e análise de investimentos: fundamentos, técnicas e aplicações. 5 ed. São Paulo: Atlas, 2006.
+
+SOUZA, M. A. S.; AZEVEDO, C. P.; SOUZA, C. R.; FRANÇA, M.; VASCONCELOS NETO, E. L. Dinâmica e produção de uma floresta sob regime de manejo sustentável na Amazônia Central. Floresta, Curitiba, PR, v. 47, n. 1, p. 55 - 63, jan. / mar. 2017.
+
+TARANTOLA, S.; FERRETTI, F.; LO PIANO, S.; KOZLOVA, M.; LACHI, A.; ROSATI, R.; PUY, A.; ROY, P.; VANNUCCI, G. KUC-CZARNECKA. M.; SALTELLI, A. An annotated timeline of sensitivity analysis. Environmental Modelling & Software. v. 174, 2024.
+
+TARANTOLA, S.; GIGLIOLI, N.; JESINGHAUS, J.; SALTELLI, A. Can global sensitivity analysis steer the implementation of models for environmental assessments and decision-making? Stoch. Environ. Res. Risk Assess. v. 16, n. 1, 2002.
+
+TIMOFEICZYK JÚNIOR, R. DA SILVA, V. S. M., BERGER, R., DE MELO, R. A. T. Rentabilidade econômica do manejo de baixo impacto em florestas tropicais: um estudo de caso. Floresta, v. 38, n. 4, 15p. 2008.
+
+TIMOFEICZYK JUNIOR, R.; BERGER, R.; SOUSA, R. A. T. M.; SILVA, V. S. M. Custo de oportunidade da terra no manejo de baixo impacto em florestas tropicais – um estudo de caso. Floresta, Curitiba, PR, v. 37, n. 3, set./dez. 2007.
+
+TIMOFEICZYK JUNIOR, R. GRAÇA, L. R.; BERGER, R.; SOUSA, R. A. T. M.; HOSOKAWA, R. T. Estrutura de custos do manejo de baixo impacto em Florestas tropicais – um estudo de caso. Floresta, Curitiba, PR, v. 35, n. 1, jan./abr. 2005.
+
+TRIBUNAL DE CONTAS DA UNIÃO (TCU). Relatório. 2021. Disponível em: <file:///C:/Users/pcgp2/Downloads/Ac%C3%B3rd%C3%A3o%20252%20de%202023%20Plen%C3%A1rio%20(1).pdf>. Acesso em: 5 dez. 2023. 
+
+TRIBUNAL DE CONTAS DA UNIÃO (TCU). Relatório. 2023. Disponível em: <https://pesquisa.apps.tcu.gov.br/documento/acordao-completo/*/NUMACORDAO%253A1052%2520ANOACORDAO%253A2021%2520COLEGIADO%253A%2522Plen%25C3%25A1rio%2522/DTRELEVANCIA%2520desc%252C%2520NUMACORDAOINT%2520desc/0>. Acesso em: 5 de dez. 2023. 
+
+UNITED STATES DEPARTMENT OF THE TREASURY. Daily Treasury Par Yield Curve Rates. 2024. Disponível em: <https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value=all>. Acesso em: 10 dez. 2024.
+
+VAN GARDINGEN, P. R.; VALLE, D.; THOMPSON, I. Evaluation of yield regulation options for primary forest in Tapajós National Forest, Brazil. Forest Ecology and Management, v. 231, n. 1–3, p. 184-195, 2006. 
+
+WAGNER, J. E. Forestry Economics: a managerial approach. Ed Routledge, 408 p, 2011.
+
+WARDE P. The invention of sustainability. Modern Intellectual History. v. 8, p. 153–170, 2011.
+
+WIJEWARDANA, D. Criteria and indicators for sustainable forest management: the road travelled and the way ahead. Ecol. Indic. v. 8, p. 115–122, 2008.
+
+YIN, R. K. Estudo de caso: planejamento e métodos. trad. Daniel Grassi. 2. ed. Porto Alegre: Bookman, 2001.
+
+YOO, S.; CHO, Y.-S.; PARK, H. An Optimal Management Strategy of Carbon Forestry with a Stochastic Price.  Sustainability, v. 10, n. 3290, 2018. 
+
+ZHANG, F.; JOHNSON, D. M.; WANG, J.; YU, C. Cost, energy use and GHG emissions for forest biomass harvesting Operations. Energy, v. 114, p. 1053-1062, 2016.
+
+ZINKHAN, F.C.; CUBBAGE, F.W. Financial analysis of timber investments. In: SILL, E.O.; ABT, K.L. (eds.) Forest in a market economy. Dordrecht: Kluwer Academic Publishers, p. 77-95. 2003.
+
+" %>% strsplit("\n") %>% unlist -> a
+a[nchar(a)>0] %>% sapply(function(x){strsplit(x, "[ \t\n]") %>% unlist -> b; b[length(b)] %>% substring(1, 4)}) %>% as.numeric -> b; b[!is.na(b)] -> b; b[b>1000]%>% sort -> b
+(b>0) %>% sum -> tot
+(b>2019) %>% sum -> ult5
+c(tot, ult5, ult5/180)
+b
+```
+
+# Investigação sobre idade média de falecimentos em Curitiba
+
+```{r, fig.keep='all'}
+library(pdftools)
+
+dirname = "/Users/jfrega/Downloads/"
+fnames = list.files(dirname, "Faleci*")
+# Leio os PDF dos falecimentos gerados a partir do jornal Tribuna
+# e guardo em um vetor de idades
+idades = NULL
+for (fname in fnames) {
+pdf_text(paste0(dirname,fname)) %>% strsplit(split = "[ \n\t]") %>% unlist -> a
+a[nchar(a)>0] -> a
+sapply(a, function(x) stringi::stri_locate(x, fixed = "ano(s)")) %>% as.numeric -> b
+b %>% matrix(ncol = 2, byrow = TRUE) -> b
+c(idades, a[which(!is.na(b[,1]))-1] %>% as.numeric) -> idades
+sapply(a, function(x) stringi::stri_locate(x, fixed = "dias(s)")) %>% as.numeric -> b
+b %>% matrix(ncol = 2, byrow = TRUE) -> b
+b = b[,1]
+b = b[which(!is.na(b))]
+if(length(b)>0) c(idades, rep(0, length(b))) -> idades
+}
+# Apresento o sumário e o número de dados coletados
+c(idades %>% summary, n = idades %>% length)
+# Faço um histograma simples
+idades %>% hist
+# Verifico a presença de outliers na distribuição
+car::qqPlot(idades)
+b = boxplot(idades, range = 1.5)
+# Pelo boxplot percebemos que há vários candidatos a outliers inferiores, ou seja, mais pessoas
+# jovens morrendo do que seria de se esperar
+# Removo os candidatos a outliers
+idades.1 <- idades[-which(idades%in%b$out)]
+# Faço novo histograma simples
+idades.1 %>% hist
+c(summary(idades.1), n = idades.1 %>% length)
+# Diferentes testes de normalidade nos darão diferentes resultados...
+shapiro.test(idades.1)
+moments::jarque.test(idades.1)
+nortest::ad.test(idades.1)
+nortest::cvm.test(idades.1)
+nortest::lillie.test(idades.1)
+nortest::pearson.test(idades.1) # este é o mais leniente
+nortest::sf.test(idades.1)
+car::qqPlot(idades.1)
+
+#
+# Coisinhas bacanas que dá pra fazer no R
+# A função a seguir redefine a função histograma padrão colocando novas cores e 
+# desenhando uma distribuição normal superimposta ao histograma
+mhist = function(xx, linecol = "blue", lwd = 2, col = "lightyellow", border = "darkgray", normdist = TRUE, main = NULL, xlab = deparse(substitute(xx)), ...) {
+  
+  xxx = seq(min(xx), max(xx), length.out = 100)
+  if(is.null(main)) main = paste0("Histograma de ", deparse(substitute(xx)))
+  yyy = 0
+  if(normdist) yyy = dnorm(xxx, mean(xx), sd(xx))
+  h = graphics::hist(x = xx, ..., plot = FALSE)
+  sub = ""
+  if(normdist) sub = paste("Shapiro p-value", (shapiro.test(xx)$p.value %>% round(2)), collapse = " = ")
+  h = graphics::hist(x = xx, ..., freq = FALSE, plot = TRUE, ylim = c(0, max(c(h$density, yyy))), col = col, border = border, sub = sub, main = main, xlab = xlab)
+  if(normdist) {
+    curve(dnorm(x, mean(xx), sd(xx)), add = TRUE, col = linecol, lwd = lwd)
+  }
+}
+#
+# Aqui a gente usa a função padrão
+hist(idades.1)
+#
+# Aqui a gente troca a função padrão pela função redefinida
+hist = mhist
+hist(idades.1)
+```
+
+
+```{r}
+# Também podemos chamar diretamente a função redefinida
+mhist(idades.1)
+#
+# Aqui a gente volta a usar a função padrão
+hist = graphics::hist
+hist(idades.1)
+```
+
+# Diferentes linguagens podem ser usadas
+
+Vamos calcular o somatório das raízes quadradas dos primeiros 5 milhões de números naturais
+
+## Em `Julia`
+
+```{julia}
+1 + 1
+a = 1:5000000
+x = 0
+y = 0
+for i in a
+  global y = y+sqrt(i);
+end
+y
+```
+
+## Em `Python`
+
+```{python}
+import numpy as np
+a = 0
+for i in range(1, 5000001):
+  a += np.sqrt(i)
+a
+```
+
+## Em `R`
+
+```{r}
+a = 0
+for(i in 1:5000000) {
+  a = a + sqrt(i)
+}
+a %>% sprintf("%15.6f", .) %>% cat
+```
+
