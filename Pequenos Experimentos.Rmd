@@ -1,9 +1,17 @@
 ---
-title: "Untitled"
+title: "Pequenos experimentos"
 author: "Prof. Frega"
-date: "2025-03-09"
-output: html_document
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output: 
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_float: yes
 ---
+<style>
+.h1, h1 {margin-top: 2em; color: #000080FF;}
+h2, h3, h4, h5 {margin-top: 1em; color: #000080FF;}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -36,6 +44,7 @@ Qual deve ser o valor de venda VV de um imóvel comprado por $600000 para que te
 
 $$
 \begin{align}
+\text{VL} &= \text{VV}-\text{VIR}-\text{VRCOM}\\[0.5em]
 \text{VL} &= \text{VV}-(\text{VV}-600000)·0.15 - \text{VV}·0.06\\[0.5em]
 \text{VL} &= \text{VV}-0.15·\text{VV} + 90000 - 0.06·\text{VV}\\[0.5em]
 \text{VL} &= 90000 +(1-0.15-0.06)·\text{VV}\\[1em]
@@ -438,6 +447,127 @@ ZHANG, F.; JOHNSON, D. M.; WANG, J.; YU, C. Cost, energy use and GHG emissions f
 
 ZINKHAN, F.C.; CUBBAGE, F.W. Financial analysis of timber investments. In: SILL, E.O.; ABT, K.L. (eds.) Forest in a market economy. Dordrecht: Kluwer Academic Publishers, p. 77-95. 2003.
 
+" 
+
+"ABERNATHY, J. L., HERRMANN, D., KANG, T., & KRISHNAN, G. V. Audit committee financial expertise and properties of analyst earnings forecasts. Advances in Accounting, 29(1), 1-11, 2013.
+
+AKERLOF, G. A. The Market for \"Lemons\": Quality Uncertainty and the Market Mechanism. The Quarterly Journal of Economics, v. 84, n. 3, p. 488-500, 1970.
+
+ANBIMA. Raio X do investidor brasileiro 2021. São Paulo: ANBIMA, 2021. Disponível em: https://www.anbima.com.br. Acesso em: 22/01/2025.
+
+ANBIMA. Raio X do investidor brasileiro 2023. São Paulo: ANBIMA, 2023. Disponível em: https://www.anbima.com.br. Acesso em: 22/01/2025.
+
+BALL, Ray; BROWN, Philip. An empirical evaluation of accounting income numbers. In: Financial Accounting and Equity Markets. Routledge, 2013. p. 27-46. 
+BEAVER, W. H., Financial Reporting: An Accounting Revolution. New Jersey: Prentice Hall, 1981
+
+BEAVER, William H. Alternative accounting measures as predictors of failure. The Accounting Review, v. 43, n. 1, p. 113-122, 1968.
+
+BEAVER, William H.; MCNICHOLS, Maureen F. The characteristics and valuation of loss reserves of property casualty insurers. Review of Accounting Studies, v. 3, p. 73-95, 1998.
+
+BEKAERT, Geert; HARVEY, Campbell R.; LUNDBLAD, Christian. Liquidity and expected returns: Lessons from emerging markets. The review of financial studies, v. 20, n. 6, p. 1783-1831, 2007.
+
+BENNINGA, S. Financial Modeling. 4. ed. Cambridge: MIT Press, 2014. 
+
+BERNARD, Vincent; JACOB, Thomas. Post-earnings announcement drift: Delayed price response or risk premium, Journal of Accounting Research, v. 27, p. 1–36, 1989.
+
+BINDER, John. The event study methodology since 1969. Review of quantitative Finance and Accounting, v. 11, p. 111-137, 1998.
+
+BONSALL IV, Samuel B.; GREEN, Jeremiah; MULLER III, Karl A. Market uncertainty and the importance of media coverage at earnings announcements. Journal of Accounting and Economics, v. 69, n. 1, p. 101264, 2020.
+
+BRASIL. Lei nº 11.638, de 28 de dezembro de 2007. Altera e revoga dispositivos da Lei nº 6.404, de 15 de dezembro de 1976, e da Lei nº 6.385, de 7 de dezembro de 1976, e estende às sociedades de grande porte disposições relativas à elaboração e divulgação de demonstrações financeiras. Diário Oficial [da República Federativa do Brasil], Brasília, DF, v. 134, n. 249-A, 28 dez. 2007. Seção 1- Edição Extra.
+
+BRASIL. Lei nº 6.404, de 15 de dezembro de 1976. Disponível em: <http://www.planalto.gov.br/ccivil_03/leis/l6404consol.htm>. Acesso em: 17 fevereiro. 2024.
+
+BREALEY, Richard A.; MYERS, Stewart C.; ALLEN, Franklin. Principles of corporate finance. McGraw-hill, 2014.
+
+BRITO, Eficiência informacional fraca de mercados de capitais sob condições de inflação. Revista Brasileira do Mercado de Capitais, Rio de Janeiro, v. 4, n. 10, p. 63-85, jan.-abr. 1978.
+
+BROEDEL LOPES, Alexsandro; WALKER, Martin. Asset revaluations, future firm performance and firm-level corporate governance arrangements: New evidence from Brazil. The British Accounting Review, v. 44, n. 2, p. 53-67, 2012.
+
+BROOKS, Chris. Introductory econometrics for finance. Cambridge university press, 2014.
+
+BROWN, L., A temporal analysis of earnings surprises: Profit versus losses. Journal of Accounting Research. Chicago, 39 (2), 2001
+
+BROWN, Stephen J.; WARNER, Jerold B. Measuring security price performance. Journal of financial economics, v. 8, n. 3, p. 205-258, 1980.
+
+BROWN, Stephen J.; WARNER, Jerold B. Using daily stock returns: The case of event studies. Journal of financial economics, v. 14, n. 1, p. 3-31, 1985.
+
+CAMPBELL, J., LO, A W., MACKINLAY, A. The Econometric of Financial Markets. New Jersey: Princeton University Press, 1997.
+
+CRAGG J. G. & MAKIEL B. G. The consensus and accuracy of some predictions of the growth of earnings. Journal of Finance, Chicago p. 67-84, 1968.
+
+DAMODARAN, A. Investment Valuation: Tools and Techniques for Determining the Value of Any Asset. 3rd ed. New York: Wiley, 2012
+
+DECHOW, Patricia M.; HUTTON, Amy P.; SLOAN, Richard G. An empirical assessment of the residual income valuation model. Journal of accounting and economics, v. 26, n. 1-3, p. 1-34, 1999.
+
+FAMA, Eugene F. et al. The adjustment of stock prices to new information. International economic review, v. 10, n. 1, p. 1-21, 1969.
+
+FAMA, Eugene F. Efficient capital markets: a review of theory and empirical work. The Journal of Finance, v. 25, n. 2, p. 383-417, Cambridge, May,1970.
+
+FAMA, E. F. Efficient capital markets II. The Journal of Finance, Chicago: American Finance Association, v. 46, n. 5, p. 1575-1617, Dec. 1991.
+
+FAMA, Eugene F. Random walks in stock market prices. Financial analysts journal, v. 51, n. 1, p. 75-80, 1995.
+
+FRENCH, K. R.; ROLL, R. Stock returns variances: the arrival of information and the reaction of traders. Journal of Financial Economics, Amsterdam: North Holland, v. 17, n. 1, p. 5-26, Sept. 1986.
+
+GRAHAN, Benjamin & DODD, David. Security analysis. McGraw Hill, 1934.
+
+HEALY, P. M.; PALEPU, K. G. Information asymmetry, corporate disclosure, and the capital markets: A review of the empirical disclosure literature. Journal of Accounting and Economics, v. 31, n. 1-3, p. 405-440, 2001.
+
+HOLLER, J. Event-study methodology and statistical significance. Alemanha: O1WIR Publisher for Economics, Computer Science and Law, 2014.
+
+KAHNEMAN, D.; TVERSKY, A. Prospect Theory: An Analysis of Decision under Risk. Econometrica, v. 47, n. 2, p. 263-291, 1979.
+
+KASZNIK, R; MCNICHOLS M. Does meeting earnings expectations matter? Evidence from analysts forecast revisions and share prices, Journal of Accounting Research, Chicago,40 (3):727-759, 2002
+
+KOTHARI, S.; WARNER, J. Econometrics of Event Studies,[in:] Handbook of Empirical Corporate Finance, eds. Espen Eckbo. 2007.
+
+KOTHARI, Sri Prakash. Capital markets research in accounting. Journal of accounting and economics, v. 31, n. 1-3, p. 105-231, 2001.
+
+LATANÉ, H.; JONES, C. Standardized unexpected earnings – A progress report. Journal of Finance. Chicago,32 (5): 1457-65. 1977
+
+LEAL, Ricardo PC; CARVALHAL-DA-SILVA, André L. Corporate governance and value in Brazil (and in Chile). Investor protection and corporate governance: Firm-level evidence across Latin America, p. 213-287, 2007.
+
+LO, Andrew W.; MACKINLAY, A. Craig. Maximizing predictability in the stock and bond markets. Macroeconomic dynamics, v. 1, n. 1, p. 102-134, 1997.
+
+MACKINLAY, A. C. \"Event studies in economics and finance.\" Journal of Economic Literature, v. 35, n. 1, p. 13-39, 1997.
+
+MAGNAN, M., MENINI, A., & PARBONETTI, A. Fair value accounting: information or confusion for financial markets?. Review of Accounting Studies, 20(1), 559-591, 2015. 
+
+MARTINEZ, A. L. Gerenciamento dos resultados contábeis: estudo empírico das companhias abertas brasileiras. 2001. 153 f. Tese (Doutorado em Ciências Contábeis) - Faculdade de Economia, Administração e Contabilidade, Universidade de São Paulo, São Paulo, 2001.
+
+
+MARTINEZ, A. L. Análise da surpresa dos analistas ao anúncio dos resultados contábeis: evidências empíricas para as companhias abertas brasileiras. In: CONGRESSO USP DE CONTROLADORIA E CONTABILIDADE, 4., 2006, São Paulo.Anais. São Paulo: FEA/USP, 2004.
+
+MARTINEZ, Antonio Lopo. Como o mercado de capitais brasileiro reage a surpresa nos lucros? REAd - Revista Eletrônica de Administração, v. 12, n. 3, p. 1-23, 2006.
+
+MARTINS, V. G., PAULO, E., & DO MONTE, P. A. O gerenciamento de resultados contábeis exerce influência na acurácia da previsão de analistas no Brasil?. Revista Universo Contábil, 12(3), 73, 2016.
+
+MAZZIONI, S., PRIGOL, V., DE MOURA, G. D., & KLANN, R. C. Influência da governança corporativa e da estrutura de capital no gerenciamento de resultados. Revista Contemporânea de Contabilidade, 12(27), 61-86, 2015.
+
+MCKINNEY, W. Python for Data Analysis: Data Wrangling with Pandas, NumPy, and IPython. 2. ed. Sebastopol: O'Reilly Media, 2017.
+
+OLIVEIRA, Allan Marcelo de; SOARES, Rodrigo Oliveira. GESTORES EXCESSIVAMENTE CONFIANTES E OTIMISTAS GERENCIAM RESULTADOS? EVIDÊNCIAS EM COMPANHIAS LISTADAS NA B3. Advances in Scientific and Applied Accounting, [S. l.], v. 11, n. 3, p. 410–429, 2019. Disponível em: https://asaa.anpcont.org.br/asaa/article/view/427. Acesso em: 3 abr. 2024.
+
+PAXSON, D., WOOD, D. Blackwell Enciclopedic Dictionary of Finance. Massachusetts: Blackwell Publishers, 1998.
+
+RITTER, J. R. The long-run performance of initial public offerings. Journal of Finance, v. 46, n. 1, p. 3-27, 1991.
+
+ROBERTS, H. Statistical versus clinical prediction of the stock market. Unspublished Work presented in the Conference of Securities Price Analysis, Chicago, May 1967.
+
+ROSS, Stephen. The arbitrage pricing theory. Journal of Economic Theory, v. 13, n. 3, p. 341-360, 1976.
+
+SANTOS, P. S., VERHAGEM, J. A., & BEZERRA, F. A. Gerenciamento de resultados por meio de decisões operacionais e a governança corporativa: análise das indústrias siderúrgicas e metalúrgicas brasileiras. Revista de Contabilidade e Organizações, 5(13), 55-74, 2011. 
+
+SANVICENTE, Ântonio Zorato. A contabilidade e a Teoria da Informação. Caderno de estudos, São Paulo, FIPECAFI, v.11, n22, p-9-15, 1999. 
+
+SCHOLES, Myron; WILLIAMS, Joseph. Estimating betas from nonsynchronous data. Journal of financial economics, v. 5, n. 3, p. 309-327, 1977.
+
+SHARPE, William F. Capital asset prices: A theory of market equilibrium under conditions of risk. The journal of finance, v. 19, n. 3, p. 425-442, 1964.
+
+SHEFRIN, Hersh; STATMAN, Meir. The disposition to sell winners too early and ride losers too long: Theory and evidence. The Journal of finance, v. 40, n. 3, p. 777-790, 1985.
+
+WATTS, R. L.; ZIMMERMAN, J. L. Positive Accounting Theory. Englewood Cliffs: Prentice-Hall, 1986.
 " %>% strsplit("\n") %>% unlist -> a
 a[nchar(a)>0] %>% sapply(function(x){strsplit(x, "[ \t\n]") %>% unlist -> b; b[length(b)] %>% substring(1, 4)}) %>% as.numeric -> b; b[!is.na(b)] -> b; b[b>1000]%>% sort -> b
 (b>0) %>% sum -> tot
@@ -456,17 +586,23 @@ fnames = list.files(dirname, "Faleci*")
 # Leio os PDF dos falecimentos gerados a partir do jornal Tribuna
 # e guardo em um vetor de idades
 idades = NULL
+# para cada um dos PDF
 for (fname in fnames) {
-pdf_text(paste0(dirname,fname)) %>% strsplit(split = "[ \n\t]") %>% unlist -> a
-a[nchar(a)>0] -> a
-sapply(a, function(x) stringi::stri_locate(x, fixed = "ano(s)")) %>% as.numeric -> b
-b %>% matrix(ncol = 2, byrow = TRUE) -> b
-c(idades, a[which(!is.na(b[,1]))-1] %>% as.numeric) -> idades
-sapply(a, function(x) stringi::stri_locate(x, fixed = "dias(s)")) %>% as.numeric -> b
-b %>% matrix(ncol = 2, byrow = TRUE) -> b
-b = b[,1]
-b = b[which(!is.na(b))]
-if(length(b)>0) c(idades, rep(0, length(b))) -> idades
+  # leio o texto do pdf e separo em elementos
+  # esse processo se chama tokenização
+  pdf_text(paste0(dirname,fname)) %>% strsplit(split = "[ \n\t]") %>% unlist -> a
+  # descarto os elementos em branco
+  a[nchar(a)>0] -> a
+  # acho a posição onde está registrada a idade do falecido
+  sapply(a, function(x) stringi::stri_locate(x, fixed = "ano(s)")) %>% as.numeric -> b
+  b %>% matrix(ncol = 2, byrow = TRUE) -> b
+  c(idades, a[which(!is.na(b[,1]))-1] %>% as.numeric) -> idades
+  # vejo se há muito jovens falecidos
+  sapply(a, function(x) stringi::stri_locate(x, fixed = "dia(s)")) %>% as.numeric -> b
+  b %>% matrix(ncol = 2, byrow = TRUE) -> b
+  b = b[,1]
+  b = b[which(!is.na(b))]
+  if(length(b)>0) c(idades, rep(0, length(b))) -> idades
 }
 # Apresento o sumário e o número de dados coletados
 c(idades %>% summary, n = idades %>% length)
@@ -477,8 +613,11 @@ car::qqPlot(idades)
 b = boxplot(idades, range = 1.5)
 # Pelo boxplot percebemos que há vários candidatos a outliers inferiores, ou seja, mais pessoas
 # jovens morrendo do que seria de se esperar
-# Removo os candidatos a outliers
-idades.1 <- idades[-which(idades%in%b$out)]
+# estes são os valores apontados como candidatos a outliers
+b$out
+# Removo esses candidatos a outliers da amostra
+w = which(idades%in%b$out)
+idades.1 <- idades[-w]
 # Faço novo histograma simples
 idades.1 %>% hist
 c(summary(idades.1), n = idades.1 %>% length)
@@ -488,7 +627,7 @@ moments::jarque.test(idades.1)
 nortest::ad.test(idades.1)
 nortest::cvm.test(idades.1)
 nortest::lillie.test(idades.1)
-nortest::pearson.test(idades.1) # este é o mais leniente
+nortest::pearson.test(idades.1)
 nortest::sf.test(idades.1)
 car::qqPlot(idades.1)
 
@@ -529,6 +668,27 @@ hist = graphics::hist
 hist(idades.1)
 ```
 
+Por vezes, para analisar o conjunto completo de dados e obter maior qualidade estatística, fazemos uso de transformações. Por exemplo, dados que exibem assimetria negativa costumam se comportar melhor quando elevados a uma potência
+
+```{r}
+# Pegamos o conjunto original com forte assimetria negativa e elevamos os seus valores
+# ao quadrado
+idades.2 = idades^2
+mhist(idades.2)
+shapiro.test(idades.2)
+boxplot(idades.2)
+nortest::pearson.test(idades.2)
+```
+
+```{r}
+# Assimetria dos conjuntos de dados
+lapply(list(idades, idades.1, idades.2), moments::skewness) %>% unlist
+# Achatamento (curtose) dos conjuntos de dados (centrado em 3)
+lapply(list(idades, idades.1, idades.2), moments::kurtosis) %>% unlist
+# Excesso de curtose dos conjuntos de dados (centrado em 0)
+lapply(list(idades, idades.1, idades.2), e1071::kurtosis) %>% unlist
+```
+
 # Diferentes linguagens podem ser usadas
 
 Vamos calcular o somatório das raízes quadradas dos primeiros 5 milhões de números naturais
@@ -536,14 +696,14 @@ Vamos calcular o somatório das raízes quadradas dos primeiros 5 milhões de n�
 ## Em `Julia`
 
 ```{julia}
-1 + 1
-a = 1:5000000
-x = 0
-y = 0
-for i in a
-  global y = y+sqrt(i);
+let 
+  a = 1:5000000 
+  y = 0
+  for i in a
+    y += sqrt(i);
+  end
+  y
 end
-y
 ```
 
 ## Em `Python`
