@@ -1,0 +1,331 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 03"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "25/03/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+```
+
+# Chapter 5 The Multiple Regression Model
+
+## 5.1 The General Model
+
+Supondo que nossa amostra possui $m$ variáveis explicativas e $n$ casos observados
+
+$$
+\widehat{y} = b_0 + b_1x_1 + b_2x_2+\cdots+b_mx_m
+$$
+
+## 5.2 Example: Big Andy’s Hamburger Sales
+
+$$
+sales=\beta_0+\beta_1price+\beta_2advert+e
+$$
+
+$H_1: \beta_1$ deve ser negativo
+
+$H_2: \beta_2$ deve ser positivo
+
+
+Freund, J. E., & Simon, G. A. 2000. Estatística aplicada: Economia, administração e contabilidade (9th ed.). Porto Alegre: Bookman.
+
+minhabiblioteca.ufpr.br
+
+
+```{r}
+library(PoEdata)
+data(andy)
+head(andy)
+plot(andy$price, andy$sales)
+plot(andy$advert, andy$sales, ylim = c(min(andy$sales), max(andy$sales)), pch = 20, col = "darkgray")
+```
+
+
+```{r}
+library(xtable)
+mod1 <- lm(sales~price+advert, data=andy)
+library(knitr)
+kable(summary(mod1) %>% xtable %>% data.frame)
+summary(mod1)
+```
+
+```{r}
+library(lmtest)
+# Teste 1: normalidade dos resíduos
+# estará tudo OK se eu não rejeitar a H0 de normalidade
+shapiro.test(mod1$residuals)
+# Teste 2: forma funcional (teste RESET de Ramsey)
+# se aceitar H0 a forma funcional é adequada
+reset(mod1)
+# Teste 3: heteroscedasticidade
+# se não rejeitar H0 os resultados são homoscedásticos
+bptest(mod1)
+```
+
+```{r}
+library(effects)
+effprice <- effect("price", mod1)
+plot(effprice)
+```
+
+```{r}
+alleffandy <- allEffects(mod1)
+plot(alleffandy)
+```
+
+
+```{r}
+mod2 <- lm(sales~price+advert+I(advert^2), data=andy)
+summary(mod2)
+```
+
+```{r}
+library(lmtest)
+# Teste 1: normalidade dos resíduos
+# estará tudo OK se eu não rejeitar a H0 de normalidade
+shapiro.test(mod2$residuals)
+# Teste 2: forma funcional (teste RESET de Ramsey)
+# se aceitar H0 a forma funcional é adequada
+reset(mod2)
+# Teste 3: heteroscedasticidade
+# se não rejeitar H0 os resultados são homoscedásticos
+bptest(mod1)
+```
+
+```{r}
+alleffandy <- allEffects(mod2)
+plot(alleffandy)
+```
+
+```{r}
+plot(andy$advert, andy$sales, ylim = c(min(andy$sales), max(andy$sales)), pch = 20, col = "darkgray")
+adv = seq(min(andy$advert), max(andy$advert), length.out = 100)
+y = predict(mod1, data.frame(advert = adv, price = mean(andy$price)))
+lines(adv, y, col = "red", lwd = 2)
+y = predict(mod2, data.frame(advert = adv, price = mean(andy$price)))
+lines(adv, y, col = "blue", lwd = 2)
+```
+
+```{r}
+plot(mod1)
+```
+
+```{r}
+plot(mod2)
+```
+
+
+Matrizes de covariância
+
+
+```{r}
+vcov(mod1)
+vcov(mod2)
+cbind(andy$sales, andy$price, andy$advert, andy$advert^2) %>% var
+```
+
+Conseguimos comprovar as nossas hipóteses?
+
+Conseguimos controlar as hipóteses alternativas?
+
+$R^2_{aj}(mod1)=`r summary(mod1)$adj.r.sq`$ e $R^2_{aj}(mod2)=`r summary(mod2)$adj.r.sq`$
+
+
+
+
+```{r}
+
+```
+
+
+## Distribuição t ou distribuição normal?
+
+```{r}
+qnorm(1-0.05/2) %>% round(4)
+qt(1-0.05/2, 5000-2)
+qt(1-0.05/2, 500-2)
+qt(1-0.05/2, 200-2)
+qt(1-0.05/2, 120-2)
+qt(1-0.05/2, 30-2)
+```
+
+## modelo polinomial do segundo grau para Andy
+
+```{r}
+mod2
+```
+
+$$
+\widehat{sales} = 109.719       -7.640\ price +       12.151\ advert       -2.768\ advert^2
+
+$$
+
+Qual o valor máximo a ser investido em propaganda?
+
+Fica perto do ponto onde a parábola atinge o seu máximo.
+
+Ponto de máximo:
+
+$$
+advert = \dfrac{-b}{2a} = \dfrac{-12.151}{2(-2.768)} = \dfrac{12.151}{5.536} \approx 2.194906
+$$
+
+
+```{r}
+12.151/(2*2.768)
+```
+
+```{r}
+plot(andy$advert, andy$sales, ylim = c(min(andy$sales), max(andy$sales)), pch = 20, col = "darkgray")
+adv = seq(min(andy$advert), max(andy$advert), length.out = 100)
+y = predict(mod1, data.frame(advert = adv, price = mean(andy$price)))
+lines(adv, y, col = "red", lwd = 2)
+y = predict(mod2, data.frame(advert = adv, price = mean(andy$price)))
+lines(adv, y, col = "blue", lwd = 2)
+xmax = 12.151/(2*2.768)
+ymax = predict(mod2, data.frame(price = mean(andy$price), advert = xmax))
+abline(v = xmax, h = ymax, lty = 2, col = "blue")
+points(xmax, ymax, col = "blue")
+text(xmax, ymax, paste("(", xmax %>% round(2), ", ", ymax %>% round(2), ")", sep = ""), pos = 3, col = "blue")
+grid()
+mean(andy$price)
+```
+
+
+## 5.6 Interaction Terms in Linear Regression
+
+
+```{r}
+data("pizza4",package="PoEdata")
+head(pizza4)
+?pizza4
+```
+
+```{r}
+mod3 = lm(pizza~income, data = pizza4)
+mod3 %>% summary
+mod3 = lm(pizza~age, data = pizza4)
+mod3 %>% summary
+mod3 = lm(pizza~age+income, data = pizza4)
+mod3 %>% summary
+mod3 = lm(pizza~age+income+age:income, data = pizza4)
+mod3 %>% summary
+mod3 = lm(pizza~age+income+income:age, data = pizza4)
+mod3 %>% summary
+mod3 = lm(pizza~age*income, data = pizza4)
+mod3 %>% summary
+```
+
+
+```{r}
+data(cps4_small)
+head(cps4_small)
+```
+
+```{r}
+# lembram da função mhist que foi definida no arquivo "Pequenos Experimentos.Rmd"?
+# (dêem uma olhada lá)
+# criei um arquivo que contém essa função (mhist.R) e para tornar essa funcionalidade 
+# disponível basta carregar o arquivo direto do github
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+# wage apresenta muitos outliers superiores
+mhist(cps4_small$wage)
+boxplot(cps4_small$wage)
+# a transformação log reduz o problema a uns poucos outliers inferiores
+mhist(cps4_small$wage %>% log)
+boxplot(cps4_small$wage %>% log)
+# Lembrem de que qualquer modelo precisa ser suportado pela adequada teoria
+# aqui está sendo proposta uma interação entre educ e exper
+# e uma utilidade decrescente da exper
+mod4 = lm(log(wage)~educ*exper+I(exper^2), data = cps4_small)
+summary(mod4)
+with(cps4_small, plot(educ, wage))
+with(cps4_small, plot(exper, wage))
+```
+
+# Chapter 6 Further Inference in Multiple Regression
+
+Necessidade de indicadores mais robustos que o $R^2$ para determinar a qualidade de uma regressão.
+
+Modernamente, usa-se os critérios de informação
+
+AIC (Akaike Information Criterion)
+
+BIC (Bayesian Information Criterion)
+
+```{r}
+library(broom)
+mod1
+mod2
+rbind(glance(mod1), 
+glance(mod2))
+```
+
+O melhor modelo é o que apresenta o menor valor para um dado critério de informação. 
+
+Com base no AIC, o modelo 1 (mod1) é pior que o modelo 2 (mod2) (455.739 > 449.108)
+
+Os critérios de informação balanceiam a parcimônia do modelo com a qualidade do ajuste. 
+
+
+```{r}
+mod1$call
+mod2.1 = lm(formula = sales ~ price + advert + I(advert^2) + I(price^2), data = andy)
+rbind(glance(mod1), 
+glance(mod2), glance(mod2.1))
+mod2.2 = lm(formula = sales ~ price + advert + I(advert^2) + I(advert^3) + I(price^2), data = andy)
+rbind(glance(mod1), 
+glance(mod2), glance(mod2.1), glance(mod2.2)) %>% as.data.frame -> df
+row.names(df) = c("mod1 (linear)", "mod2 (quadrático em advert)", "mod2.1 (quadrático em tudo)", "mod2.2 (quadrático em price, cúbico em advert")
+df[, c("adj.r.squared", "AIC", "BIC")]
+summary(mod2.1)
+
+```
+
+
+Pelo critério Akaike (AIC), o melhor modelo é `r row.names(df)[which.min(df[,"AIC"])]`.
+
+Pelo critério de Schwarz (AIC), o melhor modelo é `r row.names(df)[which.min(df[,"BIC"])]`.
+
+
+
+
+
+
+

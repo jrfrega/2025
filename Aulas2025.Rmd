@@ -70,3 +70,9 @@ library(reticulate)
 
 ```
 
+# AULA 4 { - }
+
+```{r Aula 04, child="Aula04.Rmd"}
+
+```
+
