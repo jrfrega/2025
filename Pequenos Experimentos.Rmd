@@ -592,6 +592,7 @@ for (fname in fnames) {
   # esse processo se chama tokenização
   pdf_text(paste0(dirname,fname)) %>% strsplit(split = "[ \n\t]") %>% unlist -> a
   # descarto os elementos em branco
+  print(a[1])
   a[nchar(a)>0] -> a
   # acho a posição onde está registrada a idade do falecido
   sapply(a, function(x) stringi::stri_locate(x, fixed = "ano(s)")) %>% as.numeric -> b
@@ -635,18 +636,22 @@ car::qqPlot(idades.1)
 # Coisinhas bacanas que dá pra fazer no R
 # A função a seguir redefine a função histograma padrão colocando novas cores e 
 # desenhando uma distribuição normal superimposta ao histograma
-mhist = function(xx, linecol = "blue", lwd = 2, col = "lightyellow", border = "darkgray", normdist = TRUE, main = NULL, xlab = deparse(substitute(xx)), ...) {
-  
+mhist = function(xx, linecol = "blue", lwd = 2, col = "lightyellow", border = "darkgray", normdist = TRUE, main = NULL, xlab = deparse(substitute(xx)), expdist = FALSE, ...) {
   xxx = seq(min(xx), max(xx), length.out = 100)
   if(is.null(main)) main = paste0("Histograma de ", deparse(substitute(xx)))
   yyy = 0
+  yyy2 = 0
   if(normdist) yyy = dnorm(xxx, mean(xx), sd(xx))
+  if(expdist) yyy2 = dexp(xxx, 1/mean(xx))
   h = graphics::hist(x = xx, ..., plot = FALSE)
   sub = ""
   if(normdist) sub = paste("Shapiro p-value", (shapiro.test(xx)$p.value %>% round(2)), collapse = " = ")
-  h = graphics::hist(x = xx, ..., freq = FALSE, plot = TRUE, ylim = c(0, max(c(h$density, yyy))), col = col, border = border, sub = sub, main = main, xlab = xlab)
+  h = graphics::hist(x = xx, ..., freq = FALSE, plot = TRUE, ylim = c(0, max(c(h$density, yyy, yyy2))), col = col, border = border, sub = sub, main = main, xlab = xlab)
   if(normdist) {
     curve(dnorm(x, mean(xx), sd(xx)), add = TRUE, col = linecol, lwd = lwd)
+  }
+  if(expdist) {
+    curve(dexp(x, 1/mean(xx)), add = TRUE, col = linecol, lwd = lwd)
   }
 }
 #
@@ -691,13 +696,13 @@ lapply(list(idades, idades.1, idades.2), e1071::kurtosis) %>% unlist
 
 # Diferentes linguagens podem ser usadas
 
-Vamos calcular o somatório das raízes quadradas dos primeiros 5 milhões de números naturais
+Vamos calcular o somatório das raízes quadradas dos primeiros 10 milhões de números naturais
 
-## Em `Julia`
+## Em `Julia` é mais rápido que em...
 
 ```{julia}
-let 
-  a = 1:5000000 
+@time let 
+  a = 1:10000000 
   y = 0
   for i in a
     y += sqrt(i);
@@ -706,23 +711,129 @@ let
 end
 ```
 
-## Em `Python`
-
-```{python}
-import numpy as np
-a = 0
-for i in range(1, 5000001):
-  a += np.sqrt(i)
-a
-```
-
-## Em `R`
+## Em `R`, que é mais rápido que em...
 
 ```{r}
+start = Sys.time()
 a = 0
-for(i in 1:5000000) {
+for(i in 1:10000000) {
   a = a + sqrt(i)
 }
 a %>% sprintf("%15.6f", .) %>% cat
+end = Sys.time()
+cat("\n", end-start, " segundos", sep = "")
 ```
 
+## Em `Python`
+
+```{python}
+import timeit
+start = timeit.default_timer()
+import numpy as np
+a = 0
+for i in range(1, 10000001):
+  a += np.sqrt(i)
+a
+end = timeit.default_timer()
+print("{:.7f}".format(end-start) + " segundos")
+```
+
+# Regressão Linear 
+
+A regressão linear em sua forma matricial pode ser descrita como
+
+$$
+\mathbf{X}=\left[\matrix{
+1&x_{1,1}&x_{1,2}&\dots&x_{1,k}\\
+1&x_{2,1}&x_{2,2}&\dots&x_{2,k}\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+1&x_{n-1,1}&x_{n-1,2}&\dots&x_{n-1,k}\\
+1&x_{n,1}&x_{n,2}&\dots&x_{n,k}
+}\right]\quad
+\mathbf{b} = \left[\matrix{
+b_0\\
+b_1\\
+\vdots\\
+b_{k-1}\\
+b_k
+}\right]\quad
+\mathbf{y} = \left[\matrix{
+y_0\\
+y_1\\
+\vdots\\
+y_{n-1}\\
+y_n
+}\right]\\\ \\[2em]\\[1em]
+\mathbf{Xb = y}\\[1em]
+\mathbf{X'Xb = X'y}\\[1em]
+\mathbf{(X'X)^{-1}X'Xb = (X'X)^{-1}X'y}\\[1em]
+\mathbf{Ib = (X'X)^{-1}X'y}\\[1em]
+\mathbf{b = (X'X)^{-1}X'y}\\[1em]
+\mathbf{\widehat{y} = Xb}\\[1em]
+\mathbf{e=y-\widehat{y}}\\[1em]
+n = \dim({\mathbf{X}})[1]\\[1em]
+k = \dim({\mathbf{X}})[2]\\[1em]
+SSE = \mathbf{e'e}\\[1em]
+glE = n-k\\[1em]
+\sigma^2 = SSE/glE\\[1em]
+SSTr = \sum(\widehat{y}_i-\bar{y})^2\\[1em]
+glTr = k-1\\[1em]
+F = \dfrac{SSTr/glTr}{SSE/glE}\\[2em]
+\text{se}_i=\sigma^2\left[\mathbf{(X'X)^{-1}}\right]_{ii}\\[1em]
+t_i = b_i/\text{se}_i\\[1em]
+R^2 = 1-\dfrac{SSE}{SSTr+SSE}\\[2em]
+R^2_{aj} = 1-\left[\left(1-R^2\right)\dfrac{n-1}{n-k}\right]
+$$
+Tomando um caso exemplo
+
+```{r}
+set.seed(33)
+x = 1:10
+y = 2*x + rnorm(x)*2
+y = round(y, 0)
+plot(x, y); m = lm(y~x); abline(m)
+```
+
+Vamos aos cálculos
+
+```{r}
+# Montando a matrix X
+(X = cbind(1, x))
+# vetor y
+y %>% matrix(ncol = 1)
+# transpondo
+Xt = t(X)
+# multiplicando
+XtX = Xt%*%X
+# Invertendo
+XtXm1 = solve(XtX)
+# Multiplicando pela transposta
+XtXm1Xt = XtXm1%*%Xt
+# calculando os coeficientes
+b = XtXm1Xt%*%y
+b
+# calculando valores previstos 
+yhat = X%*%b
+# erros
+e = y - yhat
+# quadrados dos erros, dos tratamentos e os respectivos graus de liberdade
+SSE = sum(e^2)
+glE = nrow(X)-ncol(X)
+SSTr = sum((yhat - mean(y))^2)
+glTr = ncol(X)-1
+# erro-padrão da regressão
+sigma2 = SSE/glE
+se = sqrt(sigma2)
+se
+# Estatística F do teste ANOVA de regressão
+(SSTr/glTr)/(SSE/glE)
+# Coeficiente de determinação (bruto e ajustado)
+(R2 = 1-SSE/(SSE+SSTr))
+(R2aj = 1-(1-R2)*(nrow(X)-1)/(glE))
+# erros-padrão dos coeficientes
+((sigma2*XtXm1) %>% diag %>% sqrt -> se)
+# estatísticas t dos coeficientes
+(b/se -> t)
+# compare com os valores da função padrão
+summary(m)
+```

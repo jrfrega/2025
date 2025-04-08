@@ -133,7 +133,7 @@ alleffandy <- allEffects(mod2)
 plot(alleffandy)
 ```
 
-```{r}
+```{r andyadvertxsales}
 plot(andy$advert, andy$sales, ylim = c(min(andy$sales), max(andy$sales)), pch = 20, col = "darkgray")
 adv = seq(min(andy$advert), max(andy$advert), length.out = 100)
 y = predict(mod1, data.frame(advert = adv, price = mean(andy$price)))
@@ -141,6 +141,7 @@ lines(adv, y, col = "red", lwd = 2)
 y = predict(mod2, data.frame(advert = adv, price = mean(andy$price)))
 lines(adv, y, col = "blue", lwd = 2)
 ```
+
 
 ```{r}
 plot(mod1)
@@ -315,7 +316,6 @@ glance(mod2), glance(mod2.1), glance(mod2.2)) %>% as.data.frame -> df
 row.names(df) = c("mod1 (linear)", "mod2 (quadrático em advert)", "mod2.1 (quadrático em tudo)", "mod2.2 (quadrático em price, cúbico em advert")
 df[, c("adj.r.squared", "AIC", "BIC")]
 summary(mod2.1)
-
 ```
 
 
@@ -323,7 +323,30 @@ Pelo critério Akaike (AIC), o melhor modelo é `r row.names(df)[which.min(df[,"
 
 Pelo critério de Schwarz (AIC), o melhor modelo é `r row.names(df)[which.min(df[,"BIC"])]`.
 
+Olhando o melhor modelo indicado pelo AIC, 
 
+```{r}
+plot(andy$advert, andy$sales, ylim = c(min(andy$sales), max(andy$sales)), pch = 20, col = "darkgray")
+adv = seq(min(andy$advert), max(andy$advert), length.out = 100)
+y = predict(mod1, data.frame(advert = adv, price = mean(andy$price)))
+lines(adv, y, col = "red", lwd = 2)
+y = predict(mod2.1, data.frame(advert = adv, price = mean(andy$price)))
+lines(adv, y, col = "blue", lwd = 2)
+```
+
+```{r}
+plot(andy$price, andy$sales, ylim = c(min(andy$sales), max(andy$sales)), pch = 20, col = "darkgray")
+prc = seq(min(andy$price), max(andy$price), length.out = 100)
+y = predict(mod1, data.frame(advert = mean(andy$advert), price = prc))
+lines(prc, y, col = "red", lwd = 2)
+y = predict(mod2.1, data.frame(advert = mean(andy$advert), price = prc))
+lines(prc, y, col = "blue", lwd = 2)
+plot(mod2.1$residuals); abline(h = 0, col = "darkgray")
+plot(mod2.1$residuals, type = "l"); abline(h = 0, col = "darkgray")
+plot(mod2$residuals); abline(h = 0, col = "darkgray")
+plot(mod2$residuals, type = "l"); abline(h = 0, col = "darkgray")
+mhist(mod2.1$residuals %>% scale, breaks = 6)
+```
 
 
 
