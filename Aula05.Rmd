@@ -1,0 +1,362 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 05"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "08/04/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+```
+
+# Chapter 7 Using Indicator Variables
+
+## 7.1 Factor Variables
+
+```{r}
+library(stargazer); library(ggplot2)
+data("utown", package="PoEdata")
+utown %>% head
+utown$utown %>% as.factor() -> utown$utown
+utown$pool %>% as.factor() -> utown$pool
+utown$fplace %>% as.factor() -> utown$fplace
+utown %>% head
+```
+
+```{r}
+library(PoEdata)
+?utown
+mod4 <- lm(price~as.factor(utown)*sqft+age+as.factor(pool)+as.factor(fplace), data=utown)
+summary(mod4)
+```
+
+```{r}
+data("cps4_small", package="PoEdata")
+cps4_small %>% head
+```
+
+```{r}
+mod5 <- lm(wage~educ+as.factor(black)*as.factor(female), data=cps4_small)
+summary(mod5)
+```
+
+```{r}
+.stargazertype = "text"
+dnosouth <- cps4_small[which(cps4_small$south==0),]#no south
+dsouth <- cps4_small[which(cps4_small$south==1),] #south
+mod5ns <- lm(wage~educ+black*female, data=dnosouth)
+mod5s <- lm(wage~educ+black*female, data=dsouth)
+mod6 <- lm(wage~educ+black*female+south/(educ+black*female),
+                       data=cps4_small)
+stargazer(mod6, mod5ns, mod5s, header=FALSE, 
+  type=.stargazertype,
+  title="Model comparison, 'wage' equation",
+  digits=2, single.row=TRUE, column.labels = c("Todo", "Não SUL", "SUL"), 
+  intercept.bottom=FALSE)
+```
+
+```{r}
+anova(mod5, mod6)
+```
+
+## 7.5 The Linear Probability Model
+
+```{r}
+data("coke", package="PoEdata")
+coke %>% head
+mod2 <- lm(coke~pratio+disp_coke+disp_pepsi, data=coke)
+summary(mod2)
+```
+
+## 7.7 The Difference-in-Differences Estimator
+
+$$
+y_{i,t} = b_0 + b_1T + b_2A +\delta (T \times A) + e_{i,t}
+$$
+
+```{r}
+data("njmin3", package="PoEdata")
+njmin3 %>% head
+mod1 <- lm(fte~nj*d, data=njmin3)
+summary(mod1)
+mod2 <- lm(fte~nj*d+kfc+roys+wendys+co_owned, data=njmin3)
+summary(mod2)
+mod3 <- lm(fte~nj*d+kfc+roys+wendys+co_owned+southj+centralj+pa1, data=njmin3)
+summary(mod3)
+```
+
+# Trabalho { - }
+
+## Questão 1
+
+```{r}
+library(openxlsx)
+#file.choose()
+dados <- read.xlsx("/Users/jfrega/Downloads/ExerciciosAula05.xlsx", sheet = "Q1")
+# Examinando a variável dependente (parece OK)
+hist(dados$y)
+# Fazendo o gráfico de dispersão
+# A relação não parece ser linear
+plot(dados$x, dados$y, pch = 20, col = "darkgray")
+# modelo linear
+m.1.q1 = lm(y~x, data = dados)
+library(lmtest)
+# teste de forma funcional
+# p-valor < 0.05 = forma funcional inadequada
+reset(m.1.q1)
+plot(dados$x, dados$y, pch = 20, col = "darkgray")
+abline(m.1.q1, col = "blue")
+# testando forma quadrática
+m.2.q1 = lm(y~x+I(x^2), data = dados)
+# teste de forma funcional
+# p-valor > 0.05 = forma funcional adequada
+reset(m.2.q1)
+# teste de normalidade dos resíduos
+# p-valor > 0.05 = resíduos são normais
+shapiro.test(m.2.q1$residuals)
+hist(m.2.q1$residuals %>% scale)
+# teste de heteroscedasticidade
+# p-valor > 0.05 = dados são homoscedásticos
+bptest(m.2.q1)
+```
+
+O modelo mais adequado é 
+
+$$
+y = b_0+b_1x+b_2x^2+e
+$$
+
+```{r}
+summary(m.2.q1)
+```
+
+```{r}
+plot(dados$x, dados$y, pch = 20, col = "darkgray")
+.x = seq(min(dados$x), max(dados$x), length.out = 100)
+.y = predict(m.2.q1, data.frame(x = .x))
+lines(.x, .y, col = "blue")
+```
+
+## Questão 2
+
+```{r}
+dados <- read.xlsx("/Users/jfrega/Downloads/ExerciciosAula05.xlsx", sheet = "Q2")
+# Examinando a variável dependente (parece OK)
+hist(dados$y)
+# Fazendo o gráfico de dispersão
+# A relação não parece ser linear
+plot(dados$x, dados$y, pch = 20, col = "darkgray")
+# modelo linear
+m.1.q2 = lm(y~x, data = dados)
+library(lmtest)
+# teste de forma funcional
+# p-valor < 0.05 = forma funcional inadequada
+reset(m.1.q2)
+plot(dados$x, dados$y, pch = 20, col = "darkgray")
+abline(m.1.q2, col = "blue")
+# testando forma quadrática
+m.2.q2 = lm(y~x+I(x^2), data = dados)
+# teste de forma funcional
+# p-valor < 0.05 = forma funcional inadequada
+reset(m.2.q2)
+# testando forma cúbica
+m.3.q2 = lm(y~x+I(x^2)+I(x^3), data = dados)
+# teste de forma funcional
+# p-valor > 0.05 = forma funcional adequada
+reset(m.3.q2)
+# teste de normalidade dos resíduos
+# p-valor > 0.05 = resíduos são normais
+shapiro.test(m.3.q2$residuals)
+hist(m.3.q2$residuals %>% scale)
+# teste de heteroscedasticidade
+# p-valor > 0.05 = dados são homoscedásticos
+bptest(m.3.q2)
+```
+
+```{r}
+summary(m.3.q2)
+```
+
+```{r}
+plot(dados$x, dados$y, pch = 20, col = "darkgray")
+.x = seq(min(dados$x), max(dados$x), length.out = 100)
+.y = predict(m.3.q2, data.frame(x = .x))
+lines(.x, .y, col = "blue")
+```
+
+```{r}
+library(broom)
+glance(m.1.q2)$AIC
+glance(m.2.q2)$AIC
+glance(m.3.q2)$AIC
+glance(m.1.q2)$BIC
+glance(m.2.q2)$BIC
+glance(m.3.q2)$BIC
+anova(m.1.q2, m.2.q2, m.3.q2)
+```
+
+
+
+
+## Questão 3
+
+```{r}
+dados <- read.xlsx("/Users/jfrega/Downloads/ExerciciosAula05.xlsx", sheet = "Q3")
+# Examinando a variável dependente (parece OK)
+hist(dados$y)
+# Fazendo o gráfico de dispersão
+# A relação não parece ser linear
+layout(c(1, 2, 3) %>% matrix(nrow = 1))
+layout(1)
+plot(dados$X1, dados$y, pch = 20, col = "darkgray")
+plot(dados$X2, dados$y, pch = 20, col = "darkgray")
+plot(dados$X3, dados$y, pch = 20, col = "darkgray")
+layout(1)
+# modelo linear
+m.1.q3 = lm(y~X1+X2+X3, data = dados)
+library(lmtest)
+# teste de forma funcional
+# p-valor < 0.05 = forma funcional inadequada
+reset(m.1.q3)
+# testando forma quadrática
+m.2.q3 = lm(y~X1+X2+X3+I(X1^2)+I(X2^2)+I(X3^2), data = dados)
+# teste de forma funcional
+# p-valor < 0.05 = forma funcional inadequada
+reset(m.2.q3)
+# teste de normalidade dos resíduos
+# p-valor > 0.05 = resíduos são normais
+shapiro.test(m.2.q3$residuals)
+hist(m.2.q3$residuals %>% scale)
+# teste de heteroscedasticidade
+# p-valor > 0.05 = dados são homoscedásticos
+bptest(m.2.q3)
+```
+
+```{r}
+summary(m.2.q3)
+```
+
+```{r}
+plot(dados$X2, dados$y, pch = 20, col = "darkgray")
+.x = seq(min(dados$X2), max(dados$X2), length.out = 100)
+.y = predict(m.2.q3, data.frame(X1 = mean(dados$X1), X2 = .x, X3 = mean(dados$X3)))
+lines(.x, .y, col = "blue")
+```
+
+```{r}
+plot(dados$X1, dados$y, pch = 20, col = "darkgray")
+.x = seq(min(dados$X1), max(dados$X1), length.out = 100)
+.y = predict(m.2.q3, data.frame(X2 = mean(dados$X2), X1 = .x, X3 = mean(dados$X3)))
+lines(.x, .y, col = "blue")
+```
+
+
+```{r}
+library(broom)
+glance(m.1.q3)$AIC
+glance(m.2.q3)$AIC
+glance(m.1.q3)$BIC
+glance(m.2.q3)$BIC
+anova(m.1.q3, m.2.q3)
+```
+
+
+## Questão 4
+
+```{r}
+dados <- read.xlsx("/Users/jfrega/Downloads/ExerciciosAula05.xlsx", sheet = "Q4")
+# Examinando a variável dependente (parece OK)
+hist(dados$y)
+# Fazendo o gráfico de dispersão
+# A relação parece ser linear
+layout(c(1, 2, 3) %>% matrix(nrow = 1))
+layout(1)
+plot(dados$X1, dados$y, pch = 20, col = "darkgray")
+plot(dados$X2, dados$y, pch = 20, col = "darkgray")
+plot(dados$X3, dados$y, pch = 20, col = "darkgray")
+layout(1)
+# modelo linear
+m.1.q4 = lm(y~X1+X2+X3, data = dados)
+library(lmtest)
+# teste de forma funcional
+# p-valor < 0.05 = forma funcional inadequada
+reset(m.1.q4)
+summary(m.1.q4)
+# testando forma quadrática
+m.I.q4 = lm(y~X1*X2+X3, data = dados)
+# teste de forma funcional
+# p-valor > 0.05 = forma funcional adequada
+reset(m.I.q4)
+# teste de normalidade dos resíduos
+# p-valor > 0.05 = resíduos são normais
+shapiro.test(m.I.q4$residuals)
+hist(m.I.q4$residuals %>% scale)
+# teste de heteroscedasticidade
+# p-valor > 0.05 = dados são homoscedásticos
+bptest(m.I.q4)
+```
+
+```{r}
+summary(m.I.q4)
+```
+
+```{r}
+plot(dados$X2, dados$y, pch = 20, col = "darkgray")
+.x = seq(min(dados$X2), max(dados$X2), length.out = 100)
+.y = predict(m.I.q4, data.frame(X1 = mean(dados$X1), X2 = .x, X3 = mean(dados$X3)))
+lines(.x, .y, col = "blue")
+```
+
+```{r}
+plot(dados$X1, dados$y, pch = 20, col = "darkgray")
+.x = seq(min(dados$X1), max(dados$X1), length.out = 100)
+.y = predict(m.I.q4, data.frame(X2 = mean(dados$X2), X1 = .x, X3 = mean(dados$X3)))
+lines(.x, .y, col = "blue")
+```
+
+
+```{r}
+library(broom)
+glance(m.1.q4)$AIC
+glance(m.I.q4)$AIC
+glance(m.1.q4)$BIC
+glance(m.I.q4)$BIC
+anova(m.1.q4, m.I.q4)
+```
+
+
+
+
