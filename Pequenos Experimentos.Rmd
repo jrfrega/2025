@@ -11,11 +11,18 @@ output:
 <style>
 .h1, h1 {margin-top: 2em; color: #000080FF;}
 h2, h3, h4, h5 {margin-top: 1em; color: #000080FF;}
+td {padding-left:0.4em; padding-right:0.4em;}
 </style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(magrittr)
+```
+
+# Configurações do sistema
+
+```{r}
+sessionInfo()
 ```
 
 # Lista de datas copiadas do EXCEL e resultado formatado para um script PHP
@@ -583,6 +590,8 @@ library(pdftools)
 
 dirname = "/Users/jfrega/Downloads/"
 fnames = list.files(dirname, "Faleci*")
+fnames = c(fnames, list.files(dirname, "Obitu"))
+fnames = unique(fnames)
 # Leio os PDF dos falecimentos gerados a partir do jornal Tribuna
 # e guardo em um vetor de idades
 idades = NULL
@@ -607,6 +616,34 @@ for (fname in fnames) {
 }
 # Apresento o sumário e o número de dados coletados
 c(idades %>% summary, n = idades %>% length)
+#
+# Coisinhas bacanas que dá pra fazer no R
+# A função a seguir redefine a função histograma padrão colocando novas cores e 
+# desenhando uma distribuição normal superimposta ao histograma
+mhist = function(xx, linecol = "blue", lwd = 2, col = "lightyellow", border = "darkgray", normdist = TRUE, main = NULL, xlab = deparse(substitute(xx)), expdist = FALSE, breaks = sqrt(length(xx))/2, ...) {
+  xxx = seq(min(xx), max(xx), length.out = 100)
+  if(is.null(main)) main = paste0("Histograma de ", deparse(substitute(xx)))
+  yyy = 0
+  yyy2 = 0
+  if(normdist) yyy = dnorm(xxx, mean(xx), sd(xx))
+  if(expdist) yyy2 = dexp(xxx, 1/mean(xx))
+  h = graphics::hist(x = xx, ..., plot = FALSE, breaks = breaks)
+  sub = ""
+  if(normdist) sub = paste("Shapiro p-value", (shapiro.test(xx)$p.value %>% round(2)), collapse = " = ")
+  h = graphics::hist(x = xx, ..., freq = FALSE, plot = TRUE, ylim = c(0, max(c(h$density, yyy, yyy2))), col = col, border = border, sub = sub, main = main, xlab = xlab, breaks = breaks)
+  if(normdist) {
+    curve(dnorm(x, mean(xx), sd(xx)), add = TRUE, col = linecol, lwd = lwd)
+  }
+  if(expdist) {
+    curve(dexp(x, 1/mean(xx)), add = TRUE, col = linecol, lwd = lwd)
+  }
+  abline(v = mean(xx), col = "blue", lwd = 2.5, lty = 2)
+  abline(v = median(xx), col = "#C00000", lwd = 2.5, lty = 2)
+  grid()
+  legend("topleft", legend = c("Média", "Mediana"), col = c("blue", "#C00000"), lty = 2, lwd = 2)
+}
+# redefino a função hist
+hist = mhist
 # Faço um histograma simples
 idades %>% hist
 # Verifico a presença de outliers na distribuição
@@ -633,29 +670,8 @@ nortest::sf.test(idades.1)
 car::qqPlot(idades.1)
 
 #
-# Coisinhas bacanas que dá pra fazer no R
-# A função a seguir redefine a função histograma padrão colocando novas cores e 
-# desenhando uma distribuição normal superimposta ao histograma
-mhist = function(xx, linecol = "blue", lwd = 2, col = "lightyellow", border = "darkgray", normdist = TRUE, main = NULL, xlab = deparse(substitute(xx)), expdist = FALSE, ...) {
-  xxx = seq(min(xx), max(xx), length.out = 100)
-  if(is.null(main)) main = paste0("Histograma de ", deparse(substitute(xx)))
-  yyy = 0
-  yyy2 = 0
-  if(normdist) yyy = dnorm(xxx, mean(xx), sd(xx))
-  if(expdist) yyy2 = dexp(xxx, 1/mean(xx))
-  h = graphics::hist(x = xx, ..., plot = FALSE)
-  sub = ""
-  if(normdist) sub = paste("Shapiro p-value", (shapiro.test(xx)$p.value %>% round(2)), collapse = " = ")
-  h = graphics::hist(x = xx, ..., freq = FALSE, plot = TRUE, ylim = c(0, max(c(h$density, yyy, yyy2))), col = col, border = border, sub = sub, main = main, xlab = xlab)
-  if(normdist) {
-    curve(dnorm(x, mean(xx), sd(xx)), add = TRUE, col = linecol, lwd = lwd)
-  }
-  if(expdist) {
-    curve(dexp(x, 1/mean(xx)), add = TRUE, col = linecol, lwd = lwd)
-  }
-}
-#
 # Aqui a gente usa a função padrão
+hist = graphics::hist
 hist(idades.1)
 #
 # Aqui a gente troca a função padrão pela função redefinida
@@ -722,6 +738,10 @@ for(i in 1:10000000) {
 a %>% sprintf("%15.6f", .) %>% cat
 end = Sys.time()
 cat("\n", end-start, " segundos", sep = "")
+start = Sys.time()
+1:10000000 %>% sqrt %>% sum
+end = Sys.time()
+cat("\n", end-start, " segundos", sep = "")
 ```
 
 ## Em `Python`
@@ -779,7 +799,7 @@ glE = n-k\\[1em]
 SSTr = \sum(\widehat{y}_i-\bar{y})^2\\[1em]
 glTr = k-1\\[1em]
 F = \dfrac{SSTr/glTr}{SSE/glE}\\[2em]
-\text{se}_i=\sigma^2\left[\mathbf{(X'X)^{-1}}\right]_{ii}\\[1em]
+\text{se}_i=\sqrt{\sigma^2\left[\mathbf{(X'X)^{-1}}\right]_{ii}}\\[1.5em]
 t_i = b_i/\text{se}_i\\[1em]
 R^2 = 1-\dfrac{SSE}{SSTr+SSE}\\[2em]
 R^2_{aj} = 1-\left[\left(1-R^2\right)\dfrac{n-1}{n-k}\right]
@@ -837,3 +857,135 @@ se
 # compare com os valores da função padrão
 summary(m)
 ```
+
+# O quanto uma regressão pode explicar um fenômeno?
+
+## Este é o fenômeno definido por 4 pontos
+
+```{r}
+set.seed(3141592)
+x = 1:4
+ok = FALSE
+while(!ok){
+  y = runif(4, 10, 20)
+  lm(y~x+I(x^2)+I(x^3)) -> m
+  m %>% coef -> cf
+  ok = abs(cf[2]/cf[4]) < 10
+}
+.xx = seq(0, 5, length.out = 300)
+.yy = cbind(1, .xx, .xx^2, .xx^3) %*% cf
+.x = rnorm(300, 2.5, 0.8)
+.y = (cbind(1, .x, .x^2, .x^3) %*% cf)
+.y = .y+(range(.y) %>% diff)/5*rnorm(.y)
+# este é o fenômeno
+plot(.x, .y, type = "n")
+#lines(.xx, .yy, col = "red", lwd = 2)
+points(x, y, col = "red", pch = 10)
+```
+
+## A curva polinomial exata que passa pelos 4 pontos
+
+```{r}
+plot(.x, .y, type = "n")
+lines(.xx, .yy, col = "red", lwd = 2)
+points(x, y, col = "red", pch = 10)
+```
+
+## Pontos aleatórios gerados com base no fenômeno
+
+```{r}
+# estes são pontos aleatórios gerados em torno do fenômeno
+plot(.x, .y, pch = 20, col = "gray")
+lines(.xx, .yy, col = "red", lwd = 2)
+```
+
+## Cálculo do polinômio de regressão
+
+### Escolha do modelo
+
+```{r}
+#lines(.xx, .yy, col = "red")
+.xxx = seq(min(.x), max(.x), length.out = 300)
+lm(.y~.x) -> m1
+lmtest::reset(m1)
+lm(.y~.x+I(.x^2)) -> m2
+lmtest::reset(m2)
+lm(.y~.x+I(.x^2)+I(.x^3)) -> m
+lmtest::reset(m)
+lm(.y~.x+I(.x^2)+I(.x^3)+I(.x^4)) -> m4
+lmtest::reset(m4)
+lm(.y~.x+I(.x^2)+I(.x^3)+I(.x^4)+I(.x^5)) -> m5
+lmtest::reset(m5)
+lapply(list(m1, m2, m, m4, m5), broom::glance) %>% as.data.frame() %>% matrix(nrow = 5, byrow = 1) -> aicbic
+aicbic = aicbic[,c(2, 9:10)]
+colnames(aicbic) = c("R2aj", "AIC", "BIC")
+rownames(aicbic) = paste(1:5, "º grau", sep = "")
+# R2, AIC e BIC
+aicbic
+# Teste ANOVA
+anova(m1, m2, m, m4, m5)
+.y2 = predict(m2, data.frame(.x = .xxx))
+.yyy = predict(m, data.frame(.x = .xxx))
+.yyyy = predict(m4, data.frame(.x = .xxx))
+.yyyyy = predict(m5, data.frame(.x = .xxx))
+plot(.x, .y, pch = 20, col = "gray")
+lines(.xxx, .y2, col = "#00800060", lwd = 1.5)
+abline(m1, col = "darkgray", lwd = 1.5)
+legend("topleft", legend = paste("Grau", 5:1)[4:5], col = c("green", "maroon", "blue", "#00800060", "darkgray")[4:5], lwd = 2)
+plot(.x, .y, pch = 20, col = "gray")
+lines(.xxx, .yyyyy, col = "green", lwd = 1.5)
+lines(.xxx, .yyyy, col = "maroon", lwd = 1.5)
+lines(.xxx, .yyy, col = "blue", lwd = 1.5)
+legend("topleft", legend = paste("Grau", 5:1)[1:3], col = c("green", "maroon", "blue", "#00800060", "darkgray")[3:1], lwd = 2)
+```
+
+O $R^2$ aumenta para cada regressão e o BIC melhora, mas o AIC piora a partir do grau 4, ou seja, a escolha do AIC é o grau 3.
+
+O teste ANOVA indica que não há melhora significativa a partir do grau 3, ou seja, os graus 4 e 5 introduzem uma complexidade desnecessária à explicação do fenômeno. 
+
+
+```{r, results='asis'}
+library(stargazer)
+stargazer(m1, m2, m, m4, m5, type = "html", font.size = "small", report = "vcp*", star.char = "•", notes = "<small>Os coeficientes de graus 4 e 5 perdem significância, ou seja, não melhoram a explicação do fenômeno, então ficamos com o grau 3.</small>", notes.append = FALSE, notes.align = "l")
+```
+
+ 
+
+### Como o polinômio de regressão aproxima o fenômeno
+
+```{r}
+plot(.x, .y, type = "n")
+lines(.xx, .yy, col = "red", lwd = 2)
+lines(.xxx, .yyy, col = "blue", lwd = 2)
+legend("topleft", legend = c("Polinômio da regressão", "Polinômio do fenômeno"), col = c("blue", "red"), lwd = 2)
+```
+
+### Comparativo dos coeficientes
+
+```{r}
+# coeficientes do fenômeno
+cf
+# coeficientes calculados pela regressão
+m %>% summary
+# diferenças percentuais
+(abs(m$coefficients-cf)/abs(m$coefficients)*100) %>% round(1)
+```
+
+## Vamos ver os resíduos
+
+```{r}
+# Os resíduos são normais
+shapiro.test(m$residuals)
+mhist(m$residuals %>% scale)
+# Não temos condição de heteroscedasticidade
+lmtest::bptest(m)
+```
+
+## Conclusão
+
+Mesmo com um elevado nível de ruído, com um $R^2\approx`r aicbic[3,1] %>% as.numeric %>% round(4) * 100`$%, observa-se uma boa aproximação da explicação do fenômeno por meio da regressão. 
+
+Este é um caso onde tem-se uma previsão ruim (por conta do $R^2$ baixo) mas uma boa explicação (a regressão aproximou adequadamente o fenômeno estudado). 
+
+
+

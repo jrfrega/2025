@@ -1,0 +1,488 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 06"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "15/04/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+```
+
+# Chapter 6 Further Inference in Multiple Regression
+
+```{r}
+library(car)
+
+```
+
+## 6.6 Collinearity
+
+$$
+y = b_0 + b_1x_1 + b_2x_2 + e\\[1em]
+cor(x_1, x_2) = 0
+$$
+
+Os regressores devem ser independentes, ou seja, ortogonais, não correlacionados. 
+
+banco de dados `cars`
+
+mpg - miles per galon
+
+cyl - número de cilindros do motor
+
+Ou seja, quanto mais cilindros, menos milhas por galão o carro faz. 
+
+```{r}
+data("cars", package="PoEdata")
+mod1 <- lm(mpg~cyl, data=cars)
+summary(mod1)
+```
+
+eng - cilindrada do motor
+
+wgt - weight (peso)
+
+```{r}
+mod2 <- lm(mpg~cyl+eng+wgt, data=cars)
+summary(mod2)
+```
+
+Testa o VIF (Variance Inflation Factor) dos regressores
+
+$$VIF_k = \dfrac{1}{1-R^2_k}\\[2em]
+x_k = a_0 + \sum b_ix_i + e\quad \quad i\ne k
+$$
+```{r}
+lm(cyl~eng+wgt, data = cars) -> .m
+.m %>% summary() -> .s
+.s$r.squared -> .r2
+1/(1-.r2)
+lm(eng~cyl+wgt, data = cars) -> .m
+.m %>% summary() -> .s
+.s$r.squared -> .r2
+1/(1-.r2)
+lm(wgt~cyl+eng, data = cars) -> .m
+.m %>% summary() -> .s
+.s$r.squared -> .r2
+1/(1-.r2)
+car::vif(mod2)
+```
+
+Variáveis com VIF > 10 são problemáticas e devem ser excluídas da regressão. 
+
+```{r}
+lm(mpg~cyl+wgt, data = cars) -> .m
+car::vif(.m)
+summary(.m)
+```
+
+## Omitted Variable Bias
+
+```{r}
+lm(mpg~cyl, data = cars) -> .m1
+#car::vif(.m)
+summary(.m1)
+```
+
+```{r}
+lm(mpg~wgt, data = cars) -> .m2
+#car::vif(.m)
+summary(.m2)
+```
+
+```{r, results='asis'}
+stargazer::stargazer(mod2, .m, .m1, .m2, type = .sgouttype)
+```
+
+
+Cuidado com a retirada de variáveis da regressão pois podemos incorrer em viés de variável omitida. 
+
+Busque sempre o equilíbrio entre o VIF e o VVO.
+
+
+## Resumo
+
+Testar forma funcional, normalidade dos resíduos, heteroscedasticidade e inflação de variância
+
+
+# Chapter 8 Heteroskedasticity
+
+```{r}
+data("food",package="PoEdata")
+mod1 <- lm(food_exp~income, data=food)
+plot(food$income,food$food_exp, type="p",
+     xlab="income", ylab="food expenditure")
+abline(mod1)
+```
+
+
+O estimador de mínimos quadrados ordinários continua sendo BLUE (best linear unbiased estimator) (consistência)
+
+Em condição de heteroscedasticidade os erros-padrão podem ser danificados, ou seja, são mal estimados. Isso afeta a significância de cada coeficiente da regressão.
+
+```{r}
+res <- residuals(mod1)
+yhat <- fitted(mod1)
+plot(food$income,res, xlab="income", ylab="residuals")
+abline(h = 0)
+plot(yhat,res, xlab="fitted values", ylab="residuals")
+abline(h = 0)
+```
+
+
+```{r}
+library(lmtest)
+reset(mod1)
+shapiro.test(mod1$residuals)
+# como só tenho 1 regressor não preciso fazer o teste de VIF
+# H0 do teste Breusch-Pagan é que não há heteroscedasticidade (p > 0.05)
+bptest(mod1)
+```
+
+```{r}
+summary(mod1)
+```
+
+
+## 8.3 Heteroskedasticity-Consistent Standard Errors
+
+HC -> Heteroskedasticity-Consistent
+
+```{r}
+mod1
+library(car)
+?hccm
+vcov(mod1)
+car::hccm(model = mod1) -> vcovh0
+vcovh0
+library(lmtest)
+summary(mod1)
+coeftest(mod1)
+coeftest(mod1, vcov. = vcovh0)
+coeftest(mod1, vcov. = hccm(model = mod1, type = "hc1"))
+coeftest(mod1, vcov. = hccm(model = mod1, type = "hc2"))
+coeftest(mod1, vcov. = hccm(model = mod1, type = "hc3"))
+coeftest(mod1, vcov. = hccm(model = mod1, type = "hc4"))
+```
+
+
+## 8.4 GLS: Known Form of Variance
+
+$$
+V[e_i] = \sigma^2x_i
+$$
+
+GLS = Generalized Least Squares
+
+```{r}
+# normalmente a compensação nos software econométricos é pelo desvio-padrão, 
+# ou seja, usa-se a raiz quadrada da variância, ou ainda, a raiz quadrada
+# do peso. 
+# w = 1/sqrt(food$income)
+# mas no R compensa-se pela variância, ou seja, usa-se a forma a seguir
+w <- 1/food$income
+food.wls <- lm(food_exp~income, weights=w, data=food)
+coeftest(mod1)
+summary(mod1)
+summary(food.wls)
+
+```
+
+
+Estimadores GLS melhoram a eficiência da estimativa, mas não garantem a sua consistência.
+
+Sempre vamos preferir a estimativa que mantém a consistência. Ora, como o OLS é BLUE, é sempre consistente, e será o nosso padrão de comparação. 
+
+
+## 8.5 Grouped Data
+
+```{r}
+# banco de dados cps2
+data("cps2", package="PoEdata")
+# faz a regressão para indivíduos fora da região metropolitana
+rural.lm <- lm(wage~educ+exper, data=cps2, subset=(metro==0))
+# pega-se o erro padrão da regressão
+sigR <- summary(rural.lm)$sigma
+# faz a regressão para indivíduos dentro da região metropolitana
+metro.lm <- lm(wage~educ+exper, data=cps2, subset=(metro==1))
+# pega-se o erro padrão da regressão
+sigM <- summary(metro.lm)$sigma
+cps2$wght <- rep(0, nrow(cps2))
+# Create a vector of weights
+# tenho 1000 observações na amostra
+# for (i in 1:1000) 
+for (i in 1:nrow(cps2)) 
+{
+  if (cps2$metro[i]==0){cps2$wght[i] <- 1/sigR^2}
+  else{cps2$wght[i] <- 1/sigM^2}
+}
+# esta estimativa pode ser inconsistente
+wge.fgls <- lm(wage~educ+exper+metro, weights=wght, data=cps2)
+# essas duas estimativas a seguir são OLS, portanto consistentes
+wge.lm <- lm(wage~educ+exper+metro, data=cps2)
+# esta estimativa, além de OLS, está compensando a heteroscedasticidade
+# por Huber-White
+wge.hce <- coeftest(wge.lm, vcov.=hccm(wge.lm, data=cps2))
+```
+
+```{r, results='asis'}
+# apresentar as regressões em uma tabela bonitinha
+library(stargazer)
+stargazer(rural.lm, metro.lm, wge.lm, wge.fgls,wge.hce,
+  header=FALSE, 
+  title="OLS vs. FGLS estimates for the 'cps2' data",
+  type=.sgouttype, # "html" or "latex" (in index.Rmd) 
+  keep.stat="n",  # what statistics to print
+  omit.table.layout="n",
+  star.cutoffs=c(0.1, 0.05, 0.01, 0),
+  digits=3, 
+#  single.row=TRUE,
+  intercept.bottom=FALSE, #moves the intercept coef to top
+  column.labels=c("Rural","Metro", "OLS", "FGLS", "HC1"),
+  dep.var.labels.include = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption="Dependent variable: wage",
+  model.names=FALSE,
+  star.char="*") #supresses the stars
+
+```
+
+
+### Dados simulados
+
+```{r}
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+set.seed(2)
+x = MASS::mvrnorm(500, c(10, 10), Sigma = c(1, 0, 0, 1) %>% matrix(nrow = 2)) %>% round(1)
+dummy = rbinom(500, 1, 0.5)
+coefteorico = c(0, 4, 2, 2)
+y = (cbind(1, x, dummy) %*% coefteorico + 4*rnorm(dummy, 0, dummy*2+1)) %>% round(1)
+df = data.frame(y, x1 = x[,1], x2 = x[,2], dummy)
+m = lm(y~x1+x2+as.factor(dummy), data = df)
+reset(m)
+shapiro.test(m$residuals)
+# Como o teste de Shapiro-Wilk é muito sensível para grandes amostras, 
+# tomamos uma subamostra para testar a normalidade dos resíduos
+m$residuals %>% sample(200) %>% shapiro.test
+# O histograma indica alguns resíduos extremos
+mhist(m$residuals %>% scale)
+# Temos presença de heteroscedasticidade, isso pode 
+# desviar os resíduos da normalidade
+bptest(m)
+# perceba que os coeficientes estão bem próximos do modelo teórico
+summary(m)
+```
+
+```{r}
+# Vamos identificar os outliers (observações que geram resíduos extremos)
+which(m$residuals%in%boxplot(m$residuals)$out) -> outliers
+# removemos essas observações da regressão
+m = lm(y~x1+x2+as.factor(dummy), data = df[-outliers,])
+reset(m)
+shapiro.test(m$residuals)
+# Passa no teste de normalidade da subamostra
+m$residuals %>% sample(200) %>% shapiro.test
+mhist(m$residuals %>% scale)
+bptest(m)
+# perceba que os coeficientes estão mais distantes do pressuposto teórico
+# apesar de terem as significâncias preservadas
+summary(m)
+```
+
+```{r}
+var(y[-outliers][which(dummy[-outliers]==1)])
+var(y[-outliers][which(dummy[-outliers]==0)])
+# as variâncias dos grupos são diferentes
+# caso de variância blocada
+var.test(y[-outliers][which(dummy[-outliers]==1)], y[-outliers][which(dummy[-outliers]==0)])
+```
+
+```{r}
+# vamos corrigir com FGLS
+w1 = 1/(lm(y~x1+x2+dummy, data = df[-outliers,][which(dummy[-outliers]==1),]) %>% summary)$sigma^2
+w0 = 1/(lm(y~x1+x2+dummy, data = df[-outliers,][which(dummy[-outliers]==0),]) %>% summary)$sigma^2
+df$w = 0
+df$w[-outliers][which(dummy[-outliers]==0)] = w0
+df$w[-outliers][which(dummy[-outliers]==1)] = w1
+m.fgls = lm(y~x1+x2+as.factor(dummy), data = df[-outliers,], weights = w)
+summary(m.fgls)
+# agora mexendo na VCOV
+m.hc1 = coeftest(m, vcov. = hccm(m, type = "hc1"))
+m.hc1
+```
+
+```{r, results='asis'}
+stargazer::stargazer(m, m.hc1, m.fgls, type = .sgouttype)
+```
+
+Fazendo o mesmo procedimento na amostra completa
+
+
+```{r}
+m = lm(y~x1+x2+as.factor(dummy), data = df)
+# vamos corrigir com FGLS
+w1 = 1/(lm(y~x1+x2+dummy, data = df[which(dummy==1),]) %>% summary)$sigma^2
+w0 = 1/(lm(y~x1+x2+dummy, data = df[which(dummy==0),]) %>% summary)$sigma^2
+df$w = 0
+df$w[which(dummy==0)] = w0
+df$w[which(dummy==1)] = w1
+m.fgls = lm(y~x1+x2+as.factor(dummy), data = df, weights = w)
+summary(m.fgls)
+# agora mexendo na VCOV
+m.hc1 = coeftest(m, vcov. = hccm(m, type = "hc1"))
+m.hc1
+```
+
+```{r, results='asis'}
+stargazer::stargazer(m, m.hc1, m.fgls, type = .sgouttype)
+```
+
+## 8.6 GLS: Unknown Form of Variance
+
+
+```{r}
+# banco de dados food
+data("food", package="PoEdata")
+# regressão OLS
+food.ols <- lm(food_exp~income, data=food)
+# pego os resíduos ao quadrado
+ehatsq <- resid(food.ols)^2
+# regressão do logaritmo natural dos resíduos ao quadrado versus
+# o logaritmo natural da variável independente
+sighatsq.ols  <- lm(log(ehatsq)~log(income), data=food)
+# calculo o antilogaritmo natural dos valores ajustados da regressão
+vari <- exp(fitted(sighatsq.ols))
+# e uso esses valores como pesos para o WLS
+food.fgls <- lm(food_exp~income, weights=1/vari, data=food)
+food.HC1 = coeftest(food.ols, vcov. = hccm(food.ols, type = "hc1"))
+```
+
+```{r, results='asis'}
+stargazer(food.ols, food.HC1, food.wls, food.fgls,
+  header=FALSE, 
+  title="Comparing various 'food' models",
+  type=.sgouttype, # "html" or "latex" (in index.Rmd) 
+  keep.stat="n",  # what statistics to print
+  omit.table.layout="n",
+  #star.cutoffs=NA,
+  digits=3, 
+#  single.row=TRUE,
+  intercept.bottom=FALSE, #moves the intercept coef to top
+  column.labels=c("OLS","HC1","WLS","FGLS"),
+  dep.var.labels.include = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption="Dependent variable: 'food expenditure'",
+  model.names=FALSE,
+  star.char="*") #supresses the stars
+```
+
+```{r}
+summary(food.fgls)
+```
+
+## 8.7 Heteroskedasticity in the Linear Probability Model
+
+
+```{r}
+# banco de dados coke
+data("coke", package="PoEdata")
+# modelo OLS original
+coke.ols <- lm(coke~pratio+disp_coke+disp_pepsi, data=coke)
+# Breusch-Pagan diz que não temos problemas de heteroscedasticidade
+bptest(coke.ols)
+# calcula um modelo com correção Huber-White (não precisa)
+coke.hc1 <- coeftest(coke.ols, vcov.=hccm(coke.ols, type="hc1"))
+# criou uma variável p com os valores previstos (sobre a reta de regressão)
+# vai tentar simular um valor de probabilidade
+p <- fitted(coke.ols)
+# probabilidades SEMPRE são valores entre 0 e 1
+# Truncate negative or >1 values of p
+pt<-p
+# se o valor for negativo (ou melhor, menor que 0.01), coloco 0.01
+pt[pt<0.01] <- 0.01
+# se o valor for maior que 1 (ou melhor, maior que 0.99), coloco 0.99
+pt[pt>0.99] <- 0.99
+# calcula sigma ao quadrado (variância)
+sigsq <- pt*(1-pt)
+# peso é 1 sobre a variância
+wght <- 1/sigsq
+# calculo o WLS com casos truncados
+coke.gls.trunc <- lm(coke~pratio+disp_coke+disp_pepsi, 
+                  data=coke, weights=wght)
+# Em vez de truncar (entre 0.01 e 0.99)
+# vou simplesmente eliminar os casos onde a probabilidade foi
+# inconsistente
+# Eliminate negative or >1 values of p
+p1 <- p
+# isso aqui tira a observação da regressão
+p1[p1<0.01 | p1>0.99] <- NA
+# variância
+sigsq <- p1*(1-p1)
+# peso = 1/variância
+wght <- 1/sigsq
+# WLS com casos omitidos
+coke.gls.omit <- lm(coke~pratio+disp_coke+disp_pepsi, 
+                  data=coke, weights=wght)
+predict(coke.gls.omit)
+quantile(predict(coke.gls.omit))
+```
+
+```{r, results='asis'}
+stargazer(coke.ols, coke.hc1, coke.gls.trunc, coke.gls.omit,
+  header=FALSE, 
+  title="Comparing various 'coke' models",
+  type=.sgouttype, # "html" or "latex" (in index.Rmd) 
+  keep.stat="n",  # what statistics to print
+  omit.table.layout="n",
+  star.cutoffs=NA,
+  digits=4, 
+#  single.row=TRUE,
+  intercept.bottom=FALSE, #moves the intercept coef to top
+  column.labels=c("OLS","HC1","GLS-trunc","GLS-omit"),
+  dep.var.labels.include = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption="Dependent variable: 'choice of coke'",
+  model.names=FALSE,
+  star.char=NULL) #supresses the stars
+```
+
+
+
+
+
+

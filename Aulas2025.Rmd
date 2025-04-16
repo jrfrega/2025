@@ -82,3 +82,9 @@ library(reticulate)
 
 ```
 
+# AULA 6 { - }
+
+```{r Aula 06, child="Aula06.Rmd"}
+
+```
+
