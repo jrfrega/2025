@@ -1,0 +1,251 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 08"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "29/04/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+.stargazertype = .sgouttype
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+library(stargazer)
+```
+
+# Chapter 10 Random Regressors
+
+## 10.1 The Instrumental Variables (IV) Method
+
+```{r}
+library(PoEdata)
+data(mroz)
+mroz1 = mroz[mroz$wage>0,]
+```
+
+```{r}
+mhist(mroz1$wage)
+mhist(mroz1$wage %>% log)
+```
+
+
+```{r}
+library(lmtest)
+mroz1.ols = lm(log(wage)~educ+exper+I(exper^2), data = mroz1)
+reset(mroz1.ols)
+bptest(mroz1.ols)
+shapiro.test(mroz1.ols$residuals)
+mhist(mroz1.ols$residuals)
+# educ parece ser endógena
+# está com o coeficiente possivelmente enviesado
+mroz1.ols %>% summary
+```
+
+```{r}
+# introduzir mothereduc na equação
+library(AER)
+mroz1.iv <- ivreg(
+  # regressão original
+  log(wage)~educ+exper+I(exper^2) |
+  # defino o(s) instrumento(s)
+  exper+I(exper^2)+mothereduc,
+  # usar mothereduc como instrumento para educ
+  data=mroz1)
+mroz1.iv %>% summary
+
+eq1 = educ~exper+I(exper^2)+mothereduc+fathereduc
+lm(eq1, data = mroz1) -> meq1
+educhat = predict(meq1)
+lm(log(wage)~educhat+exper+I(exper^2), data = mroz1) -> wage.2sls;  wage.2sls %>% summary
+
+mroz1.iv1 <- ivreg(
+  # regressão original
+  log(wage)~educ+exper+I(exper^2) |
+  # defino o(s) instrumento(s)
+  exper+I(exper^2)+mothereduc+fathereduc,
+  # usar mothereduc + fathereduc como instrumento para educ
+  data=mroz1)
+mroz1.iv1 %>% summary
+
+mroz1.iv2 <- ivreg(
+  # regressão original
+  log(wage)~educ+exper+I(exper^2) |
+  # defino o(s) instrumento(s)
+  exper+I(exper^2)+fathereduc,
+  # usar fathereduc como instrumento para educ
+  data=mroz1)
+mroz1.iv2 %>% summary
+```
+
+```{r}
+stargazer(mroz1.ols, wage.2sls, mroz1.iv, mroz1.iv1,
+  title="Wage equation: OLS, 2SLS, and IV models compared",
+  header=FALSE, 
+  type=.stargazertype, # "html" or "latex" (in index.Rmd) 
+  keep.stat="n",  # what statistics to print
+  omit.table.layout="n",
+  star.cutoffs=NA,
+  digits=4, 
+#  single.row=TRUE,
+  intercept.bottom=FALSE, #moves the intercept coef to top
+  column.labels=c("OLS","explicit 2SLS", "IV mothereduc", 
+                  "IV mothereduc and fathereduc"),
+  dep.var.labels.include = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption="Dependent variable: wage",
+  model.names=FALSE,
+  star.char=NULL) #supresses the stars)
+```
+
+
+## 10.2 Specification Tests
+
+```{r}
+summary(mroz1.iv, diagnostics=TRUE)
+summary(mroz1.iv1, diagnostics=TRUE)
+summary(mroz1.iv2, diagnostics=TRUE)
+```
+
+### R2 generalizado (regressões não-OLS)
+
+```{r}
+# COR = R
+# COR^2 = R^2
+cor(mroz1$wage %>% log, mroz1.iv1$fitted.values)^2
+```
+
+
+### `mhist`
+
+```{r}
+mhist
+mhist(mroz$wage)
+mhist(mroz$wage, normdist = FALSE)
+```
+
+# Chapter 11 Simultaneous Equations Models
+
+he following example uses the dataset  truffles, where  
+ q is quantity of truffles traded,  
+ p is the market price,  
+ ps is the price of a substitute,  
+ di is disposable income, and  
+ pf is a measure of costs of production. 
+ The structural demand and supply equations (Equations  1 and  2) are formulated based on economic theory; quantity and price are endogenous, and all the other variables are considered exogenous.
+
+
+$$
+\text{Equação da demanda: }\quad
+q = \alpha_0 + \alpha_1p + \alpha_2ps+\alpha_3di+\epsilon_d\\
+\alpha_1 (-)\quad\alpha_2 (+)\quad\alpha_3 (+)\quad\\
+\text{Equação da oferta: }\quad
+q = \beta_0 + \beta_1p + \beta_2pf + \epsilon_s\\
+\beta_1 (+)\quad\beta_2 (-)
+$$
+
+
+```{r}
+data("truffles", package="PoEdata")
+truffles %>% head
+lm(q~p+ps+di, truffles) %>% summary
+lm(q~p+pf, truffles) %>% summary
+
+D <- q~p+ps+di # ~ps+di+pf -> p é instrumentalizado por pf
+S <- q~p+pf    # ~ps+di+pf -> p é instrumentalizado por ps+di
+sys <- list(D,S)
+library(systemfit)
+systemfit(sys, data = truffles) %>% summary
+
+# defino os instrumentos
+instr <- ~ps+di+pf
+# vou analisar a relação q~p
+truff.sys <- systemfit(sys, inst=instr, method="2SLS", data=truffles)
+summary(truff.sys)
+```
+## Fulton Fish
+
+$$
+\log(quan) = \alpha_0 + \alpha_1\log(price)+\alpha_2mon+\alpha_3tue+\alpha_4wed+\alpha_5thu+\epsilon_d\\
+\log(quan) = \beta_0 + \beta_1\log(price)+\beta_2stormy+\epsilon_s\\
+\log(quan) = \gamma_0+\alpha_2mon+\alpha_3tue+\alpha_4wed+\alpha_5thu+\beta_2stormy+\epsilon_{r1}\\
+\log(price) = \gamma_0+\alpha_2mon+\alpha_3tue+\alpha_4wed+\alpha_5thu+\beta_2stormy+\epsilon_{r1}\\
+$$
+
+```{r}
+data("fultonfish", package="PoEdata")
+fishQ.ols <- lm(lquan~mon+tue+wed+thu+stormy, data=fultonfish)
+summary(fishQ.ols)
+```
+
+```{r}
+fishP.ols <- lm(lprice~mon+tue+wed+thu+stormy, data=fultonfish)
+summary(fishP.ols)
+```
+
+```{r}
+fish.D <- lquan~lprice+mon+tue+wed+thu
+fish.S <- lquan~lprice+stormy
+fish.eqs <- list(fish.D, fish.S)
+fish.ivs <- ~mon+tue+wed+thu+stormy
+fish.sys <- systemfit(fish.eqs, method="2SLS", inst=fish.ivs, data=fultonfish)
+summary(fish.sys)
+```
+
+```{r}
+fish.sys <- systemfit(fish.eqs, method="SUR", data=fultonfish)
+summary(fish.sys)
+```
+
+## LAVAAN 
+
+```{r}
+# resolve equações estruturais pelo método de covariância (CB-SEM)
+library(lavaan)
+model = "
+lprice~mon+dsi1*tue+dsi2*wed+thu+stormy
+lquan~prec*lprice+mon+tue+wed+thu+stormy
+tuemediado := dsi1*prec
+wedmediado := dsi2*prec
+"
+sem(model = model, data = fultonfish) -> fit
+summary(fit, standar = TRUE)
+semPlot::semPaths(fit, style = "lisrel", what = "std")
+```
+
+
+
+
+

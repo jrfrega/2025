@@ -1,0 +1,375 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 07"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "22/04/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+```
+
+
+# Ordem dos dados { - }
+
+## Cross-section
+
+```{r}
+library(PoEdata)
+data(food)
+head(food)
+lm(food_exp~income, data = food) %>% summary
+food[sample(1:40),] -> food2
+lm(food_exp~income, data = food2) %>% summary
+```
+
+A ordem em que os dados são apresentados para o procedimento não importa.
+
+## Séries temporais
+
+A ordem é FUNDAMENTAL. 
+
+
+# Chapter 9 Time-Series: Stationary Variables
+
+## 9.1 An Overview of Time Series Tools in R
+
+ts(), diff(), lag()
+
+## 9.2 Finite Distributed Lags
+
+$$
+y_t = b_0 + b_1x_{t}+b_2x_{t-1}+b_3x_{t-2}+\dots+b_qx_{t-q+1}+e_t
+$$
+
+```{r}
+data("okun", package="PoEdata")
+okun
+is.ts(okun)
+# transformar em série temporal
+# frequency = 4 -> dados trimestrais ("quarter")
+okun.ts <- ts(okun, start=c(1985,2), end=c(2009,3),frequency=4)
+is.ts(okun.ts)
+okun.ts
+# queremos estudar taxa de variação de u (diff) versus g em vários instantes de tempo (lag)
+```
+
+```{r}
+okun.ts.tab <- cbind(okun.ts,
+                 lag(okun.ts[,2], -1),
+                 diff(okun.ts[,2], lag=1),
+                 lag(okun.ts[,1], -1),
+                 lag(okun.ts[,1], -2),
+                 lag(okun.ts[,1], -3))
+library(knitr)
+colnames(okun.ts.tab)=c("g","u","uL1","du","gL1","gL2","gL3")
+kable(head(okun.ts.tab), 
+      caption="The `okun` dataset with differences and lags",
+      col.names=c("g","u","uL1","du","gL1","gL2","gL3"))
+```
+
+```{r}
+colnames(okun.ts.tab)=c("g","u","uL1","du","gL1","gL2","gL3")
+lm(du~g+gL1+gL2+gL3, data = okun.ts.tab) %>% summary
+library(dynlm)
+okunL3.dyn <- dynlm(d(u)~L(g, 0:3), data=okun.ts)
+summary(okunL3.dyn)
+```
+Taxa de desemprego (du/dt) explicada pelo crescimento econômico (g[t], g[t-1], g[t-2])
+
+$$
+\dfrac{\rm{d}u}{\rm{d}t} \approx \dfrac{u_t-u_{t-1}}{t-(t-1)} = \dfrac{u_t-u_{t-1}}{1} = u_t-u_{t-1} = d(u)
+$$
+
+```{r}
+okunL2.dyn <- dynlm(d(u)~L(g, 0:2), data=okun.ts)
+okunL2.dyn %>% summary
+```
+
+```{r}
+library(broom)
+glance(okunL2.dyn)[1, "AIC"] # -58
+glance(okunL3.dyn)[1, "AIC"] # -55
+# okunL2.dyn é o melhor modelo
+```
+
+## Serial correlation
+
+```{r}
+layout(1:3 %>% matrix(nrow = 1))
+plot(okun.ts[,"g"], ylab="growth")
+plot(okun.ts[,"u"], ylab="unemployment")
+plot(okun.ts[,"u"] %>% diff, ylab="diff(unemployment)")
+```
+
+
+```{r}
+ggL3 <- data.frame(cbind(okun.ts[,"g"], lag(okun.ts[,"g"],-1), lag(okun.ts[,"g"],-2), lag(okun.ts[,"g"],-3)))
+cor(ggL3, use = "pairwise")
+```
+
+$$
+z = \dfrac{r_k}{\sqrt{\dfrac{1}{T}}}\\
+r_k = z\sqrt{\dfrac{1}{T}}\\
+z \in \{-1.96, 1.96\}\\
+T = 98 \\
+r_k =\{-1.96, 1.96\}\times\sqrt{1/98}\approx \{-0.198, 0.198\}
+$$
+
+```{r}
+acf(okun.ts[,"g"]) -> v
+```
+
+
+inf~d(u)
+
+
+```{r}
+data("phillips_aus", package="PoEdata")
+phill.ts <- ts(phillips_aus, 
+               start=c(1987,1), 
+               end=c(2009,3),
+               frequency=4)
+plot.ts(phill.ts)
+plot.ts(diff(phill.ts[,"u"]))
+```
+
+```{r}
+dynlm(inf~d(u), data = phill.ts) -> phill.dyn
+ehat <- phill.dyn$residuals
+plot(ehat)
+abline(h=0, lty=2)
+```
+
+```{r}
+acf(ehat)
+```
+
+```{r}
+library(lmtest)
+bgtest(phill.dyn, 1)
+bgtest(phill.dyn, 4)
+```
+
+```{r}
+dwtest(phill.dyn)
+```
+
+## Estimation with Serially Correlated Errors
+
+```{r}
+library(sandwich)
+s1 <- coeftest(phill.dyn, vcov.=vcovHAC(phill.dyn))
+stargazer::stargazer(phill.dyn, s1, type = "text")
+```
+
+## 9.6 A More General Model
+
+```{r}
+acf(phill.ts[, "inf"])
+pacf(phill.ts[, "inf"])
+```
+
+$$
+\text{inf}_t = b_0 + b_1 \text{inf}_{t-1} + b_2 \text{du}_t + e_t
+$$
+
+```{r}
+dynlm(inf~L(inf, 1:2)+d(u), data = phill.ts) -> phill.gen
+plot(phill.gen$residuals); abline(h = 0, lty = 2)
+```
+
+```{r}
+bgtest(phill.gen, 1)
+dwtest(phill.gen)
+shapiro.test(phill.gen$residuals)
+mhist(phill.gen$residuals)
+reset(phill.gen)
+bptest(phill.gen)
+```
+
+```{r}
+# vou usar a correção de heteroscedasticidade porque 
+# o teste de Breusch-Pagan rejeitou H0
+coeftest(phill.gen, vcov. = vcovHAC(phill.gen))
+```
+
+## 9.7 Autoregressive Models
+
+Explico uma variável em função dela mesma em períodos passados. 
+
+$$
+y_t = b_0 + \sum b_i y_{t-i} + e_t
+$$
+
+```{r}
+okun.ts %>% head
+formula = g~L(g, 1:2)
+dynlm(formula, data = okun.ts) -> okun.ar2
+summary(okun.ar2)
+shapiro.test(okun.ar2$residuals)
+mhist(okun.ar2$residuals)
+bptest(okun.ar2)
+boxplot(okun.ar2$residuals) -> bp; bp$out
+reset(okun.ar2)
+bgtest(okun.ar2)
+dwtest(okun.ar2)
+```
+
+```{r}
+plot.ts(okun.ts[,"g"])
+```
+
+```{r}
+acf(okun.ar2$residual)
+```
+
+
+```{r}
+aics <- bics <- rep(0,5)
+y <- okun.ts[,"g"]
+for (i in 1:5){
+  ari <- dynlm(y~L(y,1:i), start=i)
+  aics[i] <- AIC(ari)
+  bics[i] <- BIC(ari)
+}
+tbl <- data.frame(rbind(aics, bics))
+names(tbl) <- c("1","2","3","4","5")
+row.names(tbl) <- c("AIC","BIC")
+tbl
+```
+
+```{r}
+formula = g~L(g, 1:4)
+dynlm(formula, data = okun.ts) -> okun.ar4
+summary(okun.ar4)
+shapiro.test(okun.ar4$residuals)
+mhist(okun.ar4$residuals)
+bptest(okun.ar4)
+boxplot(okun.ar4$residuals) -> bp; bp$out
+reset(okun.ar4)
+bgtest(okun.ar4)
+dwtest(okun.ar4)
+```
+
+```{r}
+arima(okun.ts[, "g"], order = c(2, 0, 0))
+arima(okun.ts[, "g"], order = c(4, 0, 0))
+forecast::auto.arima(okun.ts[,"g"], d = 0, max.P = 0, max.Q = 0, max.q = 0)
+```
+
+```{r}
+ar2g <- stats::ar(y, aic=FALSE, order.max=2, method="ols")
+fcst <- data.frame(forecast::forecast(ar2g, 6))
+plot(forecast::forecast(ar2g, 6))
+```
+
+# Gerando dados correlacionados e testando modelos { - }
+
+```{r}
+# Gerando séries temporais
+set.seed(12)
+N = 200
+NN = N*1.2
+arcompy = c(0.5, 0.4, 0.0)
+arcompx = c(0.4, -0.3, 0.0)
+y = rnorm(NN)
+x = rnorm(NN)
+erro = 0.2*rnorm(NN)
+# Série autoregressiva
+y = arima.sim(list(ar = arcompy), n = NN)
+# adiciona o efeito de x
+for(i in (length(arcompy)+1):NN) {
+  y[i] = y[i]+arcompx[1]*x[i]+arcompx[2]*x[i-1]+arcompx[3]*x[i-2]
+}
+# adiciona o termo de erro
+for(i in (length(arcompy)+1):NN) {
+  y[i] = y[i]+erro[i]
+}
+# coloca em um data frame
+dd = data.frame(y = y[(NN-N+1):NN], x = x[(NN-N+1):NN])
+# inspecionando para ver como ficou
+plot.ts(dd)
+# PACF indica 2 lags para a autoregressão
+pacf(dd[,'y'])
+# Cross-Correlation indica efeito de x contemporâneo e 1 atraso
+ccf(dd[,'y'], dd[,'x'])
+# transforma os dados em série temporal
+dd = ts(dd)
+# varre os possíveis modelos guardando o BIC
+nmod = 0
+mlist = list()
+aics = NULL
+frms = NULL
+for(ary in 0:4) {
+  for(arx in 0:4) {
+    if(ary == 0) {
+      frm = paste0("y~L(x, 0:", arx, ")") %>% as.formula
+      dynlm(frm, dd) -> m
+    } else {
+      frm = paste0("y~L(y, 1:", ary, ")+L(x, 0:", arx, ")") %>% as.formula
+      dynlm(frm, dd) -> m
+    }
+    nmod = nmod + 1
+    aics = c(aics, BIC(m))
+    mlist[[nmod]] = m
+    frms = c(frms, frm)
+  }
+}
+# vê qual modelo possui o menor BIC
+nmod = which.min(aics)
+# Pega esse modelo
+mlist[[nmod]] -> m
+# mostra a equação
+# dois atrasos de y + x contemporâneo e 1 atraso
+frms[nmod]
+# forma funcional
+reset(m)
+# autoregressão
+bgtest(m)
+# Heteroscedasticidade
+bptest(m)
+# Normalidade dos resíduos
+shapiro.test(m$residuals)
+mhist(m$residuals)
+plot.ts(m$residuals)
+boxplot(m$residuals)
+# tudo ok, vamos aos coeficientes
+m %>% summary
+```
+

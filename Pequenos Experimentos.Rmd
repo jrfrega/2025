@@ -987,5 +987,40 @@ Mesmo com um elevado nível de ruído, com um $R^2\approx`r aicbic[3,1] %>% as.n
 
 Este é um caso onde tem-se uma previsão ruim (por conta do $R^2$ baixo) mas uma boa explicação (a regressão aproximou adequadamente o fenômeno estudado). 
 
+#
 
+```{r}
+plot(c(-1, 1), c(-1, 1), type = "n")
+text(0, 0, expression(displaystyle(pi)[~"["*0*","*1*"]"]^2~"|"~alpha~""%->%~a~~~integral(f(x)*dx, a, b)~~~prod(plain(P)(X==x), x==1, n)~~~sum(x[i], i==1, n)), cex = 1)
+```
+
+
+```{r}
+rho12 = 0.8; rho13 = 0.7; rho14 = 0.9
+rho23 = 0.7; rho24 = 0.8; 
+rho34 = 0.92
+c(1, rho12, rho13, rho14, 
+  rho12, 1, rho23, rho24, 
+  rho13, rho23, 1, rho34, 
+  rho14, rho24, rho34, 1) %>% matrix(nrow = 4) -> s
+MASS::mvrnorm(500, mu = rep(0, 4), Sigma = s) -> dados
+
+y = dados %*% c(0.3, 0.4, 0.5, 0.6) + 3*rnorm(500)
+
+df = data.frame(y, dados)
+
+df
+
+lm(y~., df) %>% summary
+```
+
+```{r}
+cor(dados)
+princomp(dados) -> pc
+pc$scores %>% cor %>% round(3) -> dadospc
+df = data.frame(y, pc$scores)
+
+lm(y~., df) %>% summary
+
+```
 

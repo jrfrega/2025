@@ -1,0 +1,350 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 09"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "06/05/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+.stargazertype = .sgouttype
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+library(stargazer)
+```
+```{r}
+library(tseries) # for ADF unit root tests
+library(dynlm)
+library(nlWaldTest) # for the `nlWaldtest()` function
+library(lmtest) #for `coeftest()` and `bptest()`.
+library(broom) #for `glance(`) and `tidy()`
+library(PoEdata) #for PoE4 datasets
+library(car) #for `hccm()` robust standard errors
+library(sandwich)
+library(knitr) #for kable()
+library(forecast) 
+```
+
+# Estacionariedade e não-estacionariedade
+
+## Série estacionária
+
+
+```{r}
+set.seed(10)
+# Gerando uma série de 200 observações com autocorrelação AR(1) = 0.4
+# A série é autocorrelacionada e estacionária
+x1 = arima.sim(list(ar = c(0.4, 0, 0)), 200)
+plot.ts(x1); abline(h = 0)
+acf(x1)
+pacf(x1)
+```
+
+
+```{r}
+set.seed(10)
+# Gerando uma série de 200 observações com autocorrelação AR(1) = 0
+# A série é estacionária
+x2 = arima.sim(list(ar = c(0.0, 0, 0)), 200)
+plot.ts(x2); abline(h = 0)
+acf(x2)
+pacf(x2)
+```
+## Série Integrada - Não estacionária
+
+```{r}
+set.seed(10)
+# Gerando uma série de 200 observações com autocorrelação AR(1) = 0.4
+# A série é autoregressiva e não-estacionária
+x3 = arima.sim(list(ar = 0.4, order = c(1, 1, 0)), 200)
+plot.ts(x3); abline(h = 0)
+acf(x3)
+pacf(x3)
+```
+
+$$
+\text{diff}(x_t) = x_t-x_{t-1}
+$$
+
+```{r}
+x3 %>% diff -> dx3
+plot.ts(dx3); abline(h = 0)
+acf(dx3)
+pacf(dx3)
+```
+
+```{r}
+# Série autocorrelacionada e estacionária
+dynlm(x1~L(x1, 1)) %>% summary
+# Série estacionária
+dynlm(x2~L(x2, 1)) %>% summary
+# Série autocorrelacionada e não-estacionária
+# Vejam o R^2 da regressão: temos algo de muito errado. 
+dynlm(x3~L(x3, 1)) %>% summary
+# Série autocorrelacionada e estacionária pela primeira diferença
+dynlm(dx3~L(dx3, 1)) %>% summary
+```
+
+## Integrando séries
+
+$$
+\text{cumsum}(x_t) = x_t+x_{t-1}
+$$
+
+```{r}
+set.seed(131)
+xa = rnorm(100)
+xb = rnorm(100)
+plot.ts(data.frame(xa, xb))
+cor(xa, xb)
+# Integração de primeira ordem
+xac = cumsum(xa)
+xbc = cumsum(xb)
+plot.ts(data.frame(xac, xbc))
+cor(xac, xbc)
+# Integração de segunda ordem
+xacc = cumsum(xac)
+xbcc = cumsum(xbc)
+plot.ts(data.frame(xacc, xbcc))
+cor(xacc, xbcc)
+```
+
+
+Se não controlarmos a não-estacionariedade, correremos o risco de detectar correlações (e regressões) espúrias, ou seja, inexistentes na realidade. 
+
+
+# Chapter 12 Time Series: Nonstationarity
+
+
+```{r}
+data("usa", package="PoEdata")
+usa.ts <- ts(usa, start=c(1984,1), end=c(2009,4),
+               frequency=4)
+Dgdp <- diff(usa.ts[,1])
+Dinf <- diff(usa.ts[,"inf"])
+Df <- diff(usa.ts[,"f"])
+Db <- diff(usa.ts[,"b"])
+usa.ts.df <- ts.union(gdp=usa.ts[,1], # package tseries
+                      inf=usa.ts[,2], 
+                      f=usa.ts[,3],
+                      b=usa.ts[,4],
+                      Dgdp,Dinf,Df,Db,
+                      dframe=TRUE)
+                      
+plot(usa.ts.df$gdp)
+plot(usa.ts.df$Dgdp)
+plot(usa.ts.df$inf)
+plot(usa.ts.df$Dinf)
+plot(usa.ts.df$f)
+plot(usa.ts.df$Df)
+plot(usa.ts.df$b)
+plot(usa.ts.df$Db)
+```
+
+
+As séries que estacionam com a primeira diferença são classificadas como I(1), ou seja, integradas de ordem 1. 
+No caso acima, todas as séries parecem ser I(1), ou seja, estacionaram na primeira diferença. 
+
+
+ARIMA 
+
+AR - AutoRegressive
+I - Integrated
+MA - Moving average
+
+
+## 12.1 AR(1), the First-Order Autoregressive Model
+
+
+$$
+y_t = \rho\ y_{t-1} + \nu_t\quad,\quad |\rho|<1
+$$
+
+
+# 12.3 Unit Root Tests for Stationarity
+
+O teste tem esse nome porque pretende descobrir a presença de uma raiz unitária no processo autoregressivo, ou seja, o processo tente a se tornar um passeio aleatório. $(\rho = 1)$
+
+
+## Teste de Dickey-Fuller
+
+```{r}
+# teste Advanced Dickey-Fuller
+# Default: H0: a série é não-estacionária (existe uma raiz unitária)
+# Olhem o p-valor: esta série é estacionária
+adf.test(x1)
+# Olhem o p-valor: esta série é estacionária
+adf.test(x2)
+# Olhem o p-valor: esta série é não-estacionária (aceitei H0)
+adf.test(x3)
+# Olhem o p-valor: esta série é estacionária
+adf.test(dx3)
+```
+
+```{r}
+apply(usa.ts.df[2:nrow(usa.ts.df),], 2, adf.test, k = 1)
+```
+
+**IMPORTANTE**
+
+A função `adf.test` da biblioteca `tseries` implementa o teste completo ADF, com constante e tendência. 
+Na biblioteca `fUnitRoots` tem a função `adfTest` que dá o controle completo da regressão de Dickey-Fuller.
+
+$$
+ct: \Delta y_t = \alpha + \gamma\ y_{t-1} + \lambda\ t + \nu_t\\
+c: \Delta y_t = \alpha + \gamma\ y_{t-1} + \nu_t\\
+nc: \Delta y_t =\gamma\ y_{t-1} + \nu_t
+$$
+
+```{r}
+library(fUnitRoots)
+adfTest(usa.ts.df$b, 1, "nc") # sem alfa e sem lambda
+adfTest(usa.ts.df$b, 1, "c")  # com alfa e sem lambda
+adfTest(usa.ts.df$b, 1, "ct") # com alfa e com lambda
+adf.test(usa.ts.df$b, k = 1)  # com alfa e com lambda
+```
+
+
+```{r}
+usa.ts.df$f %>% plot.ts
+usa.ts.df$f %>% Acf
+usa.ts.df$f %>% adf.test(k = 10)
+usa.ts.df$b %>% plot.ts
+usa.ts.df$b %>% Acf
+usa.ts.df$f %>% adf.test(k = 20)
+usa.ts.df$gdp %>% plot.ts
+usa.ts.df$gdp %>% Acf -> v
+usa.ts.df$gdp %>% adf.test(k = 20)
+```
+```{r}
+adf.test(usa.ts.df$gdp)
+pp.test(usa.ts.df$gdp)
+# Cuidado: a H0 do KPSS é de ESTACIONARIEDADE (ao contrário do ADF e do PP)
+kpss.test(usa.ts.df$gdp)
+```
+
+
+```{r}
+# No pacote forecast tem essa função ndiffs
+# que pode usar Dickey-Fuller, Phillips-Perron, KPSS
+ndiffs(usa.ts.df$gdp)
+ndiffs(usa.ts.df$inf)
+ndiffs(usa.ts.df$f)
+ndiffs(usa.ts.df$b)
+ndiffs(x1)
+ndiffs(x2)
+ndiffs(x3)
+ndiffs(dx3)
+ndiffs(xac)
+ndiffs(xacc)
+ndiffs(xbc)
+ndiffs(xbcc)
+```
+
+# 12.4 Cointegration
+
+
+Cointegração é o **ÚNICO** procedimento que usa as séries não-estacionárias. 
+
+
+```{r}
+plot.ts(usa.ts.df[,3:4]) # não-estacionárias
+lm(f~b, usa.ts.df) -> m
+m$residuals %>% plot.ts; abline(h = 0)
+m$residuals %>% acf
+m$residuals %>% adfTest(lags = 4, type = "nc") # resíduos são estacionários
+m$residuals %>% ndiffs # resíduos são estacionários
+```
+
+
+## Teste de Phillips-Ouliaris
+
+```{r}
+# H0: não há cointegração
+# o teste rejeita fracamente a não-integração, ou seja, as 
+# séries são fracamente cointegradas
+po.test(usa.ts.df[,3:4], demean = FALSE)
+```
+
+# 12.5 The Error Correction Model
+
+Teste de Johansen da biblioteca `urca`
+
+```{r}
+library(urca)
+# teste de cointegração mais rigoroso
+urca::ca.jo(usa.ts.df[,4:3], type = "eigen") %>% summary
+# teste de cointegração mais leniente
+urca::ca.jo(usa.ts.df[,4:3], type = "trace") %>% summary
+```
+
+# ARIMA
+
+O modelo ARIMA é um padrão da indústria para previsão 
+
+O modelo ARIMA é caracterizado por 3 parâmetros (p, d, q)
+
+p = autoregressivo
+
+d = integrado (d é de diferença)
+
+q = médias móveis
+
+
+```{r}
+forecast::auto.arima(x1)
+forecast::auto.arima(x2)
+forecast::auto.arima(x3)
+forecast::auto.arima(dx3)
+forecast::auto.arima(xa)
+forecast::auto.arima(xac)
+forecast::auto.arima(xacc, trace = TRUE, max.q = 0)
+```
+```{r}
+arima(x3, order= c(1, 0, 0))
+arima(x3, order= c(1, 1, 0))
+arima(x3, order= c(1, 2, 0))
+```
+
+O modelo ARIMA sem integração se chama ARMA e sem medias móveis é um AR.
+
+## Cochrane-Orcutt (modelo AR(1))
+
+Vamos falar dele na próxima aula (?).
+
+
+
+

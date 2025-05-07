@@ -88,3 +88,21 @@ library(reticulate)
 
 ```
 
+# AULA 7 { - }
+
+```{r Aula 07, child="Aula07.Rmd"}
+
+```
+
+# AULA 8 { - }
+
+```{r Aula 08, child="Aula08.Rmd"}
+
+```
+
+# AULA 9 { - }
+
+```{r Aula 09, child="Aula09.Rmd"}
+
+```
+
