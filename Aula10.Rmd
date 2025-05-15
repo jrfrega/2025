@@ -1,0 +1,341 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 10"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "10/05/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+.stargazertype = .sgouttype
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+library(stargazer)
+```
+```{r}
+library(tseries) # for ADF unit root tests
+library(dynlm)
+library(nlWaldTest) # for the `nlWaldtest()` function
+library(lmtest) #for `coeftest()` and `bptest()`.
+library(broom) #for `glance(`) and `tidy()`
+library(PoEdata) #for PoE4 datasets
+library(car) #for `hccm()` robust standard errors
+library(sandwich)
+library(knitr) #for kable()
+library(forecast) 
+```
+
+
+# Chapter 13 VEC and VAR Models
+
+# 13.1 VAR and VEC Models
+
+$$
+y_t = \beta_{10} + \beta_{11}\ y_{t-1} + \beta_{12}\ x_{t-1} +\ ^y\nu_t\\
+x_t = \beta_{20} + \beta_{21}\ y_{t-1} + \beta_{22}\ x_{t-1} +\ ^x\nu_t\\[1em]
+y_t = \beta_0 + \beta_1 x_t + e_t\\[1em]
+\widehat{ e }_{t-1} = y_{t-1} - \beta_0 - \beta_1\ x_{t-1}\\[1em]
+y_t-y_{t-1} = \alpha_{10}+\alpha_{11}\ \widehat{ e }_{t-1} + \ ^y\nu_t\\
+\Delta y_t = \alpha_{10}+\alpha_{11}\ \widehat{ e }_{t-1} + \ ^y\nu_t\\
+x_t-x_{t-1} = \alpha_{20}+\alpha_{21}\ \widehat{ e }_{t-1} + \ ^x\nu_t\\
+\Delta x_t = \alpha_{20}+\alpha_{21}\ \widehat{ e }_{t-1} + \ ^x\nu_t\\
+$$
+
+
+## 13.2 Estimating a VEC Model
+
+Essa estimação é feita pelo método de Engle-Granger
+
+```{r}
+library(PoEdata)
+data("gdp")
+gdp
+mcol = c("blue", "red")
+plot.ts(gdp, plot.type = "single", col = mcol)
+legend("topleft", c("USA", "AUS"), fill = mcol, border = NULL, bty = "n")
+acf(gdp$usa)
+# como o decaimento é lento, deixo a função adf calcular o número
+# adequado de lags
+# lembrando que H0: a série é não-estacionária
+# o p-valor aceita H0, logo a série é não-estacionária
+adf.test(gdp$usa)
+acf(gdp$aus)
+# como o decaimento é lento, deixo a função adf calcular o número
+# adequado de lags
+# lembrando que H0: a série é não-estacionária
+# o p-valor aceita H0, logo a série é não-estacionária
+adf.test(gdp$aus)
+# vamos verificar se as séries são I(1)
+gdp$usa %>% diff -> dgdp
+acf(dgdp)
+# como o decaimento é rápido, uso os lags significativos (2)
+# lembrando que H0: a série é não-estacionária
+# o p-valor rejeita fortemente H0, logo a série é estacionária
+adf.test(dgdp, k = 2)
+gdp$aus %>% diff -> dgdp
+acf(dgdp)
+# como o decaimento é rápido, uso os lags significativos (1)
+# lembrando que H0: a série é não-estacionária
+# o p-valor rejeita fortemente H0, logo a série é estacionária
+adf.test(dgdp, k = 1)
+# ambas as séries são I(1)
+dynlm(aus~0+usa, gdp) -> m
+dynlm(aus~-1+usa, gdp) -> m
+dynlm(aus~usa-1, gdp) -> m
+m %>% summary
+plot.ts(m$residuals); abline(h = 0, col = "darkgray")
+acf(m$residuals)
+# como o decaimento é rápido, uso os lags significativos (7)
+# lembrando que H0: a série em teste é não-estacionária
+# no caso, estamos testando o erro (resíduos) da regressão
+# o p-valor rejeita H0 (0.03 < 0.05), logo a série é estacionária (por pouco)
+m$residuals %>% adf.test(k = 7)
+```
+
+Colonescu faz a regressão de Dickey-Fuller manualmente, sem tendência e sem constante, com apenas um lag
+
+
+```{r}
+m$residuals -> ehat
+ehat = ts(ehat)
+dynlm(d(ehat)~L(ehat)-1) %>% summary
+```
+
+$$
+\Delta \text{aus}\,_t = \alpha_{10}+\alpha_{11}\ \widehat{ e }_{t-1} + \ ^y\nu_t\\
+\Delta \text{usa}\,_t = \alpha_{20}+\alpha_{21}\ \widehat{ e }_{t-1} + \ ^x\nu_t\\
+$$
+
+d(aus)~L(ehat)
+
+Quero saber se $\alpha_{11}$ é significativo.
+
+d(usa)~L(ehat)
+
+Quero saber se $\alpha_{21}$ é significativo.
+
+
+```{r}
+gdp = ts(gdp)
+vecaus<- dynlm(d(aus)~L(ehat), data=gdp)
+# O erro no tempo t-1 (L(ehat)) tem uma influência significativa e negativa
+# sobre a taxa de variação do gdp da aus
+# d(aus) = aus[t]-aus[t-1]
+summary(vecaus)
+vecusa <- dynlm(d(usa)~L(ehat), data=gdp)
+# O erro no tempo t-1 (L(ehat)) não tem uma influência significativa
+# sobre a taxa de variação do gdp do usa
+# d(usa) = usa[t]-usa[t-1]
+summary(vecusa)
+```
+
+## Usando o teste de Johanssen
+
+Teste genérico que pode ser aplicado a mais de 2 séries simultaneamente. 
+
+
+```{r}
+library(urca)
+# Este teste de Dickey-Fuller com TODAS as opções
+# mais sofisticado e um tanto mais difícil de interpretar
+# urca::ur.df(gdp[,"usa"]) %>% summary
+# 
+# Teste ca(Cointegration Ananlysis).jo(Johanssen)
+# duas versões: eigen (mais rigoroso) e trace (mais leniente)
+# Values of teststatistic and critical values of test:
+# ler de baixo para cima enquanto o valor da estatística de teste
+# for maior que os valores de referência
+# Como o valor da estatística de teste é menor que os valores de referência
+# para a linha r = 0, significa que não há relações de cointegração
+urca::ca.jo(gdp[,1:2], type = "eigen", K = 2) -> jo
+jo %>% summary
+# Values of teststatistic and critical values of test:
+# ler de baixo para cima enquanto o valor da estatística de teste
+# for maior que os valores de referência
+# Como o valor da estatística de teste é maior que o valor de referência
+# de 10%
+# para a linha r = 0, significa que há r = 1 relações de cointegração
+urca::ca.jo(gdp[,1:2], type = "trace", K = 2) -> jo
+jo %>% summary
+# r = 1 é o número de relações de cointegração que foram identificadas
+# no teste de Johanssen. Como são duas variáveis, o máximo possível
+# é uma relação. 
+urca::cajorls(jo, r = 1) -> vecm
+vecm$beta
+vecm$rlm %>% summary
+```
+Este é o mecanismo de correção de erros:
+
+$$
+ect1 = 1.0000000\ usa.l2 - 0.9381727\ aus.l2
+$$
+
+As equações de regressão indicam que $\Delta usa_t$ é afetado apenas por $\Delta usa_{t-1}$, ou seja, é um fenômeno puramente autoregressivo. 
+
+Por outro lado, $\Delta aus_t$ é afetado por $ect1_t$ e por $\Delta usa_{t-1}$
+
+
+
+## 13.3 Estimating a VAR Model
+
+E quando as séries não são cointegradas?
+
+Faz-se um estudo de relações de curto prazo, que é um modelo VAR.
+
+$$
+\Delta y_t = \beta_{10} + \beta_{11}\ \Delta y_{t-1} + \beta_{12}\ \Delta x_{t-1} +\ ^{\Delta y}\nu_t\\
+\Delta x_t = \beta_{20} + \beta_{21}\ \Delta y_{t-1} + \beta_{22}\ \Delta x_{t-1} +\ ^{\Delta x}\nu_t\\[1em]
+$$
+
+Faremos as primeiras diferenças (séries I(1)). 
+
+O modelo VAR é calculado nas séries estacionadas (primeira diferença).
+
+```{r}
+data("fred", package="PoEdata")
+# c = log do consumo
+# y = log do excedente de renda
+fred <- ts(fred, start=c(1960,1),end=c(2009,4),frequency=4)
+ts.plot(fred[,"c"],fred[,"y"], type="l", 
+        lty=c(1,2), col=c(1,2))
+legend("topleft", border=NULL, legend=c("c","y"), 
+       lty=c(1,2), col=c(1,2))
+```
+
+
+```{r}
+Acf(fred[,"c"])
+adf.test(fred[,"c"])
+Acf(fred[,"y"])
+adf.test(fred[,"y"])
+Acf(fred[,"c"] %>% diff)
+adf.test(fred[,"c"] %>% diff, k = 3)
+ts.plot(fred[,"c"] %>% diff); abline(h = mean(fred[,"c"] %>% diff))
+Acf(fred[,"y"] %>% diff)
+adf.test(fred[,"y"] %>% diff, k = 3)
+ts.plot(fred[,"y"] %>% diff); abline(h = mean(fred[,"y"] %>% diff))
+```
+
+Ou seja, as séries são I(1)!
+
+```{r}
+cointcy <- dynlm(c~y-1, data=fred)
+ehat <- resid(cointcy)
+plot.ts(ehat)
+Acf(ehat)
+adf.test(ehat)
+```
+
+O termo de erro é não-estacionário, o que viola a segunda condição de possibilidade de cointegração. Logo, não se pode usar o modelo VEC. 
+
+
+```{r}
+ca.jo(fred, type = "trace") -> jo; jo %>% summary
+cajorls(jo, r = 1) -> vecm
+vecm$rlm %>% summary
+```
+
+Em considerando que os resíduos são não-estacionários, precisamos usar um modelo VAR.
+
+```{r}
+library(vars)
+Dc <- diff(fred[,"c"])
+Dy <- diff(fred[,"y"])
+varmat <- as.matrix(cbind(Dc,Dy))
+Pacf(varmat)
+varfit <- VAR(varmat, p=1) # `VAR()` from package `vars`
+summary(varfit)
+```
+
+Cada variável é influenciada pelo passado próprio e da outra variável, caracterizando o fenômeno VAR.
+
+
+## 13.4 Impulse Responses and Variance Decompositions
+
+```{r, fig.asp=1, eval=FALSE, include=FALSE}
+library(urca)
+library(vars)
+data(Canada)
+var.2c <- VAR(Canada, p = 2, type = "const")
+plot(var.2c)
+var.2c.irf <- irf(var.2c, impulse = "e",
+response = c("prod", "rw", "U"), boot = FALSE)
+plot(var.2c.irf)
+## Stability
+var.2c.stabil <- stability(var.2c, type = "Rec-CUSUM")
+layout(1:2)
+plot(var.2c.stabil)
+```
+
+
+```{r}
+# Fazendo os gráficos sem usar a função plot da biblioteca vars
+class(varfit)
+impresp <- irf(varfit, boot = TRUE)
+layout(matrix(1:4, nrow = 2))
+# para colocar todos os gráficos na mesma escala
+# vamos ajustar os limites superior e inferior das ordenadas
+#
+# cálculo do limite superior
+impresp$irf %>% unlist %>% max -> mx
+(mx %>% log10() %>% abs %>% ceiling) -> decs
+mx = mx + 10^(-decs)*0.5
+mx = round(mx, decs)
+# cálculo do limite inferior
+impresp$irf %>% unlist %>% min -> mi
+if(mi>=0) {
+  mi = 0
+} else {
+  (-mi %>% log10() %>% abs %>% ceiling) -> decs
+  mi = mi - 10^(-decs)*0.5
+  mi = round(mi, decs)
+}
+# limites do gráfico
+ylim = c(mi, mx)
+plot(impresp$irf$Dc[,1], type = "l", main = "Dc x Dc", ylab = "Dc", ylim = ylim);grid()
+plot(impresp$irf$Dc[,2], type = "l", main = "Dy x Dc", ylab = "Dy", ylim = ylim);grid()
+plot(impresp$irf$Dy[,1], type = "l", main = "Dc x Dy", ylab = "Dc", ylim = ylim);grid()
+plot(impresp$irf$Dy[,2], type = "l", main = "Dy x Dy", ylab = "Dy", ylim = ylim);grid()
+```
+
+```{r}
+#layout(matrix(1:4, ncol=2))
+plot(impresp)
+plot(vars::fevd(varfit))
+```
+
+
+

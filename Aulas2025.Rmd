@@ -31,7 +31,7 @@ documentclass: book
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, tidy=TRUE, tidy.opts = list(blank = FALSE, width.cutoff = 60), fig.width = 5, fig.align = "center", wrapper=TRUE)
+knitr::opts_chunk$set(echo = TRUE, tidy=FALSE, tidy.opts = list(blank = FALSE, width.cutoff = 60), fig.width = 5, fig.align = "center", wrapper=TRUE)
 knitr::knit_hooks$set(wrapper = function(before, options) {
   # the original chunk might be indented
   if (is.null(indent <- options$indent)) indent <- ''
@@ -103,6 +103,12 @@ library(reticulate)
 # AULA 9 { - }
 
 ```{r Aula 09, child="Aula09.Rmd"}
+
+```
+
+# AULA 10 { - }
+
+```{r Aula 10, child="Aula10.Rmd"}
 
 ```
 
