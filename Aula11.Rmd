@@ -1,0 +1,202 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 11"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "20/05/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+.stargazertype = .sgouttype
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+library(stargazer)
+```
+
+# Usando o Python { - }
+
+```{r}
+library(reticulate)
+```
+
+```{r}
+# Aqui define uma variável no R
+variavel_no_R_a = 10
+```
+
+```{python}
+# Aqui define uma variável no Python
+variavel_no_Py_a = 20
+# Aqui eu chamo a variável que foi definida no bloco em R
+r.variavel_no_R_a
+```
+
+```{r}
+# Aqui eu chamo a variável definida no bloco em Python
+py$variavel_no_Py_a
+```
+
+
+# Chapter 14 Time-Varying Volatility and ARCH Models
+
+Volatilidade = o quanto a variável modifica a sua variância ao longo do tempo
+
+Variância -> heterocedasticidade
+
+ARCH -> Auto-Regressive Conditional Heteroscedasticity
+
+GARCH -> Generalized Auto-Regressive Conditional Heteroscedasticity
+
+## Preâmbulo
+
+```{r}
+library(PoEdata)
+data(sp)
+sp$r %>% plot.ts(col = "gray"); abline(h = c(0, mean(sp$r)), col = c("lightblue", "red"))
+f = function(x) c(mean(x), sd(x))
+f(sp$r)
+sp$r %>% pacf
+library(quantmod)
+getSymbols(c("AAPL", "IBM"), reload.Symbols = TRUE)
+AAPL$AAPL.Close %>% tail(300) -> aapl
+aapl %>% plot
+aapl %>% acf
+daapl = diff(aapl)[2:length(aapl)]
+daapl %>% plot
+daapl %>% acf
+daapl %>% pacf
+f(daapl)
+```
+
+
+## Livro do Colonescu { - }
+
+```{r}
+library(FinTS) #for function `ArchTest()`
+library(rugarch) #for GARCH models
+library(tseries) # for `adf.test()`
+library(dynlm) #for function `dynlm()`
+library(vars) # for function `VAR()`
+library(nlWaldTest) # for the `nlWaldtest()` function
+library(lmtest) #for `coeftest()` and `bptest()`.
+library(broom) #for `glance(`) and `tidy()`
+library(PoEdata) #for PoE4 datasets
+library(car) #for `hccm()` robust standard errors
+library(sandwich)
+library(knitr) #for `kable()`
+library(forecast) 
+```
+
+## 14.1 The ARCH Model
+
+
+Modelo homoscedástico
+
+
+$$
+e \text{~} N(0, \sigma^2) \text{ onde } \sigma^2 \text{ é constante}
+$$
+
+Modelo heteroscedástico
+
+
+$$
+e_t \text{~} N(0, h_t) \text{ onde } h \text{ não é constante}\\[1em]
+h_t = \alpha_0 + \alpha_1\ e^2_{t-1} \quad \alpha_0 > 0, \quad 0 \leqslant \alpha_1 < 1
+$$
+
+$$
+y_t = \beta_0 + e_t\\[1em]
+\widehat{e_t} = \gamma_0 + \gamma_1\ \widehat{e_{t-1}} + \gamma_2\ \widehat{e_{t-2}} + \gamma_3\ \widehat{e_{t-3}} + \dots+ + \gamma_q\ \widehat{e_{t-q}} + \nu_t
+$$
+
+```{r}
+data("byd", package="PoEdata")
+rTS <- ts(byd$r)
+plot.ts(rTS)
+graphics::hist(rTS, main="", breaks=20, freq=FALSE, col="grey")
+```
+
+```{r}
+# H0: não há efeitos ARCH
+# Se esse teste aceitar a H0, não conseguimos modelar a heteroscedasticidade
+bydArchTest <- ArchTest(byd$r, lags=4, demean=TRUE)
+bydArchTest
+```
+O teste rejeitou H0, portanto... 
+Vamos à modelagem da heteroscedasticidade
+
+
+```{r}
+library(tseries)
+byd.arch = garch(byd$r, order= c(0, 1))
+summary(byd.arch)
+```
+
+Box-Ljung aceitando a H0 (que é o caso), significa que o modelo estimado (que foi o ARCH(1)) é adequado.
+
+
+```{r}
+hhat <- ts(2*byd.arch$fitted.values[-1,1]^2)
+plot.ts(hhat)
+```
+
+```{r}
+daapl %>% plot
+```
+
+
+Vamos tentar modelar a heteroscedasticidade da variável `daapl`.
+
+
+```{r}
+# H0: não há efeitos ARCH
+# Se esse teste aceitar a H0, não conseguimos modelar a heteroscedasticidade
+AaplArchTest <- ArchTest(daapl, lags=1, demean=TRUE)
+AaplArchTest
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
