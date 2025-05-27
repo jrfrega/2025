@@ -58,15 +58,21 @@ variavel_no_R_a = 10
 ```
 
 ```{python}
+import math
 # Aqui define uma variável no Python
 variavel_no_Py_a = 20
 # Aqui eu chamo a variável que foi definida no bloco em R
 r.variavel_no_R_a
+for i in range(0,10):
+  print(i, math.sqrt(i))
 ```
 
 ```{r}
 # Aqui eu chamo a variável definida no bloco em Python
-py$variavel_no_Py_a
+cat(py$variavel_no_Py_a, "\n")
+for(i in 0:9) {
+  cat(i, sqrt(i), "\n")
+}
 ```
 
 
@@ -89,8 +95,12 @@ sp$r %>% plot.ts(col = "gray"); abline(h = c(0, mean(sp$r)), col = c("lightblue"
 f = function(x) c(mean(x), sd(x))
 f(sp$r)
 sp$r %>% pacf
+# biblioteca para capturar dados financeiros
 library(quantmod)
+# Esta função vai no yahoo.finance
 getSymbols(c("AAPL", "IBM"), reload.Symbols = TRUE)
+head(AAPL)
+tail(AAPL)
 AAPL$AAPL.Close %>% tail(300) -> aapl
 aapl %>% plot
 aapl %>% acf
@@ -189,14 +199,223 @@ AaplArchTest <- ArchTest(daapl, lags=1, demean=TRUE)
 AaplArchTest
 ```
 
-```{r}
+Ao rejeitar H0, indica que podemos modelar `daapl` por um ARCH
 
+
+```{r}
+aapl.arch = garch(daapl, order= c(0, 1))
+summary(aapl.arch)
+```
+
+
+Box-Ljung indica que o modelo ARCH(1) é adequado
+
+```{r}
+hhat <- ts(2*aapl.arch$fitted.values[-1,1]^2)
+plot.ts(hhat)
+```
+
+```{r}
+IBM %>% head
+IBM$IBM.Close %>% plot
+IBM$IBM.Close %>% tail(300) -> ibm
+ibm %>% acf
+ibm %>% adf.test()
+dibm <- diff(ibm)[2:nrow(ibm)]
+dibm %>% acf
+dibm %>% adf.test()
+dibm %>% plot
+```
+
+```{r}
+# H0: não há efeitos ARCH
+# Se esse teste aceitar a H0, não conseguimos modelar a heteroscedasticidade
+IbmArchTest <- ArchTest(dibm, lags=2, demean=TRUE)
+IbmArchTest
+```
+
+Ao aceitar H0, indica que não podemos modelar `dibm` por um ARCH
+
+
+```{r}
+ibm.arch = garch(dibm, order= c(0, 1))
+summary(ibm.arch)
+```
+
+
+Box-Ljung indica que o modelo ARCH(1) é adequado... e daí?
+
+```{r}
+hhat <- ts(2*ibm.arch$fitted.values[-1,1]^2)
+plot.ts(cbind(dibm %>% as.numeric, c(0, hhat)))
+```
+
+# 14.2 The GARCH Model
+
+GARCH(1, 1)
+
+
+$$
+\widehat{h_t} =  \omega + \alpha_1\ e^2_{t-1} + \beta_1\ \widehat{h_{t-1}} \quad \alpha_0 > 0, \quad 0 \leqslant \alpha_1 < 1
+$$
+
+```{r}
+garch(byd$r, order = c(1, 1)) %>% summary
+```
+
+A não-significância do termo $b_1$ indica que o modelo mais adequado não é o GARCH, mas sim o ARCH.
+
+Isso é compreensível porque a série testada byd$r foi gerada artificialmente por meio de um modelo ARCH.
+
+
+```{r}
+garch(daapl, order = c(1, 1)) %>% summary
 ```
 
 
 
+```{r}
+garch(dibm, order = c(1, 1)) %>% summary
+```
 
 
 
+```{r, eval = TRUE}
+# Using package `rugarch` for GARCH models
+library(rugarch)
+garchSpec <- ugarchspec(
+           variance.model=list(model="sGARCH",
+                               garchOrder=c(1,1)),
+           mean.model=list(armaOrder=c(0,0)), 
+           distribution.model="norm")
+garchFit <- ugarchfit(spec=garchSpec, data=rTS)
+#garchFit@fit %>% str
+#garchFit %>% coeftest()
+mcoefTest = function(garchFit){ 
+  options(scipen = 999) -> oldscipen
+  cbind(garchFit@fit$coef,
+  garchFit@fit$robust.se.coef,
+  garchFit@fit$robust.tval,
+  2*(1-pt(garchFit@fit$robust.tval %>% abs, garchFit@model$modeldata$T-1))) %>% round(7) -> m
+  colnames(m) = c("Estimate", "Std. Error", "t value", "Pr(>|t|)")
+  print(m)
+  options(scipen = oldscipen)#, length(rTS)-1))
+  return(invisible(m))
+}
+mcoefTest(garchFit)
+options(scipen = 0)
+```
 
+
+```{r}
+x = mvrnorm(n = 100, mu = 0.2, Sigma = 4, empirical = TRUE)
+x = x[,1]
+x %>% mean
+lm(x~1) -> m
+summary(m)
+var(m$residuals)
+ArchTest(x)
+garchSpec <- ugarchspec(
+           variance.model=list(model="sGARCH",
+                               garchOrder=c(1,0)),
+           mean.model=list(armaOrder=c(0,0)), 
+           distribution.model="std")
+garchFit <- ugarchfit(spec=garchSpec, data=x)
+garchFit@fit %>% str
+mcoefTest(garchFit)
+```
+
+```{r}
+library(reticulate)
+#py_install("garch", method = "pip")
+py_version()
+```
+
+```{r}
+set.seed(12)
+# Parâmetros GARCH(1,1) (Exemplo)
+omega = 0.1
+alpha = 0.4
+beta = 0.8
+
+# Geração de choques aleatórios (normal)
+n = 300  # Número de períodos
+mu = 0.0
+eps = rnorm(n)
+
+# Variância condicional inicial
+sigma2_prev = 1.0
+
+# Vetor para armazenar a variância condicional
+sigma2 = rep(0, n)
+
+# Geração da variância condicional
+for (i in 2:n) {
+    sigma2[i] = omega + alpha * eps[i-1]**2 + beta * ifelse(i>1,sigma2_prev,omega)  # Inicializando com o termo constante
+    sigma2_prev = sigma2[i]
+}
+
+# Geração dos retornos
+y = mu + sqrt(sigma2) * eps
+y %>% plot.ts(col = "#1080CF", lwd = 2, xlab = "Período", ylab = "Retorno", main = "Retornos gerados GARCH(1,1)")
+```
+
+
+```{python, eval = FALSE}
+import numpy as np
+import garch
+import matplotlib.pyplot as plt
+
+# Parâmetros GARCH(1,1) (Exemplo)
+omega = 0.1
+alpha = 0.4
+beta = 0.3
+
+# Geração de choques aleatórios (normal)
+n = 300  # Número de períodos
+mu = 0.0
+eps = np.random.normal(0, 1, n)
+
+# Variância condicional inicial
+sigma2_prev = 1.0
+
+# Vetor para armazenar a variância condicional
+sigma2 = np.zeros(n)
+
+# Geração da variância condicional
+for i in range(n):
+    sigma2[i] = omega + alpha * eps[i-1]**2 + beta * sigma2_prev if i > 0 else omega  # Inicializando com o termo constante
+    sigma2_prev = sigma2[i]
+
+# Geração dos retornos
+y = mu + np.sqrt(sigma2) * eps
+
+# Visualização dos retornos gerados
+plt.plot(y)
+plt.title('Retornos Gerados GARCH(1,1)')
+plt.xlabel('Período')
+plt.ylabel('Retorno')
+plt.show()
+plt.close()
+```
+
+```{r}
+#y = py$y[1:length(py$y)]
+mean(y)
+lm(y~1)
+#y %>% plot.ts
+garchSpec <- ugarchspec(variance.model=list(model="fGARCH", submodel = "GARCH", garchOrder=c(1,1)), 
+		mean.model=list(armaOrder=c(0,0), include.mean=TRUE),  
+		distribution.model="norm")#, fixed.pars=list(omega=0.30))
+garchFit <- ugarchfit(spec=garchSpec, data=y)
+#garchFit@fit %>% str
+mcoefTest(garchFit)
+garchSpec <- ugarchspec(
+           variance.model=list(model="sGARCH",
+                               garchOrder=c(1,1)),
+           mean.model=list(armaOrder=c(0,0)), 
+           distribution.model="norm") #, fixed.pars = list(beta1 = 0, shape = 0))
+garchFit <- ugarchfit(spec=garchSpec, data=y)
+mcoefTest(garchFit)
+```
 
