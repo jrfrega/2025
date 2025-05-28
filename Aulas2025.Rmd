@@ -112,3 +112,15 @@ library(reticulate)
 
 ```
 
+# AULA 11 { - }
+
+```{r Aula 11, child="Aula11.Rmd"}
+
+```
+
+# AULA 12 { - }
+
+```{r Aula 12, child="Aula12.Rmd"}
+
+```
+

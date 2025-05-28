@@ -1,0 +1,319 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 12"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "27/05/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+.stargazertype = .sgouttype
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+library(stargazer)
+```
+
+# Chapter 15 Panel Data Models
+
+```{r}
+library(plm) # Panel Linear Models
+library(tseries) # for `adf.test()`
+library(dynlm) #for function `dynlm()`
+library(vars) # for function `VAR()`
+library(nlWaldTest) # for the `nlWaldtest()` function
+library(lmtest) #for `coeftest()` and `bptest()`.
+library(broom) #for `glance(`) and `tidy()`
+library(PoEdata) #for PoE4 datasets
+library(car) #for `hccm()` robust standard errors
+library(sandwich)
+library(knitr) #for `kable()`
+library(forecast) 
+library(systemfit)
+library(AER)
+library(xtable)
+```
+
+$$
+\text{dados de corte}\\
+y_i = \beta_0 + \sum_{j=1}^m \beta_j x_{ji} + \epsilon_i\\
+\text{série temporal}\\
+y_t = \beta_0 + \sum_{j=1}^k \beta_j x_{jt} + \epsilon_t\\
+\text{dados em painel}\\
+y_{it} = \beta_0 + \sum_{j=1}^k \beta_j x_{jit} + \epsilon_{it}\\
+$$
+
+## 15.1 Organizing the Data as a Panel
+
+Duas dimensões: 
+
+1) N = dimensão do corte 
+2) T = dimensão longitudinal
+
+Se N>>T o painel é largo (*wide*)
+
+Se N<<T o painel é longo (*long*)
+
+Pode organizar como séries temporais empilhadas ou como unidades de análise empilhadas.
+
+Mais comum é N séries temporais de tamanho T empilhadas.
+
++ ID + T +
++----+---+
++ 1  + 1 +
++ 1  + 2 +
++ 1  + 3 +
++ ...+...+
++ 1  + T +
++ 2  + 1 +
++ 2  + 2 +
++ 2  + 3 +
++ ...+...+
++ 2  + T +
++ 3  + 1 +
++ 3  + 2 +
++ 3  + 3 +
++ ...+...+
++ 3  + T +
++ ...+...+
++ ...+...+
++ ...+...+
++ N  + 1 +
++ N  + 2 +
++ N  + 3 +
++ ...+...+
++ N  + T +
++----+---+
+
+
+```{r}
+library(xtable)
+data("nls_panel", package="PoEdata")
+nlspd <- pdata.frame(nls_panel, index=c("id", "year"))
+smpl <- nlspd[nlspd$id %in% c(1,2),c(1:6, 14:15)]
+smpl
+#tbl <- xtable(smpl) 
+#kable(tbl, digits=4, align="c", caption="A data sample")
+```
+
+```{r}
+pdim(nlspd[,])
+pdim(nlspd[-c(1,2),])
+```
+
+
+## 15.2 The Pooled Model
+
+Pooled = *pooling*
+
+```{r}
+wage.pooled <- plm(lwage~educ+exper+I(exper^2)+tenure+I(tenure^2)+black+south+union, model="pooling", data=nlspd)
+wage.pooled %>% summary
+```
+
+```{r}
+tbl <- tidy(coeftest(wage.pooled, vcov=vcovHC(wage.pooled,
+                    type="HC0",cluster="group")))
+tbl
+```
+
+## 15.3 The Fixed Effects 
+
+Fixos = *within*
+
+```{r}
+wage.within <- plm(lwage~educ+exper+I(exper^2)+tenure+I(tenure^2)+black+south+union, data=nlspd, model="within")
+wage.within %>% summary
+```
+
+Licença poética:
+
+As variáveis que não variam ao longo do tempo para cada uma das unidades de análise não funcionam com modelos de efeitos fixos, ou seja, `educ` e `black` ficaram de fora do modelo. 
+
+### Pergunta: o modelo `within` é melhor que o modelo `pooling`?
+
+```{r}
+# H0: as unidades de análise não apresentam significância
+# pFtest(modelo a ser testado, modelo de referência)
+pFtest(wage.within, wage.pooled)
+```
+
+O p-value < 2.2e-16 do teste F rejeita a hipótese nula, levando-nos a crer que o modelo `within` é mais adequado que o modelo `pooling`. 
+
+## 15.4 The Random Effects Model
+
+```{r}
+# H0: não há efeitos significativos dos interceptos
+wageReTest <- plmtest(wage.pooled, effect="individual")
+wageReTest
+```
+
+O teste apresenta p-value < 2.2e-16 rejeitando H0 e favorecendo o modelo de efeitos aleatórios sobre o modelo `pooling`
+
+`random.method` $\in$ {“swar” (Swamy-Arora --- default), “amemiya”, “walhus”, or “nerlove”}
+
+```{r}
+wage.random <- plm(lwage~educ+exper+I(exper^2)+tenure+I(tenure^2)+black+south+union, data=nlspd, 
+                   random.method="swar",
+                   model="random")
+wage.random %>% summary
+```
+
+Os coeficientes de intercepto individual estão distribuídos em torno da média estimada na regressão de efeitos aleatórios
+
+$$
+\beta_{0i} = \bar{\beta_0} + u_i
+$$
+
+```{r}
+ranef(wage.random) %>% round(12) %>% scale %>% hist
+```
+
+Agora o teste de consistência --- Hausman
+
+Porque consistência? Se houver endogeneidade no modelo, os coeficientes estarão enviesados e o modelo perderá consistência. 
+
+```{r}
+# H0: ambos os modelos são consistentes
+phtest(wage.within, wage.random)
+phtest(wage.pooled, wage.random)
+```
+
+O teste indica p-value = 0.002055 (na melhor hipótese), ou seja, um dos dois modelos é inconsistente. Como os modelos `within` e `pooling` são consistentes, o modelo inconsistente é o `random`.
+
+Se pararmos nesta etapa, é necessário retornar ao modelo de efeitos fixos. Nesta situação perderemos as variáveis `educ` e `black`.
+
+### Estimador de Hausman-Taylor
+
+```{r}
+wage.HT <- plm(lwage~educ+exper+I(exper^2)+tenure+I(tenure^2)+black+south+union 
+               |
+               exper+I(exper^2)+tenure+I(tenure^2)+union+black,
+               data=nlspd, model="ht")
+#wage.HT <- plm(lwage~educ+exper+I(exper^2)+tenure+I(tenure^2)+black+south+union 
+#               |
+#               exper+I(exper^2)+tenure+I(tenure^2)+union+black,
+#               data=nlspd, model="random", random.method = "ht", inst.method = "bms")
+wage.HT %>% summary
+```
+
+```{r}
+stargazer::stargazer(coeftest(wage.pooled), coeftest(wage.random), coeftest(wage.HT), type = "text")
+```
+
+## 15.5 Grunfeld’s Investment Example
+
+```{r}
+data("grunfeld2", package="PoEdata")
+grun <- pdata.frame(grunfeld2, index=c("firm","year"))
+grun
+```
+
+```{r}
+grun.pool <- plm(inv~v+k, model="pooling",data=grun)
+grun.pool %>% summary
+m = lm(inv~v+k, data=grun)
+m %>% summary
+```
+
+```{r}
+SSE.pool <- sum(resid(grun.pool)^2)
+sigma2.pool <- SSE.pool/(grun.pool$df.residual)
+sigma2.pool
+```
+
+```{r}
+grun.fe <- plm(inv~v*grun$firm+k*grun$firm, model="pooling",data=grun)
+grun.fe %>% summary
+```
+
+```{r}
+SSE.fe <- sum(resid(grun.fe)^2)
+sigma2.fe <- SSE.fe/(grun.fe$df.residual)
+sigma2.fe
+```
+
+```{r}
+grun.within <- plm(inv~v+k, model="within",data=grun)
+grun.within %>% summary
+```
+
+```{r}
+pFtest(grun.within, grun.pool)
+```
+
+Não há motivo para usar o modelo `within` no lugar do modelo `pooling`.
+
+```{r}
+grun1.pool <- plm(inv~v+k, model="pooling",
+                 subset=grun$firm==1, data=grun)
+grun1.pool %>% summary
+SSE.pool1<- sum(resid(grun1.pool)^2)
+sig2.pool1 <- SSE.pool1/grun1.pool$df.residual
+```
+
+```{r}
+grun2.pool <- plm(inv~v+k, model="pooling",
+                 subset=grun$firm==2, data=grun)
+grun2.pool %>% summary
+SSE.pool2<- sum(resid(grun2.pool)^2)
+sig2.pool2 <- SSE.pool2/grun2.pool$df.residual
+```
+
+O pFtest indicou que não há necessidade de dividir as empresas usando o modelo `within`, por outro lado, as regressões separadas indicam que temos diferentes resultados para as diferentes empresas. E agora?
+
+
+```{r}
+gqtest(grun.pool, point=0.5, alternative="two.sided", order.by=grun$firm)
+```
+
+O teste apresenta p-value = 0.000143 rejeitando a hipótese nula de homoscedasticidade da GE versus WE, o que pode estar alterando o procedimento do painel levando a uma (falsa) aceitação do modelo `pooling` sobre o modelo `within`. 
+
+```{r}
+library("systemfit")
+grunf<- grunfeld2
+grunf$Firm<-"WE"
+for (i in 1:40){
+  if(grunf$firm[i]==1){grunf$Firm[i] <- "GE"}
+}
+grunf$firm <- NULL
+names(grunf)<- c("inv", "val", "cap", "year", "firm")
+grunfpd <- plm.data(grunf, c("firm","year"))
+grunf.SUR <- systemfit(inv~val+cap, method="SUR", data=grunfpd)
+summary(grunf.SUR, resdCov=FALSE, equations=FALSE)
+```
+
+
+
