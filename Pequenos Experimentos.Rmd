@@ -1024,3 +1024,37 @@ lm(y~., df) %>% summary
 
 ```
 
+# Modelo de regressão OLS em Python
+
+```{r}
+library(reticulate)
+```
+
+
+```{python}
+import statsmodels.api as sm
+data = sm.datasets.statecrime.load_pandas()
+mod = sm.OLS(data.endog, sm.add_constant(data.exog))
+res = mod.fit()
+print(res.summary())
+```
+
+```{r}
+py$data$data %>% lm(murder~urban+poverty+hs_grad+single, data=.) -> m
+m %>% summary
+AIC(m)
+BIC(m)
+res = resid(m)
+performance::skewness(res, method = "moment")
+performance::kurtosis(res, method = "moment")
+lmtest::dwtest(m)
+tseries::jarque.bera.test(res)
+car::vif(m)
+klaR::cond.index(murder ~ urban + poverty + hs_grad + single, data = m$model)
+olsrr::ols_eigen_cindex(m)
+mat = matrix(1, nrow(m$model))
+mat = cbind(mat, m$model[,c("urban", "poverty", "hs_grad", "single")])
+multiColl::CN(mat)
+max(cbind(m$model[,c("urban", "poverty", "hs_grad", "single")]))/min(cbind(m$model[,c("urban", "poverty", "hs_grad", "single")]))
+```
+

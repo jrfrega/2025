@@ -90,32 +90,20 @@ Pode organizar como séries temporais empilhadas ou como unidades de análise em
 
 Mais comum é N séries temporais de tamanho T empilhadas.
 
-+ ID + T +
-+----+---+
-+ 1  + 1 +
-+ 1  + 2 +
-+ 1  + 3 +
-+ ...+...+
-+ 1  + T +
-+ 2  + 1 +
-+ 2  + 2 +
-+ 2  + 3 +
-+ ...+...+
-+ 2  + T +
-+ 3  + 1 +
-+ 3  + 2 +
-+ 3  + 3 +
-+ ...+...+
-+ 3  + T +
-+ ...+...+
-+ ...+...+
-+ ...+...+
-+ N  + 1 +
-+ N  + 2 +
-+ N  + 3 +
-+ ...+...+
-+ N  + T +
-+----+---+
+```{r, results='asis'}
+library(printr)
+chars = c(1:3, "...", "N")
+id = NULL
+for (i in chars) {
+  id = c(id, c(rep(i, 3), "...", i))
+}
+T = c(1:3, "...", "T")
+T = rep(T, times = 5)
+cbind(id, T) -> m
+m[20, 2] = "T"
+kable(m, table.attr = "") %>% kableExtra::kable_paper("striped", full_width = F, position = "left")
+```
+
 
 
 ```{r}
@@ -315,5 +303,77 @@ grunf.SUR <- systemfit(inv~val+cap, method="SUR", data=grunfpd)
 summary(grunf.SUR, resdCov=FALSE, equations=FALSE)
 ```
 
+# Dados completos do estudo de Grunfeld { - }
+
+
+```{r, eval=TRUE}
+if(exists("Grunfeld")) rm(Grunfeld)
+data("Grunfeld", package = "AER")
+head(Grunfeld)
+tail(Grunfeld)
+unique(Grunfeld$firm)
+pGrunfeld = pdata.frame(Grunfeld, index = c("firm", "year"))
+str(pGrunfeld)
+mpool = plm(invest~value+capital, model = "pooling", data = pGrunfeld)
+summary(mpool)
+mwithin = plm(invest~value+capital, model = "within", data = pGrunfeld)
+pFtest(mwithin, mpool)
+summary(mwithin)
+fixef(mwithin)
+mrandom = plm(invest~value+capital, model = "random", data = pGrunfeld)
+plmtest(mrandom)
+phtest(mrandom, mwithin)
+summary(mrandom)
+ranef(mrandom)
+```
+
+# Em resumo { - }
+
+Em geral, nem regressões de dados em painel com efeitos aleatórios nem com efeitos fixos são superiores por si sós. A escolha depende das premissas sobre os termos de erro do modelo e dos objetivos do pesquisador. Modelos de efeitos fixos são mais robustos à correlação entre características individuais invariantes no tempo e variáveis explicativas, enquanto modelos de efeitos aleatórios são mais eficientes quando o efeito específico do indivíduo é aleatório e não correlacionado com os regressores (ausência de endogeneidade).
+
+**Efeitos Fixos:**
+
+**Suposição:**
+
+* Assume que o efeito específico do indivíduo é fixo (não um sorteio aleatório de uma população) e está correlacionado com as variáveis explicativas.
+
+**Vantagens:**
+
+* Robustez ao viés de variável omitida: Controla características individuais não observadas que são constantes ao longo do tempo, mesmo que estejam correlacionadas com as variáveis explicativas (eficaz para controlar endogeneidade).
+* Não há necessidade de assumir independência de erros: Pode acomodar autocorrelação e correlação serial nos termos de erro.
+
+**Desvantagens:**
+
+* Não pode incluir variáveis invariantes no tempo: Absorve todas as características invariantes no tempo no efeito específico do indivíduo (intercepto).
+* Pode ser menos eficiente: Como não explora a variância entre indivíduos, pode levar a intervalos de confiança mais amplos (aumento do erro-padrao -> perda de eficiência).
+
+**Efeitos Aleatórios:**
+
+**Suposição:**
+
+* Assume que o efeito específico do indivíduo é um resultado aleatório de uma população e não está correlacionado com as variáveis explicativas (pode ser inconsistente se essa condição for violada).
+
+**Vantagens:**
+
+* Eficiência: Mais eficiente do que efeitos fixos quando a suposição de ausência de correlação entre o efeito específico do indivíduo e os regressores é válida.
+
+* Pode incluir variáveis invariantes no tempo: Variáveis explicativas que são constantes ao longo do tempo podem ser incluídas no modelo.
+
+**Desvantagens:**
+
+* Sensibilidade à suposição de ausência de correlação: Se a suposição for violada, os estimadores podem ser tendenciosos e inconsistentes.
+
+* Pode ser menos robusto: Mais vulnerável ao viés da variável omitida se o efeito específico do indivíduo estiver correlacionado com as variáveis explicativas.
+
+**Escolhendo entre Efeitos Fixos e Aleatórios:**
+
+* Teste de Hausman:
+Um teste estatístico usado para determinar se o modelo de efeitos aleatórios é apropriado. A hipótese nula é que o modelo de efeitos aleatórios é válido (ou seja, o efeito específico do indivíduo não está correlacionado com os regressores). A rejeição da hipótese nula sugere que efeitos fixos devem ser utilizados (ou usar um modelo que procure corrigir a endogeneidade, como Hausman-Taylor ou GMM).
+
+**Considerações Teóricas:**
+
+* A escolha também pode ser orientada pela compreensão dos dados pelo pesquisador e pelo potencial de correlação entre efeitos específicos do indivíduo e variáveis explicativas.
+
+* O contexto específico da questão de pesquisa e dos dados também pode influenciar a escolha entre efeitos fixos e aleatórios.
 
 
