@@ -1,0 +1,365 @@
+---
+title: "Métodos Numéricos Aplicados a Finanças --- Turma 2025"
+subtitle: "Aula 12"
+author: "Prof. Frega 
+<br>\\cr
+\\small <small>PPGOLD/Universidade Federal do Paraná</small>"
+date: "27/05/2025"
+output: 
+  # html_document:
+  # o tipo de documento bookdown::html_document2 acrescenta algumas 
+  # funcionalidades extras ao tipo html_document
+  bookdown::html_document2: 
+    # mostra o sumário com seu nível máximo
+    toc: yes
+    toc_depth: 6
+    # coloca o sumário flutuante à esquerda
+    toc_float: true
+    theme: cer
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+    css: estilo.css
+  rmdformats::readthedown:
+    toc_depth: 6
+    number_sections: yes
+    # mostra/oculta os chunks de código
+    code_folding: 'show'
+  pdf_document:
+    toc: yes
+    toc_depth: 6
+    number_sections: yes
+    extra_dependencies:
+      babel: ["portuguese,brazil"]
+      geometry: ["top=3cm, bottom=2cm,left=3cm,right=2cm"]
+documentclass: book
+---
+
+```{=html}
+```
+
+```{r}
+library(magrittr)
+.sgouttype = ifelse(!is.null(knitr::opts_knit$get("out.format")), "html", "text")
+.stargazertype = .sgouttype
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+library(stargazer)
+```
+
+```{r}
+library(nlWaldTest) # for the `nlWaldtest()` function
+library(lmtest) #for `coeftest()` and `bptest()`.
+library(broom) #for `glance(`) and `tidy()`
+library(PoEdata) #for PoE4 datasets
+library(car) #for `hccm()` robust standard errors
+library(sandwich)
+library(knitr) #for `kable()`
+library(forecast) 
+library(AER)
+library(xtable)
+```
+
+
+# Chapter 16 Qualitative and LDV Models
+
+y é uma variável qualitativa, ou seja 0 representa uma categoria e 1 representa outra categoria. Não é uma relação numérica. $(0\ne1)$
+
+$$
+y = \beta_0 + \beta_1\ x_1 + \beta_2\ x_2 + \beta_3\ x_3 + \dots  + \beta_k\ x_k + e
+$$
+
+Este é um procedimento de classificação: dados os valores de $x$, infere-se que o $y$ pertença à categoria 0 ou à categoria 1 por meio do $\widehat{y}$. 
+
+Vamos começar com uma regressão binária (ou seja, y pode assumir um dentre dois valores, usualmente representados por 0 e 1).
+
+
+```{r Gerando categorias}
+discretize = function(x, levels = 5) {
+  cut(x, levels) %>% as.numeric
+}
+set.seed(22)
+# Gerando valores aleatórios
+N = 50
+cf = c(1, 0, 2, 0, -1)
+m = NULL
+for(i in 1:5) {
+  m = cbind(m, discretize(rnorm(N)))
+}
+y = (m%*%cf + rnorm(N)) %>% discretize(2) - 1
+m = cbind(y, m)
+colnames(m) = c("y", paste("x", 1:5, sep = ""))
+head(m)
+```
+
+Modelo baseado em uma regressão linear é chamado de modelo discriminante linear
+
+```{r}
+m1 = lm(y~x1+x2+x3+x4+x5, data = m %>% as.data.frame)
+# m1 = lm(y~., data = m %>% as.data.frame)
+m1 %>% summary 
+# vejamos os yhat
+m1$fitted.values %>% head
+# vamos mostra os valores originais
+m[, "y"] %>% head
+# vamos comparar os dois
+cbind(yhat = m1$fitted.values, y = m[, "y"]) %>% head
+# modelo de classificação previsto x observado
+cbind(yhat = m1$fitted.values >= 0.5, y = m[, "y"]) -> classific
+classific %>% head
+# gerar a matriz de confusão (confusion matrix)
+classific %>% as.data.frame %>% table %>% t
+# quais são os casos em que a previsão errou
+which(classific[,1]!=classific[,2]) -> errou
+errou %>% as.numeric()
+m[errou,]
+```
+
+## Probit
+
+```{r}
+curve(dnorm(x, 0, 1), xlim = c(-3, 3))
+curve(dlogis(x, 0, 0.67), xlim = c(-3, 3))
+```
+
+
+Define-se $\Phi(y)$ como a função densidade acumulada da distribuição normal. 
+
+$$
+y = \beta_0 + \beta_1\ x_1 + \beta_2\ x_2 + \beta_3\ x_3 + \dots  + \beta_k\ x_k + e\\[1em]
+\hat{p} = \Phi(y)
+$$
+
+todos os valores previstos na regressão podem ser enxergados como probabilidades, pois estão em um intervalo $[0,\ 1]$
+
+
+```{r}
+layout(1:2 %>% matrix(ncol = 2))
+curve(dnorm(x, 0, 1), xlim = c(-3, 3), main = "Densidade")
+curve(pnorm(x, 0, 1), xlim = c(-3, 3), main = "Área acumulada")
+```
+
+```{r}
+m
+# Generalized Linear Model - GLM
+glm(y~x1+x2+x3+x4+x5, data = m %>% as.data.frame(), family = binomial(link = "probit")) -> m2
+summary(m2)
+# vejamos os yhat
+m2$fitted.values %>% head
+# vamos mostra os valores originais
+m[, "y"] %>% head
+# vamos comparar os dois
+cbind(yhat = m2$fitted.values, y = m[, "y"]) %>% head
+# modelo de classificação previsto x observado
+cbind(yhat = m2$fitted.values >= 0.5, y = m[, "y"]) -> classific
+classific %>% head
+# gerar a matriz de confusão (confusion matrix)
+classific %>% as.data.frame %>% table %>% t
+# quais são os casos em que a previsão errou
+which(classific[,1]!=classific[,2]) -> errou
+errou %>% as.numeric()
+m[errou,]
+```
+
+## 16.3 The Transportation Example
+
+```{r}
+data("transport", package="PoEdata")
+?transport
+# quanto maior o dtime (bus time - auto time)/10, mais terei preferência pelo auto
+auto.probit <- glm(auto~dtime, family=binomial(link="probit"), 
+                   data=transport)
+summary(auto.probit)
+```
+
+
+## 16.4 The Logit Model for Binary Choice
+
+Hosmer & Lemeshow 
+
+$$
+y = \beta_0 + \beta_1\ x_1 + \beta_2\ x_2 + \beta_3\ x_3 + \dots  + \beta_k\ x_k + e\\[1em]
+\hat{p} = \Lambda(y) = \dfrac{1}{1+e^{-y}} = \dfrac{e^y}{1+e^y}
+$$
+
+```{r}
+layout(1:2 %>% matrix(ncol = 2))
+curve(dlogis(x, 0, 1), xlim = c(-3, 3), main = "Densidade")
+curve(plogis(x, 0, 1), xlim = c(-3, 3), main = "Área acumulada")
+```
+
+```{r}
+m
+# Generalized Linear Model - GLM
+glm(y~x1+x2+x3+x4+x5, data = m %>% as.data.frame(), family = binomial(link = "logit")) -> m3
+summary(m3)
+# vejamos os yhat
+m3$fitted.values %>% head
+# vamos mostra os valores originais
+m[, "y"] %>% head
+# vamos comparar os dois
+cbind(yhat = m3$fitted.values, y = m[, "y"]) %>% head
+# modelo de classificação previsto x observado
+cbind(yhat = m3$fitted.values >= 0.5, y = m[, "y"]) -> classific
+classific %>% head
+# gerar a matriz de confusão (confusion matrix)
+classific %>% as.data.frame %>% table %>% t
+# quais são os casos em que a previsão errou
+which(classific[,1]!=classific[,2]) -> errou
+errou %>% as.numeric()
+m[errou,]
+```
+
+Logit é computacionalmente mais eficiente que o Probit. 
+
+## Construção x validação { - }
+
+Não se deve validar o modelo usando os mesmos dados com o qual ele foi construído, ou seja, se calcularmos o yhat a partir da mesma amostra que usamos para calcular o modelo, ele estará trabalhando em cima de dados conhecidos (validade interna). Se usarmos uma parte dos dados para construir o modelo e a outra parte para validá-lo, teremos a validade externa do modelo. 
+
+Exemplo:
+
+```{r Gerando categorias 2}
+discretize = function(x, levels = 5) {
+  cut(x, levels) %>% as.numeric
+}
+set.seed(231)
+# Gerando valores aleatórios
+N = 500
+cf = c(1, 0, 2, 0, -1)
+m = NULL
+for(i in 1:5) {
+  m = cbind(m, discretize(rnorm(N)))
+}
+y = (m%*%cf + rnorm(N)) %>% discretize(2) - 1
+m = cbind(y, m)
+colnames(m) = c("y", paste("x", 1:5, sep = ""))
+head(m)
+```
+
+```{r}
+m %>% nrow * 0.70 -> nconstroi
+sample(1:nrow(m), nconstroi) -> w
+# este conjunto vai construir o modelo
+constroi = m[w, ] %>% as.data.frame
+# este aqui vai validar o modelo
+valida = m[-w, ] %>% as.data.frame
+m4 = glm(y~., data = constroi, family = binomial(link = "logit"))
+# se usar o conjunto de construção para validar, terei uma validação interna
+predict(m4, newdata = constroi, type = "response") -> yhat
+data.frame(y = constroi$y, yhat = (yhat > 0.5) %>% as.numeric) %>% table -> t
+(t/rowSums(t)) %>% round(4) * 100 -> torigperc
+torigperc
+torig = t
+# a validação real é conseguida por meio da previsão sobre o conjunto de validação
+predict(m4, newdata = valida, type = "response") -> yhat
+data.frame(y = valida$y, yhat = (yhat > 0.5) %>% as.numeric) %>% table -> t
+(t/rowSums(t)) %>% round(4) * 100
+```
+
+```{r}
+library(rr2)
+rr2::R2(m4)
+blorr::blr_model_fit_stats(m4)
+torig %>% t
+torigperc
+blorr::blr_confusion_matrix(m4)
+# O teste de Hosmer-Lemeshow tem H0: o modelo está bem ajustado aos dados
+ResourceSelection::hoslem.test(m4$model$y, m4$fitted.values)
+# A curva ROC (Receiver Operating Characteristic) atesta o poder preditivo do modelo
+# quando AUC (Area Under Curve) > 0.5
+# o modelo perfeito teria AUC = 1
+pROC::roc(m4$model$y, m4$fitted.values, 
+          smoothed = TRUE,
+          # arguments for ci
+          ci=TRUE, ci.alpha=0.9, stratified=FALSE,
+          # arguments for plot
+          plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+          print.auc=TRUE, show.thres=TRUE) -> mroc
+plot(mroc)
+sens.ci <- pROC::ci.se(mroc)
+plot(sens.ci, type="shape", col="lightblue")
+## Warning in plot.ci.se(sens.ci, type = "shape", col = "lightblue"): Low
+## definition shape.
+plot(sens.ci, type="bars")
+```
+
+## Voltando ao tema... { - }
+
+```{r}
+data("coke", package="PoEdata")
+coke.logit <- glm(coke~pratio+disp_coke+disp_pepsi, 
+              data=coke, family=binomial(link="logit"))
+coke.logit %>% summary
+```
+
+```{r}
+coke.LPM <- lm(coke~pratio+disp_coke+disp_pepsi, 
+              data=coke)
+coke.probit <- glm(coke~pratio+disp_coke+disp_pepsi, 
+              data=coke, family=binomial(link="probit"))
+stargazer(coke.LPM, coke.probit, coke.logit,
+  header=FALSE, 
+  title="Three binary choice models for the 'coke' dataset",
+  type=.stargazertype,
+  keep.stat="n",digits=4, single.row=FALSE,
+  intercept.bottom=FALSE,
+  model.names=FALSE,
+  column.labels=c("LPM","probit","logit"))
+```
+
+```{r}
+# percebam que o Colonescu faz uma validação interna
+tble <- data.frame(true=coke$coke, predicted=round(fitted(coke.logit))) %>% table
+(tble/rowSums(tble)) %>% round(4) * 100
+```
+
+## 16.5 Multinomial Logit
+
+```{r}
+data("nels_small", package="PoEdata")
+nels_small %>% head
+library(nnet)
+nels.multinom <- multinom(psechoice~grades, data=nels_small)
+nels.multinom %>% summary
+```
+
+```{r}
+pred <- predict(nels.multinom, nels_small, "probs")
+pred %>% apply(1, which.max) -> yhat
+data.frame(y = nels_small$psechoice, yhat = yhat) %>% table -> t
+(t/rowSums(t)) %>% round(4) * 100
+```
+
+## 16.9 The Tobit, or Censored Data Model
+
+Dados censurados -> limitados à esquerda e/ou à direita
+
+```{r}
+data("mroz", package="PoEdata")
+hist(mroz$hours, breaks=20, col="grey")
+mroz %>% head
+```
+
+
+```{r}
+library(AER)
+mroz.tobit <- tobit(hours~educ+exper+age+kidsl6, data=mroz, left = 0, dist = "gaussian")
+sMrozTobit <- summary(mroz.tobit)
+sMrozTobit
+mroz.lm <- lm(hours~educ+exper+age+kidsl6, 
+                    data=mroz)
+sMrozlm <- summary(mroz.lm)
+sMrozlm
+```
+
+
+
+
+
+
+```{r}
+cbind(y = m[,1], yhat = m1$fitted.values %>% discretize(levels = 2) - 1) %>% as.data.frame() %>% table
+m2 = glm(as.factor(y)~., data = m %>% as.data.frame, family = binomial("logit"))
+m2 %>% summary
+cbind(y = m[,1], yhat = m2$fitted.values %>% discretize(levels = 2) - 1) %>% as.data.frame() %>% table
+```
+
