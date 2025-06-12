@@ -1,0 +1,478 @@
+---
+title: "R Notebook"
+output: html_document
+---
+
+```{r}
+#install.packages("rlang")
+if(!require(tidyquant)) install.packages("tidyquant")
+library(tidyquant)
+
+symbols <- c("BABA", "MSFT", "CL", "GE", "TSLA", "GM", "F", "INTC", "PSX", "DOW", "DD", "MRK", "IBM", "^NYA")
+
+#symbols <- c("^BVSP", "MSFT", "GE", "PETR4.SA", "VALE5.SA", "ESTR4.SA", "MGLU3.SA", "ABEV3.SA", "BOBR4.SA")
+
+# Download data in tidy format. 
+# Will remove VIA/B and warn you.
+#data <- tq_get(symbols)
+# SAN - Santander
+# DD - DuPont
+# F - Ford
+# DOW - Dow
+# AAPL - Apple
+# INTC - Intel
+# PSX - Phillips
+# GM - General Motors
+# BA - Boeing
+# MRK - Merck
+# IBM
+# AA - Alcoa Corporation
+# CL - Colgate Palmolive
+# MSFT - Microsoft
+#
+data <- tq_get(symbols,
+               get  = "stock.prices",
+               from = "2020-10-31",
+               to   = "2025-06-09")
+
+# 14% a.a.
+# 1.14^(1/251)-1
+# xxx a.d.u.
+rf = 1.043^(1/251)-1
+
+names(rf) = "RiskFree"
+rf
+# Ticker symbols as column names for closing prices
+library(tidyr)
+library(dplyr)
+d = data %>% 
+    select(symbol, date, close) %>% 
+    spread(key = symbol, value = close)
+plot.ts(d[,1:10], plot.type = "mult")
+```
+
+```{r}
+dd = data.frame(d[,-1])
+w = complete.cases(dd)
+dd = dd[w,]
+dd = xts(round(dd, 2), d[w,1]$date)
+nr = ceiling(length(symbols)/4)
+ly = matrix(1:8, nrow=2, byrow = 1) # matrix(1:(nr*4), nrow = nr, byrow = 1)
+k = length(symbols) %/% 8
+if ((length(symbols)%%8)>0) k = k + 1
+i = 0
+for (kk in 1:k) {
+  layout(ly)
+  for (j in 1:8) {
+    i = i + 1
+    if (i<=ncol(dd)) plot(dd[,i], main = colnames(dd)[i])
+  }
+}
+apply(dd, 2, plot.ts)
+
+# Calcular os log-retornos
+ret = apply(dd, 2, function(x) {diff(log(x))})
+ret = xts(ret, as.Date(row.names(ret)))
+# retornos risk-free
+retRF = ret - rf
+i = 0
+for (kk in 1:k) {
+  layout(ly)
+  for (j in 1:8) {
+    i = i + 1
+    if (i<=ncol(dd)) plot(ret[,i], main = colnames(dd)[i])
+  }
+}
+colnames(ret)
+# modelo CAPM
+alfa.e.beta = NULL
+for (i in 2:ncol(ret)) {
+  s = summary(lm(retRF[,i]~retRF[,1]))
+  alfa.e.beta = rbind(alfa.e.beta, c(alfa = s$coeff[1,1], p.alfa = s$coeff[1,4], beta = s$coeff[2,1], p.beta = s$coeff[2,4]))
+}
+row.names(alfa.e.beta) = colnames(ret)[2:ncol(ret)]
+alfa.e.beta = round(alfa.e.beta, 4)
+alfa.e.beta
+apply(retRF, 2, function(x) xts::as.xts(x) %>% plot)
+plot(retRF)
+anomalo = which(alfa.e.beta[,2]<0.05)
+anomalo
+m = apply(retRF, 2, mean)
+maiores = which(m>(quantile(m,0.5)))
+maiores = which(m>0)
+maiores
+s = apply(retRF, 2, sd)
+retvolSharpe = round(rbind(retorno = m, volat = s, Sharpe = m/s), 4)
+retvolSharpe
+```
+```{r}
+# Maximização de Sharpe Total
+options(scipen = 0)
+library(PortfolioAnalytics)
+colnames(ret)
+assets = retRF[, names(maiores)]
+# Escolho todos os retornos menos IBOVESPA
+assets = retRF[, -1]
+# portfolio inicial recebe os nomes dos ativos
+port = PortfolioAnalytics::portfolio.spec(assets = colnames(assets))
+# adiciono restrição do tipo de investimento
+port <- add.constraint(portfolio=port, type="full_investment")
+# long-only movimenta inteiro a cada período
+port <- add.constraint(portfolio=port, type="long_only")
+# box limita o mínimo e máximo investimento em cada ativo
+port <- add.constraint(portfolio=port, type="box",
+    min=rep(0.000, ncol(assets)),
+    max=rep(1, ncol(assets)))
+# especifico que quero medir o retorno pela média
+port <- add.objective(portfolio=port, type="return", name="mean")
+# especifico que quero medir o risco pelo desvio-padrão
+port <- add.objective(portfolio=port, type="risk", name="StdDev")
+print(port)
+# otimização do portfolio
+# trace = TRUE -> acompanhar cada passo da otimização
+# maxSR -> maximize Sharpe Ratio
+opt <- PortfolioAnalytics::optimize.portfolio(R = assets, portfolio=port, optimize_method="ROI", trace=TRUE, maxSR = TRUE)
+print(opt)
+SharpeRatio = opt$opt_values$mean/opt$opt_values$StdDev
+names(SharpeRatio) = "SharpeRatio"; SharpeRatio
+```
+
+```{r}
+options(scipen = 0)
+#plot(opt, chart.assets=TRUE, xlim=c(0.02, 0.18))
+#chart.RiskReward(opt,return.col="mean", risk.col="sd", chart.assets=TRUE, xlim=c(0.01, 0.05), main="Maximum Return")
+ef = create.EfficientFrontier(cbind(assets)+rf, portfolio = port, type = "mean-var")
+#summary(ef)
+chart.EfficientFrontier(object = ef, match.col = "StdDev", rf = rf, type = "l", n.portfolios = 25)
+abline(h=0, v=0)
+```
+
+
+```{r}
+# Minimização de Risco
+library(PortfolioAnalytics)
+assets = retRF[, -1] #[,names(maiores)]
+port = PortfolioAnalytics::portfolio.spec(assets = colnames(assets))
+port <- add.constraint(portfolio=port, type="full_investment")
+port <- add.constraint(portfolio=port, type="long_only")
+port <- add.constraint(portfolio=port, type="box",
+    min=rep(0.00, ncol(assets)),
+    max=rep(1, ncol(assets)))
+port <- add.objective(portfolio=port, type="return", name="StdDev")
+#print(port)
+opt1 <- PortfolioAnalytics::optimize.portfolio(R = assets, portfolio=port, optimize_method="ROI", trace=TRUE, maxSR = FALSE)
+print(opt1)
+
+```
+
+```{r}
+ef = create.EfficientFrontier(assets+rf, portfolio = port, type = "mean-var")
+chart.EfficientFrontier(object = ef, match.col = "StdDev", rf = rf, type = "l", n.portfolios = 250)
+abline(h=0, v=0)
+```
+
+```{r, eval = FALSE, include=FALSE}
+nrow(assets)
+assets = ret[, names(maiores)]
+layout(matrix(c(1, 2, 3, 4), nrow = 2, byrow = 1))
+w = round(opt$weights, 4); w
+port.maxsharpe = cumprod(1+(assets %*% w))
+ret.maxsharpe = port.maxsharpe[nrow(assets)]
+names(ret.maxsharpe) = "ret.maxsharpe"
+plot.ts(port.maxsharpe, main = "MaxSharpe")
+w = round(opt1 $weights, 4); w
+port.minvar = cumprod((1+assets %*% w))
+ret.minvar = port.minvar[nrow(assets)]
+names(ret.minvar) = "ret.minvar"
+plot.ts(port.minvar, main = "MinVar")
+mkt = as.numeric(dd[,1])
+ret.mkt = mkt[nrow(dd)]/mkt[1]
+names(ret.mkt) = "ret.mkt"
+mkt = cumprod(c(1, 1+ret[,1]))
+plot.ts(mkt, main = "Mkt")
+c(ret.maxsharpe, ret.minvar, ret.mkt)
+```
+```{r}
+a = round(rnorm(20, 10, 1))
+b = round(rnorm(20, 12, 2))
+t.test(a, b)
+var.test(a,b)
+ab = data.frame(a, b)
+```
+
+```{r, eval = FALSE, include = FALSE}
+wb = xlsx::createWorkbook()
+sh = createSheet(wb, sheetName = "t.test")
+xlsx::addDataFrame(ab, sh)
+sh1 = createSheet(wb, sheetName = "cot")
+xlsx::addDataFrame(dd, sh1)
+sh2 = createSheet(wb, sheetName = "ret")
+xlsx::addDataFrame(ret, sh2)
+sh3 = createSheet(wb, sheetName = "RiskFree")
+xlsx::addDataFrame(data.frame(rf), sh3)
+sh4 = createSheet(wb, sheetName = "retRF")
+xlsx::addDataFrame(retRF, sh4)
+sh5 = createSheet(wb, sheetName = "RetVolSharpe")
+xlsx::addDataFrame(data.frame(retvolSharpe), sh5)
+sh6 = createSheet(wb, sheetName = "alfa e beta")
+xlsx::addDataFrame(data.frame(alfa.e.beta), sh6)
+weights = data.frame(rbind(Sharpe = round(opt$weights, 4), Var = round(opt1$weights, 4)))
+sh7 = createSheet(wb, sheetName = "Otimização")
+xlsx::addDataFrame(data.frame(weights), sh7)
+xlsx::saveWorkbook(wb, "cotYahooBR.xlsx")
+```
+
+
+
+```{r}
+rmsft = ret[, "MSFT"] #, "DOW")]
+rdow = ret[, "DOW"]
+rford = ret[, "F"]
+mean(rmsft); mean(rdow)
+sd(rmsft); sd(rdow)
+t.test(rford, rmsft)
+var.test(rmsft, rford)
+var.test(rmsft, rdow)
+wilcox.test(as.numeric(rford), as.numeric(rmsft))
+```
+```{r}
+set.seed(1)
+x = rnorm(10)
+y = 2.5*x + rnorm(10)
+x = as.numeric(cut(x, 11))
+y = as.numeric(cut(y, 11))
+cbind(x, y)
+cor(x, y)
+cor.test(x, y)
+m = lm(y ~ x)
+s = summary(m)
+s
+plot(x, y)
+abline(m)
+```
+
+```{r}
+library(psych)
+ct = corr.test(ret[, ])
+correl = round(ct$r,2)
+nam = colnames(correl)
+sig = round(ct$p,2)
+sig = ifelse(sig<0.10, ifelse(sig<0.05, ifelse(sig<0.01, "***", "**"), "*"), "")
+correl = matrix(paste(correl, sig, sep = ""), nrow = nrow(correl), byrow = TRUE)
+colnames(correl) = nam
+row.names(correl) = nam
+diag(correl) = 1
+correl[lower.tri(correl)] = ""
+print(data.frame(correl))
+```
+```{r}
+ct = corr.test(dd[, c(1:7)])
+correl = round(ct$r,2)
+nam = colnames(correl)
+sig = round(ct$p,2)
+sig = ifelse(sig<0.10, ifelse(sig<0.05, ifelse(sig<0.01, "***", "**"), "*"), "")
+correl = matrix(paste(correl, sig, sep = ""), nrow = nrow(correl), byrow = TRUE)
+colnames(correl) = nam
+row.names(correl) = nam
+diag(correl) = 1
+correl[lower.tri(correl)] = ""
+print(data.frame(correl))
+```
+
+
+$$
+(r - r_f) = \alpha + \beta\,(m-r_f)
+$$
+
+
+# Modelo de Markowitz
+
+Resumidamente, o modelo de Markowitz nos mostra
+
+
+$$
+\sigma_{\text{cart}} \triangleq \text{Risco da carteira}
+$$
+$$
+\mathbf{\Sigma}_{\text{ativos}} = \begin{bmatrix}
+\sigma_1&0&0&\dots&0\\
+0&\sigma_{2}&0&\dots&0\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+0&0&0&\dots&\sigma_{k}
+\end{bmatrix} \triangleq \text{Matriz com os riscos dos ativos na diagonal}
+$$
+$$
+\mathbf{\rho}_{\text{ativos}} = \begin{bmatrix}
+1&\rho_{1,2}&\rho_{1,3}&\dots&\rho_{1,k}\\
+\rho_{2,1}&1&\rho_{2,3}&\dots&\rho_{2,k}\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+\rho_{k,1}&\rho_{k,2}&\rho_{k,3}&\dots&1
+\end{bmatrix}\triangleq \text{Matriz de correlação dos ativos}
+$$
+$$
+\mathbf{w} = \begin{bmatrix}
+w_1\\w_2\\w_3\\\vdots\\w_k
+\end{bmatrix}\triangleq \text{Vetor de pesos dos ativos}
+$$
+$$
+\mathbf{w'} = \begin{bmatrix}
+w_1&w_2&w_3&\dots&w_k
+\end{bmatrix}\triangleq \text{Vetor de pesos dos ativos transposto}\\[2em]
+{\sigma}_{\text{cart}} = \sqrt{\mathbf{w}'\ \mathbf{\Sigma}_{\text{ativos}}\  \mathbf{\rho}_{\text{ativos}}  \mathbf{\Sigma}_{\text{ativos}}\ \mathbf{w}}
+$$
+$$
+{\sigma}_{\text{cart}} = \sqrt{\begin{bmatrix}
+w_1&w_2&w_3&\dots&w_k
+\end{bmatrix}
+\begin{bmatrix}
+\sigma_1&0&0&\dots&0\\
+0&\sigma_{2}&0&\dots&0\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+0&0&0&\dots&\sigma_{k}
+\end{bmatrix}
+\begin{bmatrix}
+1&\rho_{1,2}&\rho_{1,3}&\dots&\rho_{1,k}\\
+\rho_{2,1}&1&\rho_{2,3}&\dots&\rho_{2,k}\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+\rho_{k,1}&\rho_{k,2}&\rho_{k,3}&\dots&1
+\end{bmatrix}
+\begin{bmatrix}
+\sigma_1&0&0&\dots&0\\
+0&\sigma_{2}&0&\dots&0\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+0&0&0&\dots&\sigma_{k}
+\end{bmatrix}
+\begin{bmatrix}
+w_1\\w_2\\w_3\\\vdots\\w_k
+\end{bmatrix}
+}
+$$
+$$
+\begin{bmatrix}
+\sigma_1&0&0&\dots&0\\
+0&\sigma_{2}&0&\dots&0\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+0&0&0&\dots&\sigma_{k}
+\end{bmatrix}
+\begin{bmatrix}
+1&\rho_{1,2}&\rho_{1,3}&\dots&\rho_{1,k}\\
+\rho_{2,1}&1&\rho_{2,3}&\dots&\rho_{2,k}\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+\rho_{k,1}&\rho_{k,2}&\rho_{k,3}&\dots&1
+\end{bmatrix}
+\begin{bmatrix}
+\sigma_1&0&0&\dots&0\\
+0&\sigma_{2}&0&\dots&0\\
+\vdots&\vdots&\vdots&\ddots&\vdots\\
+0&0&0&\dots&\sigma_{k}
+\end{bmatrix}
+= \bf{\text{vcov}}_{\text{ativos}}
+$$
+
+Presumindo dois ativos não correlacionados, 
+
+$$
+\rho_{ativos} = \begin{bmatrix}1&0\\0&1\end{bmatrix}\\
+\sigma_{cart} = \sqrt{\begin{bmatrix}w_1&w_2\end{bmatrix}\begin{bmatrix}\sigma_1&0\\0&\sigma_2\end{bmatrix}\begin{bmatrix}1&0\\0&1\end{bmatrix}\begin{bmatrix}\sigma_1&0\\0&\sigma_2\end{bmatrix}\begin{bmatrix}w_1\\w_2\end{bmatrix}} = \sqrt{w_1^2\sigma_1^2+w_2^2\sigma_2^2}
+$$
+
+$$
+\text{Tomando a variância da carteira: }\\
+\sigma_{cart}^2 = w_1^2\sigma_1^2+w_2^2\sigma_2^2\\[2em]
+\text{Como os pesos somam 1: }\\
+w_2 = 1-w_1\\[2em]
+\text{Expandindo os termos: }\\
+\sigma_{cart}^2 = w_1^2\sigma_1^2+(1-w_1)^2\sigma_2^2=w_1^2\sigma_1^2+(1-2w_1+w_1^2)\sigma_2^2 = \\
+w_1^2\sigma_1^2+\sigma_2^2-2w_1\sigma_2^2+w_1^2\sigma_2^2\\[2em]
+\text{Supondo que a variância possua um mínimo, nesse ponto a derivada  em relação a w1 será zero: }\\
+\dfrac{\rm{d}\sigma_{cart}^2}{\rm{d}w_1} = 0\\[2em]
+2w_1\sigma_1^2-2\sigma_2^2+2w_1\sigma_2^2 = 0\\[2em]
+w_1\left(\sigma_1^2+\sigma_2^2\right) = \sigma_2^2\\[2em]
+\text{Para esse peso, teremos a mínima variância: }\\
+w_1 = \dfrac{\sigma_2^2}{\sigma_1^2+\sigma_2^2}
+$$
+
+Vamos à experimentação: gerar uma carteira de dois ativos, não correlacionados, com $\sigma_1 = 0.1$ e $\sigma_2 = 0.2$
+
+```{r}
+r = 0; sd1 = 0.1; sd2 = 0.2; ret1 = 0.001; ret2 = 0.002
+# matriz rho
+rho = matrix(c(1, r, r, 1), nrow = 2); rho
+# matriz sigma
+sigma = diag(c(sd1, sd2)); sigma
+MASS::mvrnorm(400, mu = c(ret1, ret2), Sigma = sigma%*%rho%*%sigma, empirical = TRUE) -> X
+colnames(X) = paste("x", 1:ncol(X), sep = "")
+X = ts(X)
+# ativos não correlacionados
+cor(X) %>% round(4)
+```
+
+Vamos montar uma carteira variando os pesos de 0 a 100%
+
+```{r}
+msd = NULL
+for(i in 0:100) {
+  w1 = i/100; w2 = 1-w1
+  msd = c(msd, sd(X%*%c(w1, w2)))
+}
+plot.ts(msd, xlab = "% w1", ylab = "Risco da carteira"); abline(h = c(sd(X[,1]), sd(X[,2])), col = "red", lty = 2)
+```
+
+Interessante, para um peso w1 de 80% a carteira possui uma variância menor que a menor variância dos ativos que a compõem!
+
+Teoricamente
+
+```{r}
+library(magrittr)
+# cálculo dos pesos
+w1 = sd2^2/(sd1^2+sd2^2)
+w2 = 1-w1
+c(w1, w2)
+# qual o risco da carteira para esses pesos?
+(c(w1,w2)%*%diag(c(sd1, sd2))%*%diag(2)%*%diag(c(sd1, sd2))%*%c(w1, w2)) %>% sqrt
+```
+
+
+Trabalhando com o minimizador de risco do portfolio
+
+```{r}
+# Minimização de Risco
+library(PortfolioAnalytics)
+assets = X
+port = PortfolioAnalytics::portfolio.spec(assets = colnames(assets))
+port <- add.constraint(portfolio=port, type="full_investment")
+port <- add.constraint(portfolio=port, type="long_only")
+port <- add.constraint(portfolio=port, type="box",
+    min=rep(0.00, ncol(assets)),
+    max=rep(1, ncol(assets)))
+port <- add.objective(portfolio=port, type="return", name="StdDev")
+#print(port)
+opt1 <- PortfolioAnalytics::optimize.portfolio(R = assets, portfolio=port, optimize_method="ROI", trace=TRUE, maxSR = FALSE)
+print(opt1)
+
+```
+
+Qual o risco da carteira?
+
+```{r}
+(opt1$weights%*%sigma%*%rho%*%sigma%*%opt1$weights) %>% sqrt
+```
+
+
+Markowitz descobriu uma coisa muito aplicável: mesmo para ativos não correlacionados, ou seja, com riscos completamente independentes (ou idiossincráticos), é possível montar uma carteira com um risco ainda menor. 
+
+Como vimos, CAPM trabalha com risco sistemático, do mercado para o ativo e Markowitz trabalha com o risco total (sistemático + idiossincrático).
+
+## Dois ativos correlacionados
+
+$$
+\sigma^2_{\text{cart}} = w_1^2\sigma_1^2+2w_1w_2\sigma_1\sigma_2\rho_{12}+w_2^2\sigma_2^2 =\\
+w_1^2\sigma_1^2+2w_1(1-w_1)\sigma_1\sigma_2\rho_{12}+(1-w_1)^2\sigma_2^2 =\\
+w_1^2\sigma_1^2+(2w_1-2w_1^2)\sigma_1\sigma_2\rho_{12}+(1-2w_1+w_1^2)\sigma_2^2 \\
+d\sigma_{text{cart}}/dw_1 = 2w_1\sigma_1^2+(2-4w_1)\sigma_1\sigma_2\rho_{12}-2\sigma^2_2+2w_1\sigma_2^2 = 0\\
+w_1\sigma_1^2+(1-2w_1)\sigma_1\sigma_2\rho_{12}-\sigma^2_2+w_1\sigma_2^2 = 0\\
+w_1(\sigma_1^2-2\sigma_1\sigma_2\rho_{12}+\sigma_2^2) = \sigma_2^2-\sigma_1\sigma_2\rho_{12}\\
+w_1 = \dfrac{\sigma_2^2-\sigma_1\sigma_2\rho_{12}}{\sigma_1^2-2\sigma_1\sigma_2\rho_{12}+\sigma_2^2}
+$$
+
+O princípio vale para múltiplos ativos correlacionados e o caso é resolvido por meio de minimização quadrática. 
