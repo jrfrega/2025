@@ -1,0 +1,242 @@
+---
+title: "Atividade para aula 15"
+author: "Prof. Frega"
+date: "2025-04-02"
+output:
+  bookdown::html_document2:
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+    theme: cer
+    number_sections: yes
+    code_folding: show
+    css: 
+      2025/estilo.css
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+include.code = TRUE
+source("https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/mhist.R")
+```
+
+# Questão 1
+
+1) Examine a variável dependente. Necessita de alguma transformação? Por que? 
+
+2) Faça o gráfico da variável $y$ contra a variável $x$. Proponha uma possível forma funcional. 
+
+3) Teste um modelo de relação linear. Como ficou o ajustamento? Que gráficos você pode fazer?
+
+4) Você proporia algum modelo diferente da relação linear? Se sim, teste. 
+
+
+```{r, include=include.code}
+set.seed(10)
+x = rnorm(250, 4, 1)
+y = 150*x - 20.5*x^2 +8800 + 40*rnorm(x)
+x = x %>% round(1)
+y = y %>% round(1)
+data.q1 = data.frame(y, x)
+plot(x, y, pch = 20, col = "gray")
+mhist(y)
+mhist(y %>% log)
+m = lm(y~x)
+library(lmtest)
+reset(m)
+shapiro.test(m$residuals %>% scale)
+mhist(m$residuals %>% scale)
+plot(x, y, pch = 20, col = "gray")
+abline(m, col = "blue")
+m2 = lm(y~x+I(x^2))
+reset(m2)
+shapiro.test(m2$residuals %>% scale)
+mhist(m2$residuals %>% scale)
+plot(x, y, pch = 20, col = "gray")
+.x = seq(min(x), max(x), length.out = 100)
+.y = predict(m2, data.frame(x = .x))
+lines(.x, .y, col = "blue")
+```
+
+
+# Questão 2
+
+No modelo proposto, a variável y é explicada por x. Espera-se uma relação de grau mais elevado. Monte o percurso investigativo e explique cada etapa. 
+
+
+```{r, include=include.code}
+set.seed(10)
+x = rnorm(250, 3, 1)
+y = 4.4*x^3+ 20*x - 32.5*x^2 +8800 + 30*rnorm(x)
+x = x %>% round(1)
+y = y %>% round(1)
+data.q2 = data.frame(y, x)
+plot(x, y, pch = 20, col = "gray")
+mhist(y)
+mhist(y %>% log)
+m = lm(y~x)
+library(lmtest)
+reset(m)
+shapiro.test(m$residuals %>% scale)
+mhist(m$residuals %>% scale)
+plot(x, y, pch = 20, col = "gray")
+abline(m, col = "blue")
+m2 = lm(y~x+I(x^2))
+reset(m2)
+shapiro.test(m2$residuals %>% scale)
+mhist(m2$residuals %>% scale)
+plot(x, y, pch = 20, col = "gray")
+.x = seq(min(x), max(x), length.out = 100)
+.y = predict(m2, data.frame(x = .x))
+lines(.x, .y, col = "blue")
+m3 = lm(y~x+I(x^2)+I(x^3))
+reset(m3)
+shapiro.test(m3$residuals %>% scale)
+mhist(m3$residuals %>% scale)
+plot(x, y, pch = 20, col = "gray")
+.x = seq(min(x), max(x), length.out = 100)
+.y = predict(m3, data.frame(x = .x))
+lines(.x, .y, col = "blue")
+stargazer::stargazer(m, m2, m3, type = "text")
+```
+
+
+# Questão 3
+
+No modelo proposto, a variável y é explicada por X1, X2 e X3. Espera-se relações de segundo ou terceiro grau para as variáveis independentes. Monte o percurso investigativo e explique cada etapa. 
+
+
+```{r, include=include.code}
+set.seed(10)
+x = MASS::mvrnorm(250, c(10, 10, 10), diag(c(1, 2, 1.5)))
+y = 10+3*rnorm(x[,1])+x%*%matrix(c(-1, 2, 3), ncol = 1)-0.5*x[,2]^2
+x = x %>% round(1) + 0.1
+y = y %>% as.numeric %>% round(1)
+data = data.frame(y, x)
+data.q3 = data
+plot(x[,2], y, pch = 20, col = "gray")
+mhist(y)
+m = lm(y~., data)
+library(lmtest)
+reset(m)
+shapiro.test(m$residuals %>% scale)
+mhist(m$residuals %>% scale)
+summary(m)
+m2 = lm(y~.+I(X1^2)+I(X2^2)+I(X3^2), data)
+reset(m2)
+shapiro.test(m2$residuals %>% scale)
+mhist(m2$residuals %>% scale)
+summary(m2)
+mfinal = lm(y~.+I(X1^2)+I(X2^2), data)
+reset(mfinal)
+shapiro.test(mfinal$residuals %>% scale)
+mhist(mfinal$residuals %>% scale)
+summary(mfinal)
+```
+
+# Questão 4
+
+No modelo proposto, a variável y é explicada por X1, X2 e X3. Espera-se coeficientes positivos para X1 e X2 e investiga-se uma possível relacão de moderação de X2 para o efeito de X1. Monte o percurso investigativo e explique cada etapa. 
+
+```{r, include=include.code}
+set.seed(10)
+x = MASS::mvrnorm(250, c(10, 10, 10), diag(c(1, 2, 1.5)))
+y = 3*x[,1]+2*x[,2]-4*x[,1]*x[,2]+rnorm(x[,1])+600
+x = x %>% round(1) + 0.1
+y = y %>% as.numeric %>% round(1)
+data = data.frame(y, x)
+data.q4 = data
+plot(x[,2], y, pch = 20, col = "gray")
+mhist(y)
+m = lm(y~X1+X2+X3+X1:X2, data)
+library(lmtest)
+reset(m)
+shapiro.test(m$residuals %>% scale)
+mhist(m$residuals %>% scale)
+summary(m)
+```
+
+# Questão 5
+
+Na busca por um efeito de cointegração examinou-se duas séries temporais. 
+
+Explique os resultados dos exames determinando 1) se um modelo VECM para esses dados é adequado, e porque. 2) Se o VECM for adequado, qual é a série que comanda o sistema?
+
+
+```{r, include = include.code}
+library(tseries)
+set.seed(3)
+err = arima.sim(model = list(order = c(1, 0, 0), ar = 0.68), 200)
+#err=rnorm(200)
+x = rnorm(err)
+xcum = cumsum(x)+5
+ycum = xcum+1*err+3
+lm(ycum~xcum) %>% residuals -> res
+plot.ts(data.frame(xcum, ycum, res), plot.type = "single", col = c("red", "blue", "darkgreen")); abline(h=0, col = "gray")
+acf(xcum); acf(ycum); acf(res)
+pacf(xcum); pacf(ycum); pacf(res)
+
+tseries::adf.test(xcum)
+tseries::adf.test(ycum)
+tseries::adf.test(res)
+
+tseries::adf.test(xcum %>% diff)
+tseries::adf.test(ycum %>% diff)
+
+acf(xcum %>% diff); acf(ycum %>% diff)
+pacf(xcum %>% diff); pacf(ycum %>% diff)
+
+library(urca)
+ca.jo(data.frame(ycum, xcum)) -> vecm; vecm %>% summary
+cajorls(vecm)$rlm %>% summary
+```
+
+# Questão 6 
+
+Um modelo de dados em painel (Empresa x Ano) foi estudado. 
+
+Explique os resultados obtidos e qual o modelo mais adequado.
+
+
+```{r Dados em painel, include=include.code}
+set.seed(12)
+Empresa = 1:10
+ano = 2000:2024
+x = MASS::mvrnorm(250, c(0, 0, 0), diag(rep(1, 3))) %>% matrix(ncol = 3)
+y = rep(Empresa, each = 25)/10+rep(ano, times = 10)/200000+(0.1*c(1, 0, -3)%*%t(x))+rnorm(250)
+y = as.numeric(y)
+data = data.frame(E = rep(Empresa, each = 25), A = rep(ano, times = 10), y = y, x)
+pdata = plm::pdata.frame(data, index = c("E", "A"))
+m.pooled = plm::plm(y~X1+X2+X3, pdata, model = "pooling")
+summary(m.pooled)
+m.within = plm::plm(y~X1+X2+X3, pdata, model = "within")
+summary(m.within)
+plm::fixef(m.within)
+plm::pFtest(m.within, m.pooled)
+m.random = plm::plm(y~X1+X2+X3, pdata, model = "random")
+summary(m.random)
+plm::ranef(m.random)
+plm::plmtest(m.random)
+plm::phtest(m.random, m.within)
+```
+
+# APÊNDICE
+
+Os conjuntos de dados estão no GitHub, no arquivo [`ExerciciosAula15.xlsx`](https://raw.githubusercontent.com/jrfrega/2025/refs/heads/main/ExerciciosAula15.xlsx).
+
+```{r}
+library(openxlsx)
+wb = createWorkbook()
+ws = openxlsx::addWorksheet(wb, "Q1")
+writeData(wb, ws, data.q1, 1, 1)
+ws = openxlsx::addWorksheet(wb, "Q2")
+writeData(wb, ws, data.q2, 1, 1)
+ws = openxlsx::addWorksheet(wb, "Q3")
+writeData(wb, ws, data.q3, 1, 1)
+ws = openxlsx::addWorksheet(wb, "Q4")
+writeData(wb, ws, data.q4, 1, 1)
+saveWorkbook(wb, "/Users/jfrega/Documents/R/MQAPLICFIN/2025/ExerciciosAula15.xlsx", overwrite = TRUE)
+```
+
+
